@@ -28,9 +28,9 @@ const FormularioProducto = () => {
               <option value="Articulos">Artículos para entrenar</option>
             </Form.Select>
           </Form.Group>
-          <Form.Group>
+          <Form.Group className="mb-3" controlId="subcategoriaProducto">
             <Form.Label>Tipo de Indumentaria</Form.Label>
-            <Form.Select className="mb-3" controlId="subcategoriaProducto">
+            <Form.Select >
               <option value="">Seleccionar</option>
               <option value="Remera">Remera</option>
               <option value="Short">Short</option>
