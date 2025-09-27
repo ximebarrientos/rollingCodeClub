@@ -1,3 +1,4 @@
+import FormularioProducto from "./components/pages/producto/FormularioProducto"
 
 
 function App() {
@@ -5,6 +6,7 @@ function App() {
   return (
     <>
       <h1>Rolling Code Club</h1>
+      <FormularioProducto></FormularioProducto>
     </>
   )
 }
