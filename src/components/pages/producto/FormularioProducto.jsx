@@ -20,6 +20,27 @@ const FormularioProducto = () => {
               placeholder="Ingrese el precio del producto"
             />
           </Form.Group>
+          <Form.Group className="mb-3" controlId="categoriaProducto">
+            <Form.Label>Categoría</Form.Label>
+            <Form.Select>
+              <option value="">Seleccionar</option>
+              <option value="Indumentaria">Indumentaria</option>
+              <option value="Articulos">Artículos para entrenar</option>
+            </Form.Select>
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Tipo de Indumentaria</Form.Label>
+            <Form.Select className="mb-3" controlId="subcategoriaProducto">
+              <option value="">Seleccionar</option>
+              <option value="Remera">Remera</option>
+              <option value="Short">Short</option>
+              <option value="Calzado">Calzado</option>
+            </Form.Select>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="imagenProducto">
+            <Form.Label>Imagen del producto</Form.Label>
+            <Form.Control type="file" />
+          </Form.Group>
           <Form.Group className="mb-3" controlId="descripcionProducto">
             <Form.Label>Descripción</Form.Label>
             <Form.Control
@@ -27,14 +48,6 @@ const FormularioProducto = () => {
               rows={3}
               placeholder="Ingrese una descripción del producto"
             />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="categoriaProducto">
-            <Form.Label>Categoría</Form.Label>
-            <Form.Select>
-              <option value="">Seleccionar</option>
-              <option value="indumentaria">Indumentaria</option>
-              <option value="articulos">Artículos para entrenar</option>
-            </Form.Select>
           </Form.Group>
         </Form>
       </Row>
