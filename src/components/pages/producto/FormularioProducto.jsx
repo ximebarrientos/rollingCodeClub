@@ -13,6 +13,9 @@ const FormularioProducto = () => {
               placeholder="Ingrese el nombre del producto"
               className="bg-primary text-light"
             />
+            <Form.Text className="text-danger">
+                El nombre del producto es obligatorio
+          </Form.Text>
           </Form.Group>
           <Form.Group className="mb-3" controlId="precioProducto">
             <Form.Label>Precio</Form.Label>
@@ -21,6 +24,9 @@ const FormularioProducto = () => {
               placeholder="Ingrese el precio del producto"
               className="bg-primary text-light"
             />
+            <Form.Text className="text-danger">
+                El precio del producto es obligatorio
+            </Form.Text>
           </Form.Group>
           <Form.Group className="mb-3" controlId="categoriaProducto">
             <Form.Label>Categoría</Form.Label>
@@ -29,6 +35,9 @@ const FormularioProducto = () => {
               <option value="Indumentaria">Indumentaria</option>
               <option value="Articulos">Artículos para entrenar</option>
             </Form.Select>
+            <Form.Text className="text-danger">
+                La categoría del producto es obligatoria
+          </Form.Text>
           </Form.Group>
           <Form.Group className="mb-3" controlId="subcategoriaProducto">
             <Form.Label>Tipo de Indumentaria</Form.Label>
@@ -38,10 +47,16 @@ const FormularioProducto = () => {
               <option value="Short">Short</option>
               <option value="Calzado">Calzado</option>
             </Form.Select>
+            <Form.Text className="text-danger">
+                La subcategoría del producto es obligatoria
+          </Form.Text>
           </Form.Group>
           <Form.Group className="mb-3" controlId="imagenProducto">
             <Form.Label>Imagen del producto</Form.Label>
             <Form.Control type="file" className="bg-primary text-light" />
+            <Form.Text className="text-danger">
+                La imagen del producto es obligatoria
+          </Form.Text>
           </Form.Group>
           <Form.Group className="mb-3" controlId="descripcionProducto">
             <Form.Label>Descripción</Form.Label>
@@ -51,6 +66,9 @@ const FormularioProducto = () => {
               placeholder="Ingrese una descripción del producto"
               className="bg-primary text-light"
             />
+            <Form.Text className="text-danger">
+                La descripción del producto es obligatoria
+          </Form.Text>
           </Form.Group>
           <div className="d-grid">
             <Button variant="success" type="submit">
