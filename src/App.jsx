@@ -1,12 +1,9 @@
+import Footer from 'd:/CWEB12/rollingCodeClub/src/components/shared/Footer.jsx';
 
-
-function App() {
-  
+export default function App() {
   return (
     <>
-      <h1>Rolling Code Club</h1>
+      <Footer />
     </>
-  )
+  );
 }
-
-export default App
