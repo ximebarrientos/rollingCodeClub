@@ -1,14 +1,12 @@
-import { NavLink } from 'react-router';
-
 export default function Menu() {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark" data-bs-theme="dark">
       <div className="container">
-       
-        <NavLink to="/" className="navbar-brand d-flex align-items-center gap-2">
+
+        <a href="#" className="navbar-brand d-flex align-items-center gap-2">
           <img src="/logopngblanco.png" alt="Logo Rolling Code Club" height="100" /> 
           <span className="fw-bold"></span>
-        </NavLink>
+        </a>
 
         <button
           className="navbar-toggler"
@@ -23,18 +21,12 @@ export default function Menu() {
         </button>
 
         <div className="collapse navbar-collapse" id="mainNavbar">
-
           <ul className="navbar-nav mx-lg-auto mb-2 mb-lg-0 gap-2">
             <li className="nav-item">
-              <NavLink to="/" end className={({isActive}) => `nav-link${isActive ? ' active' : ''}`}>
-                Inicio
-              </NavLink>
+              <a href="#" className="nav-link">Inicio</a>
             </li>
-
             <li className="nav-item">
-              <NavLink to="/reservar" className={({isActive}) => `nav-link${isActive ? ' active' : ''}`}>
-                Reservar
-              </NavLink>
+              <a href="#" className="nav-link">Reservar</a>
             </li>
 
             <li className="nav-item dropdown">
@@ -50,34 +42,29 @@ export default function Menu() {
               </a>
               <ul className="dropdown-menu" aria-labelledby="tiendaDropdown">
                 <li><h6 className="dropdown-header">Indumentaria</h6></li>
-                <li><NavLink to="/tienda/indumentaria/camisetas" className="dropdown-item">Camisetas</NavLink></li>
-                <li><NavLink to="/tienda/indumentaria/shorts" className="dropdown-item">Shorts</NavLink></li>
-                <li><NavLink to="/tienda/indumentaria/botines" className="dropdown-item">Botines</NavLink></li>
-                
+                <li><a href="#" className="dropdown-item">Camisetas</a></li>
+                <li><a href="#" className="dropdown-item">Shorts</a></li>
+                <li><a href="#" className="dropdown-item">Botines</a></li>
+
                 <li><hr className="dropdown-divider" /></li>
 
                 <li><h6 className="dropdown-header">Accesorios</h6></li>
-                <li><NavLink to="/tienda/accesorios/kits-entrenamiento" className="dropdown-item">Kits de entrenamiento</NavLink></li>
-                <li><NavLink to="/tienda/accesorios/pelotas" className="dropdown-item">Pelotas</NavLink></li>
+                <li><a href="#" className="dropdown-item">Kits de entrenamiento</a></li>
+                <li><a href="#" className="dropdown-item">Pelotas</a></li>
               </ul>
             </li>
 
             <li className="nav-item">
-              <NavLink to="/contacto" className={({isActive}) => `nav-link${isActive ? ' active' : ''}`}>
-                Contacto
-              </NavLink>
+              <a href="#" className="nav-link">Contacto</a>
             </li>
-
             <li className="nav-item">
-              <NavLink to="/sobre-nosotros" className={({isActive}) => `nav-link${isActive ? ' active' : ''}`}>
-                Sobre Nosotros
-              </NavLink>
+              <a href="#" className="nav-link">Sobre Nosotros</a>
             </li>
           </ul>
 
           <div className="d-flex align-items-center gap-2">
-            <NavLink to="/login" className="btn btn-outline-light btn-sm py-3">Iniciar sesión</NavLink>
-            <NavLink to="/crear-cuenta" className="btn btn-primary btn-sm py-2">Crear cuenta</NavLink>
+            <a href="#" className="btn btn-outline-light btn-sm py-3">Iniciar sesión</a>
+            <a href="#" className="btn btn-primary btn-sm py-2">Crear cuenta</a>
           </div>
         </div>
       </div>
