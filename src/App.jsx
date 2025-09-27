@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router';
 import { BrowserRouter } from 'react-router';
-import Menu from './components/shared/menu.jsx';
+import Menu from 'd:/CWEB12/rollingCodeClub/src/components/shared/Menu.jsx';
 
 export default function App() {
   return (
