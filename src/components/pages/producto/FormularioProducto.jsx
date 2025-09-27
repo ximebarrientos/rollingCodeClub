@@ -5,17 +5,22 @@ const FormularioProducto = () => {
     <Container>
       <Row className="justify-content-center mb-5">
         <Form>
-          <h2 className="text-success text-center display-5">Cargar producto</h2>
+          <h2 className="text-success text-center display-5">
+            Cargar producto
+          </h2>
           <Form.Group className="mb-3" controlId="nombreProducto">
             <Form.Label>Nombre del producto</Form.Label>
             <Form.Control
               type="text"
               placeholder="Ingrese el nombre del producto"
               className="bg-primary text-light"
+              required
+              minLength={2}
+              maxLength={100}
             />
             <Form.Text className="text-danger">
-                El nombre del producto es obligatorio
-          </Form.Text>
+              El nombre del producto es obligatorio
+            </Form.Text>
           </Form.Group>
           <Form.Group className="mb-3" controlId="precioProducto">
             <Form.Label>Precio</Form.Label>
@@ -23,9 +28,13 @@ const FormularioProducto = () => {
               type="number"
               placeholder="Ingrese el precio del producto"
               className="bg-primary text-light"
+              step={1}
+              required
+              min={50}
+              max={1000000}
             />
             <Form.Text className="text-danger">
-                El precio del producto es obligatorio
+              El precio del producto es obligatorio
             </Form.Text>
           </Form.Group>
           <Form.Group className="mb-3" controlId="categoriaProducto">
@@ -36,27 +45,31 @@ const FormularioProducto = () => {
               <option value="Articulos">Artículos para entrenar</option>
             </Form.Select>
             <Form.Text className="text-danger">
-                La categoría del producto es obligatoria
-          </Form.Text>
+              La categoría del producto es obligatoria
+            </Form.Text>
           </Form.Group>
           <Form.Group className="mb-3" controlId="subcategoriaProducto">
             <Form.Label>Tipo de Indumentaria</Form.Label>
-            <Form.Select className="bg-primary text-light">
+            <Form.Select className="bg-primary text-light" required>
               <option value="">Seleccionar</option>
               <option value="Remera">Remera</option>
               <option value="Short">Short</option>
               <option value="Calzado">Calzado</option>
             </Form.Select>
             <Form.Text className="text-danger">
-                La subcategoría del producto es obligatoria
-          </Form.Text>
+              La subcategoría del producto es obligatoria
+            </Form.Text>
           </Form.Group>
           <Form.Group className="mb-3" controlId="imagenProducto">
             <Form.Label>Imagen del producto</Form.Label>
-            <Form.Control type="file" className="bg-primary text-light" />
+            <Form.Control
+              type="file"
+              className="bg-primary text-light"
+              required
+            />
             <Form.Text className="text-danger">
-                La imagen del producto es obligatoria
-          </Form.Text>
+              La imagen del producto es obligatoria
+            </Form.Text>
           </Form.Group>
           <Form.Group className="mb-3" controlId="descripcionProducto">
             <Form.Label>Descripción</Form.Label>
@@ -65,10 +78,12 @@ const FormularioProducto = () => {
               rows={3}
               placeholder="Ingrese una descripción del producto"
               className="bg-primary text-light"
+              minLength={10}
+              maxLength={500}
             />
             <Form.Text className="text-danger">
-                La descripción del producto es obligatoria
-          </Form.Text>
+              La descripción del producto es obligatoria
+            </Form.Text>
           </Form.Group>
           <div className="d-grid">
             <Button variant="success" type="submit">
