@@ -2,10 +2,10 @@ import { Col, Container, Row, ListGroup, Table } from "react-bootstrap";
 
 const Administrador = () => {
   return (
-    <Container>
+    <Container fluid className="my-4">
       <h2>Administrador</h2>
       <Row>
-        <Col>
+        <Col md={3} className="mb-3 mb-md-0">
           <ListGroup>
             <ListGroup.Item action active>Productos</ListGroup.Item>
             <ListGroup.Item action active>Usuarios</ListGroup.Item>
@@ -13,7 +13,7 @@ const Administrador = () => {
             <ListGroup.Item action active>Turnos Canchas</ListGroup.Item>
           </ListGroup>
         </Col>
-        <Col>
+        <Col md={9}>
           <Table striped bordered hover size="sm">
             <thead>
               <tr>
