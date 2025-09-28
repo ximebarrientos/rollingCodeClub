@@ -1,6 +1,7 @@
 import { Col, Container, Row, ListGroup, Table } from "react-bootstrap";
 import TablaProducto from "./producto/TablaProducto";
 import TablaUsuario from "./usuario/TablaUsuario";
+import TablaCancha from "./cancha/TablaCancha";
 
 
 const Administrador = () => {
@@ -48,6 +49,7 @@ const Administrador = () => {
           </Table>
           <TablaProducto />
             <TablaUsuario />
+            <TablaCancha />
 
         </Col>
       </Row>
