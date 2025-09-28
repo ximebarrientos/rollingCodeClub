@@ -1,11 +1,19 @@
-import FormularioCancha from './components/pages/cancha/FormularioCancha.jsx';
 import Footer from './components/shared/Footer.jsx';
+import Administrador from './components/pages/Administrador'
+import Footer from './components/shared/Footer';
+import Menu from './components/shared/Menu.jsx';
 
-export default function App() {
+
+function App() {
+  
   return (
     <>
-      <FormularioCancha />
+      <Menu />
+      <Administrador />
       <Footer />
     </>
   );
 }
+
+export default App;
+
