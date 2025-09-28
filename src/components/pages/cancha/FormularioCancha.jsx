@@ -50,15 +50,42 @@ const FormularioCancha = () => {
           </Form.Group>
           <Form.Group className="mb-3" controlId="horariosCancha">
             <Form.Label>Horarios</Form.Label>
-            <Form.Select className="bg-primary text-light">
-              <option value="">Seleccionar</option>
-              <option value="18:30-20:00">18:30-20:00</option>
-              <option value="20:00-21:30">20:00-21:30</option>
-              <option value="21:30-23:00">21:30-23:00</option>
-              <option value="23:30-00:30">23:30-00:30</option>
-            </Form.Select>
+            <div className="d-flex flex-wrap gap-3">
+              <Form.Check
+                type="checkbox"
+                id="horario-18:30-20:00"
+                label="18:30-20:00"
+                value="18:30-20:00"
+                name="horarios"
+                className="text-light"
+              />
+              <Form.Check
+                type="checkbox"
+                id="horario-20:00-21:30"
+                label="20:00-21:30"
+                value="20:00-21:30"
+                name="horarios"
+                className="text-light"
+              />
+              <Form.Check
+                type="checkbox"
+                id="horario-21:30-23:00"
+                label="21:30-23:00"
+                value="21:30-23:00"
+                name="horarios"
+                className="text-light"
+              />
+              <Form.Check
+                type="checkbox"
+                id="horario-23:30-00:30"
+                label="23:30-00:30"
+                value="23:30-00:30"
+                name="horarios"
+                className="text-light"
+              />
+            </div>
             <Form.Text className="text-danger">
-              Horario de la cancha es obligatorio
+              Debe seleccionar al menos un horario
             </Form.Text>
           </Form.Group>
           <Form.Group className="mb-3" controlId="imagenCancha">
