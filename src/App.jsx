@@ -1,14 +1,9 @@
-import FormularioProducto from "./components/pages/producto/FormularioProducto"
+import Footer from './components/shared/Footer.jsx';
 
-
-function App() {
-  
+export default function App() {
   return (
     <>
-      <h1>Rolling Code Club</h1>
-      <FormularioProducto></FormularioProducto>
+      <Footer />
     </>
-  )
+  );
 }
-
-export default App
