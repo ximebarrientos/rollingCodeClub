@@ -5,7 +5,7 @@ const FormularioCancha = () => {
     <Container>
       <Row className="justify-content-center mb-5">
         <Form>
-          <h2 className="text-success text-center display-5">Cargar Cancha</h2>
+          <h2 className="text-info text-center display-5">Cargar Cancha</h2>
           <Form.Group className="mb-3" controlId="nombreCancha">
             <Form.Label>Nombre de Cancha</Form.Label>
             <Form.Control
@@ -114,7 +114,7 @@ const FormularioCancha = () => {
             </Form.Text>
           </Form.Group>
           <div className="d-grid">
-            <Button variant="success" type="submit">
+            <Button variant="info" type="submit">
               Cargar cancha
             </Button>
           </div>
