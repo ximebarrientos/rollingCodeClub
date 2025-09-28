@@ -57,7 +57,7 @@ const Administrador = () => {
               active={seleccion === "turnos"}
               onClick={() => setSeleccion("turnos")}
             >
-              Turnos Canchas
+              Turnos Ocupados
             </ListGroup.Item>
           </ListGroup>
         </Col>
