@@ -13,7 +13,7 @@ const CarritoCompras = () => {
     <Container className="my-4">
       <Row>
         <Col xs={12} md={8}>
-          <h2 className="mb-4">Carrito de Compras</h2>
+          <h2 className="mb-4 display-5">Carrito de Compras</h2>
 
           <Alert variant="info">No hay productos en el carrito.</Alert>
           <Table striped bordered hover responsive>
@@ -71,9 +71,6 @@ const CarritoCompras = () => {
             <Button variant="success" className="w-100" size="lg">
               Pagar
             </Button>
-            <Alert variant="success" className="mt-3">
-              ¡Pago realizado con éxito!
-            </Alert>
           </div>
         </Col>
       </Row>
