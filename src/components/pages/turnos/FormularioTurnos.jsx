@@ -20,7 +20,7 @@ const FormularioTurnos = () => {
             </Form.Group>
             <Form.Group className="mb-3" controlId="categoriaCancha">
               <Form.Label>Categoría</Form.Label>
-              <Form.Select className="bg-primary text-light">
+              <Form.Select className="bg-primary text-light" required>
                 <option value="">Seleccionar</option>
                 <option value="Futbol 5 techada">Futbol 5 techada</option>
                 <option value="Futbol 5 sin techo">Futbol 5 sin techo</option>
@@ -33,7 +33,7 @@ const FormularioTurnos = () => {
             </Form.Group>
             <Form.Group className="mb-3" controlId="categoriaCancha">
               <Form.Label>Horario</Form.Label>
-              <Form.Select className="bg-primary text-light">
+              <Form.Select className="bg-primary text-light" required>
                 <option value="">Seleccionar</option>
                 <option value="18:30-20:00">18:30-20:00</option>
                 <option value="20:00-21:30">20:00-21:30</option>
