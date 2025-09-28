@@ -2,6 +2,11 @@ import { Table, Button } from "react-bootstrap";
 
 const TablaProducto = () => {
   return (
+    <>
+    <div className="d-flex justify-content-between align-items-center mb-3">
+    <h2>Productos</h2>
+    <Button variant="success">Agregar Producto</Button>
+    </div>
     <Table striped bordered hover responsive>
       <thead>
         <tr>
@@ -30,6 +35,7 @@ const TablaProducto = () => {
           </tr>
       </tbody>
     </Table>
+    </>
   );
 };
 
