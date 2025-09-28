@@ -2,7 +2,7 @@ import { Col, Container, Row, ListGroup, Table } from "react-bootstrap";
 import TablaProducto from "./producto/TablaProducto";
 import TablaUsuario from "./usuario/TablaUsuario";
 import TablaCancha from "./cancha/TablaCancha";
-
+import TablaTurnos from "./turnos/TablaTurnos";
 
 const Administrador = () => {
   return (
@@ -11,10 +11,18 @@ const Administrador = () => {
       <Row>
         <Col md={3} className="mb-3 mb-md-0">
           <ListGroup>
-            <ListGroup.Item action active>Productos</ListGroup.Item>
-            <ListGroup.Item action active>Usuarios</ListGroup.Item>
-            <ListGroup.Item action active>Canchas de fútbol</ListGroup.Item>
-            <ListGroup.Item action active>Turnos Canchas</ListGroup.Item>
+            <ListGroup.Item action active>
+              Productos
+            </ListGroup.Item>
+            <ListGroup.Item action active>
+              Usuarios
+            </ListGroup.Item>
+            <ListGroup.Item action active>
+              Canchas de fútbol
+            </ListGroup.Item>
+            <ListGroup.Item action active>
+              Turnos Canchas
+            </ListGroup.Item>
           </ListGroup>
         </Col>
         <Col md={9}>
@@ -48,9 +56,9 @@ const Administrador = () => {
             </tbody>
           </Table>
           <TablaProducto />
-            <TablaUsuario />
-            <TablaCancha />
-
+          <TablaUsuario />
+          <TablaCancha />
+          <TablaTurnos />
         </Col>
       </Row>
     </Container>
