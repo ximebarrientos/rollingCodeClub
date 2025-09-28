@@ -4,8 +4,8 @@ const TablaProducto = () => {
   return (
     <>
     <div className="d-flex justify-content-between align-items-center mb-3">
-    <h2>Productos</h2>
-    <Button variant="success">Agregar Producto</Button>
+    <h2 className="text-success display-6">Productos</h2>
+    <Button className="btn-outline-success">Agregar Producto (+)</Button>
     </div>
     <Table striped bordered hover responsive>
       <thead>

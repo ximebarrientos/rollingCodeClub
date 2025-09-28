@@ -2,6 +2,11 @@ import { Table, Button, Badge } from "react-bootstrap";
 
 const TablaCancha = () => {
   return (
+    <>
+    <div className="d-flex justify-content-between align-items-center mb-3">
+    <h2 className="text-info display-6">Canchas</h2>
+    <Button className="btn-outline-info">Agregar Cancha (+)</Button>
+    </div>
     <Table striped bordered hover responsive>
       <thead>
         <tr>
@@ -36,6 +41,7 @@ const TablaCancha = () => {
           </tr>
       </tbody>
     </Table>
+    </>
   );
 };
 
