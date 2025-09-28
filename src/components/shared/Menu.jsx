@@ -1,73 +1,38 @@
+import { Navbar, Nav, NavDropdown, Container, Button } from "react-bootstrap";
+
+
 export default function Menu() {
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark" data-bs-theme="dark">
-      <div className="container">
-
-        <a href="#" className="navbar-brand d-flex align-items-center gap-2">
-          <img src="/logopngblanco.png" alt="Logo Rolling Code Club" height="100" /> 
+    <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
+      <Container>
+        <Navbar.Brand href="#" className="d-flex align-items-center gap-2">
+          <img src="/logopngblanco.png" alt="Logo Rolling Code Club" height="60" />
           <span className="fw-bold"></span>
-        </a>
-
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#mainNavbar"
-          aria-controls="mainNavbar"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon" />
-        </button>
-
-        <div className="collapse navbar-collapse" id="mainNavbar">
-          <ul className="navbar-nav mx-lg-auto mb-2 mb-lg-0 gap-2">
-            <li className="nav-item">
-              <a href="#" className="nav-link">Inicio</a>
-            </li>
-            <li className="nav-item">
-              <a href="#" className="nav-link">Reservar</a>
-            </li>
-
-            <li className="nav-item dropdown">
-              <a
-                href="#"
-                className="nav-link dropdown-toggle"
-                id="tiendaDropdown"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Tienda
-              </a>
-              <ul className="dropdown-menu" aria-labelledby="tiendaDropdown">
-                <li><h6 className="dropdown-header">Indumentaria</h6></li>
-                <li><a href="#" className="dropdown-item">Camisetas</a></li>
-                <li><a href="#" className="dropdown-item">Shorts</a></li>
-                <li><a href="#" className="dropdown-item">Botines</a></li>
-
-                <li><hr className="dropdown-divider" /></li>
-
-                <li><h6 className="dropdown-header">Accesorios</h6></li>
-                <li><a href="#" className="dropdown-item">Kits de entrenamiento</a></li>
-                <li><a href="#" className="dropdown-item">Pelotas</a></li>
-              </ul>
-            </li>
-
-            <li className="nav-item">
-              <a href="#" className="nav-link">Contacto</a>
-            </li>
-            <li className="nav-item">
-              <a href="#" className="nav-link">Sobre Nosotros</a>
-            </li>
-          </ul>
-
-          <div className="d-flex align-items-center gap-2">
-            <a href="#" className="btn btn-outline-light btn-sm py-3">Iniciar sesión</a>
-            <a href="#" className="btn btn-primary btn-sm py-2">Crear cuenta</a>
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="mainNavbar" />
+        <Navbar.Collapse id="mainNavbar">
+          <Nav className="mx-lg-auto mb-2 mb-lg-0 gap-2">
+            <Nav.Link href="erro">Inicio</Nav.Link>
+            <Nav.Link href="#">Reservar</Nav.Link>
+            <NavDropdown title="Tienda" id="tiendaDropdown" menuVariant="dark">
+              <NavDropdown.Header>Indumentaria</NavDropdown.Header>
+              <NavDropdown.Item href="#">Camisetas</NavDropdown.Item>
+              <NavDropdown.Item href="#">Shorts</NavDropdown.Item>
+              <NavDropdown.Item href="#">Botines</NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Header>Accesorios</NavDropdown.Header>
+              <NavDropdown.Item href="#">Kits de entrenamiento</NavDropdown.Item>
+              <NavDropdown.Item href="#">Pelotas</NavDropdown.Item>
+            </NavDropdown>
+            <Nav.Link href="#">Contacto</Nav.Link>
+            <Nav.Link href="#">Sobre Nosotros</Nav.Link>
+          </Nav>
+          <div className="d-flex align-items-center gap-2 ms-lg-3 mt-3 mt-lg-0">
+            <Button variant="outline-light" size="sm" className="py-2">Iniciar sesión</Button>
+            <Button variant="primary" size="sm" className="py-2">Crear cuenta</Button>
           </div>
-        </div>
-      </div>
-    </nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 }
