@@ -1,8 +1,9 @@
+import Footer from './components/shared/Footer.jsx';
 import { Routes, Route } from 'react-router';
 import { BrowserRouter } from 'react-router';
 import Menu from './components/shared/Menu.jsx';
 
-export default function App() {
+function App() {
   return (
    <> 
     <BrowserRouter>
@@ -14,7 +15,9 @@ export default function App() {
           <Route path="*" element={<h1>Error 404 - Página no encontrada</h1>} />
         </Routes>
       </main>
+      <Footer />
     </BrowserRouter>
     </>
   );
 }
+export default App
