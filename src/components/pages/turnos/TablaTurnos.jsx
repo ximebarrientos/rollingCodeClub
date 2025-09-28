@@ -10,14 +10,16 @@ const TablaTurnos = () => {
     <Table striped bordered hover responsive>
       <thead>
         <tr>
-          <th>Cancha</th>
+          <th>Nombre</th>
+          <th>Categoria</th>
           <th>Horario</th>
           <th>Usuario</th>
         </tr>
       </thead>
       <tbody>
           <tr>
-            <td>Cancha futbol 11</td>
+            <td>Cancha A</td>
+            <td>Futbol 5 Techada</td>
             <td>20:00-21:30</td>
             <td>JosePerez</td>
           </tr>

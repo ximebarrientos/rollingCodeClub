@@ -21,8 +21,8 @@ const TablaCancha = () => {
       <tbody>
         
           <tr>
-            <td>Cancha futbol 11</td>
-            <td>Techada</td>
+            <td>Cancha A</td>
+            <td>Futbol 5 Techada</td>
             <td>20:00 a 21:30</td>
             <td>$100</td>
             <td>
