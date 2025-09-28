@@ -42,7 +42,7 @@ const CarritoCompras = () => {
                 <td>precio*cantidad</td>
                 <td>
                   <Button size="sm" variant="danger">
-                    Eliminar
+                    <i class="bi bi-trash"></i>
                   </Button>
                 </td>
               </tr>
