@@ -1,64 +1,68 @@
-import { Col, Container, Row, ListGroup, Table } from "react-bootstrap";
+
+import { useState } from "react";
+import { Col, Container, Row, ListGroup } from "react-bootstrap";
 import TablaProducto from "./producto/TablaProducto";
 import TablaUsuario from "./usuario/TablaUsuario";
 import TablaCancha from "./cancha/TablaCancha";
 import TablaTurnos from "./turnos/TablaTurnos";
 
+
 const Administrador = () => {
+  const [seleccion, setSeleccion] = useState("productos");
+
+  const renderTabla = () => {
+    switch (seleccion) {
+      case "productos":
+        return <TablaProducto />;
+      case "usuarios":
+        return <TablaUsuario />;
+      case "canchas":
+        return <TablaCancha />;
+      case "turnos":
+        return <TablaTurnos />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <Container fluid className="my-4">
       <h2>Administrador</h2>
       <Row>
         <Col md={3} className="mb-3 mb-md-0">
           <ListGroup>
-            <ListGroup.Item action active>
+            <ListGroup.Item
+              action
+              active={seleccion === "productos"}
+              onClick={() => setSeleccion("productos")}
+            >
               Productos
             </ListGroup.Item>
-            <ListGroup.Item action active>
+            <ListGroup.Item
+              action
+              active={seleccion === "usuarios"}
+              onClick={() => setSeleccion("usuarios")}
+            >
               Usuarios
             </ListGroup.Item>
-            <ListGroup.Item action active>
+            <ListGroup.Item
+              action
+              active={seleccion === "canchas"}
+              onClick={() => setSeleccion("canchas")}
+            >
               Canchas de fútbol
             </ListGroup.Item>
-            <ListGroup.Item action active>
+            <ListGroup.Item
+              action
+              active={seleccion === "turnos"}
+              onClick={() => setSeleccion("turnos")}
+            >
               Turnos Canchas
             </ListGroup.Item>
           </ListGroup>
         </Col>
         <Col md={9}>
-          <Table striped bordered hover size="sm">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Username</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td colSpan={2}>Larry the Bird</td>
-                <td>@twitter</td>
-              </tr>
-            </tbody>
-          </Table>
-          <TablaProducto />
-          <TablaUsuario />
-          <TablaCancha />
-          <TablaTurnos />
+          {renderTabla()}
         </Col>
       </Row>
     </Container>
