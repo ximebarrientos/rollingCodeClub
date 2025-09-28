@@ -1,4 +1,5 @@
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
+import "./quienesSomos.css";
 
 const integrantes = [
   {
@@ -43,7 +44,6 @@ export default function SobreNosotros() {
   return (
     <div className="bg-dark text-light py-5">
       <Container>
-
         <Row className="text-center mb-5">
           <Col>
             <h2 className="fw-bold">Conoce nuestro equipo</h2>
@@ -51,7 +51,10 @@ export default function SobreNosotros() {
         </Row>
 
         <Row className="justify-content-center mb-5">
-          <Col md={8} className="bg-success p-4 rounded text-center shadow-sm">
+          <Col
+            md={8}
+            className="bg-success p-4 rounded text-center box-introValores"
+          >
             <p className="lead mb-0">
               Somos un equipo apasionado por el deporte y el trabajo en conjunto.
             </p>
@@ -62,15 +65,16 @@ export default function SobreNosotros() {
           <h3 className="mb-4">Nuestro equipo</h3>
           {integrantes.map((persona, idx) => (
             <Col md={4} key={idx} className="mb-4">
-              <div className="d-flex flex-column align-items-center">
+              <div className="d-flex flex-column align-items-center integrante">
                 <img
                   src={persona.img}
                   alt={persona.nombre}
-                  className="rounded-circle mb-3"
+                  className="rounded-circle mb-3 mt-3"
                   style={{
                     width: "300px",
                     height: "300px",
                     objectFit: "cover",
+                    maxWidth: "100%",
                   }}
                 />
                 <h5>{persona.nombre}</h5>
@@ -81,10 +85,10 @@ export default function SobreNosotros() {
           ))}
         </Row>
 
-        <Row className="text-center bg-success rounded py-5">
+        <Row className="text-center bg-success rounded py-5 box-introValores">
           <h3 className="mb-5">Valores de nuestra comunidad</h3>
           {valores.map((valor, idx) => (
-            <Col md={4} key={idx} className="mb-4">
+            <Col md={4} key={idx} className="mb-3">
               <div className="d-flex flex-column align-items-center">
                 <div
                   className="d-flex align-items-center justify-content-center mb-3"
