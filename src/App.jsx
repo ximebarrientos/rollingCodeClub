@@ -7,7 +7,6 @@ function App() {
   
   return (
     <>
-      <h1>Rolling Code Club</h1>
       <Administrador />
       <Footer />
     </>
@@ -15,3 +14,4 @@ function App() {
 }
 
 export default App;
+
