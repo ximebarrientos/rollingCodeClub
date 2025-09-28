@@ -1,4 +1,5 @@
 import { Col, Container, Row, ListGroup, Table } from "react-bootstrap";
+import TablaProducto from "./producto/TablaProducto";
 
 const Administrador = () => {
   return (
@@ -43,6 +44,8 @@ const Administrador = () => {
               </tr>
             </tbody>
           </Table>
+          <TablaProducto />
+
         </Col>
       </Row>
     </Container>
