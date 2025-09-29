@@ -29,8 +29,8 @@ export default function Menu() {
             <NavLink to={"/sobre-nosotros"} className={"nav-link"}>Sobre Nosotros</NavLink>
           </Nav>
           <div className="d-flex align-items-center gap-2 ms-lg-3 mt-3 mt-lg-0">
-            <Button variant="outline-light" size="sm" className="py-2">Iniciar sesión</Button>
-            <Button variant="primary" size="sm" className="py-2">Crear cuenta</Button>
+            <NavLink to={"/login"} size="sm" className="py-2 btn btn-outline-light">Iniciar sesión</NavLink>
+            <Button as={Link} to={"/registro"} variant="primary" size="sm" className="py-2">Crear cuenta</Button>
           </div>
         </Navbar.Collapse>
       </Container>

@@ -9,6 +9,8 @@ import Contacto from './components/pages/Contacto.jsx';
 import QuienesSomos from './components/pages/QuienesSomos.jsx';
 import Administrador from './components/pages/Administrador.jsx';
 import Error404 from './components/pages/Error404.jsx';
+import Login from './components/pages/Login.jsx';
+import Registro from './components/pages/usuario/Registro.jsx';
 
 
 
@@ -25,6 +27,8 @@ function App() {
           <Route path='/tienda' element={<Tienda/>}></Route>
           <Route path='/contacto' element={<Contacto/>}></Route>
           <Route path='/sobre-nosotros' element={<QuienesSomos/>}></Route>
+          <Route path='/login' element={<Login/>}></Route>
+          <Route path='/registro' element={<Registro/>}></Route>
           <Route path='/administrador' element={<Administrador/>}></Route>
           <Route path='*' element={<Error404/>}></Route>
         </Routes>
