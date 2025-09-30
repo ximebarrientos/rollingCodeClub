@@ -1,5 +1,5 @@
 .sombra-verde {
-  transition: all 0.3s ease;
+  transition: all 0.9s ease;
 }
 
 .sombra-verde:hover {
@@ -18,7 +18,7 @@
 
 .sponsor-logo {
   object-fit: contain;
-  transition: transform 0.3s ease, filter 0.3s ease;
+  transition: transform 0.9s ease, filter 0.9s ease;
 }
 
 .sponsor-logo:hover {
