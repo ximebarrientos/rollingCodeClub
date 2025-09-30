@@ -2,7 +2,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router';
 import Footer from './components/shared/Footer.jsx';
 import Menu from './components/shared/Menu.jsx';
-import Inicio from './components/pages/Inicio.jsx';
+import Inicio from './components/pages/inicio/Inicio.jsx';
 import FormularioTurnos from './components/pages/turnos/FormularioTurnos.jsx';
 import Tienda from './components/pages/Tienda.jsx';
 import Contacto from './components/pages/Contacto.jsx';
