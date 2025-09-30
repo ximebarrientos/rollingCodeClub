@@ -16,7 +16,7 @@ export default function SponsorsInicio() {
           <img
             src={sponsor.img}
             alt={sponsor.nombre}
-            className="img-fluid"
+            className="img-fluid sponsor-logo"
             style={{
               
               objectFit: "contain",

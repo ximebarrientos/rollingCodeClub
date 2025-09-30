@@ -1,4 +1,5 @@
 import { Row, Col, Card, Button } from "react-bootstrap";
+import "./inicio.css";
 
 export default function ProductosInicio() {
   const productos = [
@@ -24,7 +25,7 @@ export default function ProductosInicio() {
       <h3 className="mb-4 text-center">Algunos de nuestros productos</h3>
       {productos.map((producto, idx) => (
         <Col md={4} key={idx} className="mb-4">
-          <Card className="bg-success text-light h-100 shadow-sm text-center producto-card">
+          <Card className="bg-success text-light h-100 text-center sombra-verde producto-card">
             <Card.Img
               variant="top"
               src={producto.img}

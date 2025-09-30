@@ -1,0 +1,27 @@
+.sombra-verde {
+  transition: all 0.3s ease;
+}
+
+.sombra-verde:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 20px rgba(36, 202, 125, 0.6); 
+}
+
+.producto-card img {
+  border-radius: 12px; 
+  transition: transform 0.3s ease;
+}
+
+.producto-card:hover img {
+  transform: scale(1.05);
+}
+
+.sponsor-logo {
+  object-fit: contain;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.sponsor-logo:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 10px rgba(36, 202, 125, 0.6));
+}
