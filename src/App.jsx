@@ -4,7 +4,7 @@ import Footer from './components/shared/Footer.jsx';
 import Menu from './components/shared/Menu.jsx';
 import Inicio from './components/pages/inicio/Inicio.jsx';
 import FormularioTurnos from './components/pages/turnos/FormularioTurnos.jsx';
-import Tienda from './components/pages/Tienda.jsx';
+import Tienda from './components/pages/tienda/Tienda.jsx';
 import Contacto from './components/pages/Contacto.jsx';
 import QuienesSomos from './components/pages/QuienesSomos.jsx';
 import Administrador from './components/pages/Administrador.jsx';
