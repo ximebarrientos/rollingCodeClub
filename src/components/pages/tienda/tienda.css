@@ -1,0 +1,18 @@
+.sombra-verde {
+  transition: all 0.9s ease;
+}
+
+.sombra-verde:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 20px  rgba(36, 202, 125, 0.6);
+}
+
+.producto-img {
+  max-height: 200px;
+  object-fit: contain;
+  transition: transform 0.9s ease;
+}
+
+.producto-card:hover .producto-img {
+  transform: scale(1.05);
+}
