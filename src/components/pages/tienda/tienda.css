@@ -8,9 +8,12 @@
 }
 
 .producto-img {
-  max-height: 200px;
-  object-fit: contain;
-  transition: transform 0.9s ease;
+  width: 100%;
+  height: 200px; 
+  object-fit: contain; 
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+  
 }
 
 .producto-card:hover .producto-img {
