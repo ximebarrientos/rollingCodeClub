@@ -11,9 +11,12 @@ const TablaProducto = () => {
     <Table striped bordered hover responsive>
       <thead>
         <tr>
+          <th>#</th>
+          <th>Imagen</th>
           <th>Nombre</th>
           <th>Precio</th>
           <th>Categoría</th>
+          <th>Sub-Categoría</th>
           <th>Acciones</th>
         </tr>
       </thead>
