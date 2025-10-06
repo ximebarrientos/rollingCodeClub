@@ -1,4 +1,5 @@
 import { Table, Button } from "react-bootstrap";
+import FilaUsuarioTabla from "./FilaUsuarioTabla";
 
 const TablaUsuario = () => {
   return (
@@ -16,13 +17,7 @@ const TablaUsuario = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>JosePerez</td>
-          <td>joseperez@mail.com</td>
-          <td>
-            <Button size="sm" variant="success">Activo</Button>
-          </td>
-        </tr>
+        <FilaUsuarioTabla></FilaUsuarioTabla>
       </tbody>
     </Table>
     </>
