@@ -3,10 +3,15 @@ const urlCanchas = import.meta.env.VITE_API_CANCHAS;
 export const obtenerCanchasAPI = async () => {
   try {
     const respuesta = await fetch(urlCanchas);
-    return respuesta;
+    if (respuesta.ok) {
+      return await respuesta.json();
+    } else {
+      console.error("Error en la respuesta de la API");
+      return [];
+    }
   } catch (error) {
     console.error(error);
-    return null;
+    return [];
   }
 };
 
