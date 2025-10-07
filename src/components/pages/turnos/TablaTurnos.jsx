@@ -1,4 +1,5 @@
 import { Table,Button } from "react-bootstrap";
+import FilaTurnosTabla from "./FilaTurnosTabla";
 
 const TablaTurnos = () => {
   return (
@@ -18,13 +19,7 @@ const TablaTurnos = () => {
         </tr>
       </thead>
       <tbody>
-          <tr>
-            <td>Fecha</td>
-            <td>Cancha A</td>
-            <td>Futbol 5 Techada</td>
-            <td>20:00-21:30</td>
-            <td>JosePerez</td>
-          </tr>
+          <FilaTurnosTabla></FilaTurnosTabla>
       </tbody>
     </Table>
     </>

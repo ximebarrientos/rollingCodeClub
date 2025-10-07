@@ -4,7 +4,8 @@ import Footer from './components/shared/Footer.jsx';
 import Menu from './components/shared/Menu.jsx';
 import Inicio from './components/pages/inicio/Inicio.jsx';
 import FormularioTurnos from './components/pages/turnos/FormularioTurnos.jsx';
-import Tienda from './components/pages/Tienda.jsx';
+import Tienda from './components/pages/tienda/Tienda.jsx';
+import TiendaAccesorios from './components/pages/tienda/TiendaAccesorios.jsx';
 import Contacto from './components/pages/Contacto.jsx';
 import QuienesSomos from './components/pages/QuienesSomos.jsx';
 import Administrador from './components/pages/Administrador.jsx';
@@ -25,6 +26,7 @@ function App() {
           <Route path='/' element={<Inicio/>}></Route>
           <Route path='/turnos' element={<FormularioTurnos/>}></Route>
           <Route path='/tienda' element={<Tienda/>}></Route>
+          <Route path='/tiendaAccesorios' element={<TiendaAccesorios/>}></Route>
           <Route path='/contacto' element={<Contacto/>}></Route>
           <Route path='/sobre-nosotros' element={<QuienesSomos/>}></Route>
           <Route path='/login' element={<Login/>}></Route>
