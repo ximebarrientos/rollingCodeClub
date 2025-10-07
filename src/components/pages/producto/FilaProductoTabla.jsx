@@ -1,5 +1,6 @@
 import { Button, Image } from "react-bootstrap";
 import { borrarProducto } from "../../../helpers/queries.js";
+import Swal from "sweetalert2"; 
 
 const FilaProductoTabla = ({
   producto,
@@ -20,15 +21,37 @@ const FilaProductoTabla = ({
   } = producto;
 
   const handleBorrar = async () => {
-    if (window.confirm(`¿Seguro que querés eliminar "${nombreProducto}"?`)) {
-      const respuesta = await borrarProducto(_id);
-      if (respuesta && respuesta.ok) {
-        alert("✅ Producto eliminado correctamente");
-        obtenerProductos();
-      } else {
-        alert("❌ Ocurrió un error al eliminar el producto");
+    Swal.fire({
+      title: `¿Eliminar "${nombreProducto}"?`,
+      text: "Esta acción no se puede deshacer.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const respuesta = await borrarProducto(_id);
+        if (respuesta && respuesta.ok) {
+          Swal.fire({
+            title: "Eliminado",
+            text: "✅ Producto eliminado correctamente.",
+            icon: "success",
+            confirmButtonColor: "#198754",
+            timer: 2000,
+          });
+          obtenerProductos();
+        } else {
+          Swal.fire({
+            title: "Error",
+            text: "❌ Ocurrió un error al eliminar el producto.",
+            icon: "error",
+            confirmButtonColor: "#d33",
+          });
+        }
       }
-    }
+    });
   };
 
   const handleEditar = () => {
@@ -52,7 +75,7 @@ const FilaProductoTabla = ({
         )}
       </td>
       <td>{nombreProducto}</td>
-      <td>${precio.toLocaleString("es-AR")}</td>
+      <td>${precio}</td>
       <td>{categoria}</td>
       <td>{subcategoria}</td>
       <td>

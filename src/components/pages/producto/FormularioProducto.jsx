@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Form, Row, Button, Col } from "react-bootstrap";
 import { crearProducto, editarProducto } from "../../../helpers/queries.js";
+import Swal from "sweetalert2"; 
 
 const FormularioProducto = ({
   setMostrarFormulario,
@@ -52,7 +53,12 @@ const FormularioProducto = ({
 
     const formatoValido = /\.(jpg|jpeg|png|webp)$/i.test(formData.imagen);
     if (!formatoValido) {
-      alert("❌ La imagen debe tener formato .jpg, .jpeg, .png o .webp");
+      Swal.fire({
+        title: "Formato de imagen no válido",
+        text: "La imagen debe tener formato .jpg, .jpeg, .png o .webp",
+        icon: "warning",
+        confirmButtonColor: "#198754",
+      });
       return;
     }
 
@@ -80,11 +86,15 @@ const FormularioProducto = ({
       : await crearProducto(productoAEnviar);
 
     if (respuesta && respuesta.ok) {
-      alert(
-        productoEditado
-          ? "✅ Producto editado con éxito"
-          : "✅ Producto creado con éxito"
-      );
+      Swal.fire({
+        title: productoEditado
+          ? "Producto editado con éxito"
+          : "Producto creado con éxito",
+        text: "Los cambios fueron guardados correctamente.",
+        icon: "success",
+        confirmButtonColor: "#198754",
+        timer: 2000,
+      });
 
       setFormData({
         nombreProducto: "",
@@ -99,7 +109,12 @@ const FormularioProducto = ({
       setProductoEditado(null);
       setMostrarFormulario(false);
     } else {
-      alert("❌ Error al guardar el producto. Revisa los datos.");
+      Swal.fire({
+        title: "Error al guardar el producto",
+        text: "Revisa los datos e intenta nuevamente.",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });
     }
   };
 
@@ -177,13 +192,11 @@ const FormularioProducto = ({
               >
                 <option value="">Seleccionar</option>
                 {formData.categoria &&
-                  subcategoriasPorCategoria[formData.categoria].map(
-                    (sub) => (
-                      <option key={sub} value={sub}>
-                        {sub}
-                      </option>
-                    )
-                  )}
+                  subcategoriasPorCategoria[formData.categoria].map((sub) => (
+                    <option key={sub} value={sub}>
+                      {sub}
+                    </option>
+                  ))}
               </Form.Select>
             </Form.Group>
 
@@ -238,14 +251,13 @@ const FormularioProducto = ({
               />
             </Form.Group>
 
-            {/* Imagen local (maquetada para futuro Cloudinary) */}
             <Form.Group className="mb-3" controlId="imagenLocal">
               <Form.Label>Subir imagen (opcional, futura integración)</Form.Label>
               <Form.Control
                 type="file"
                 accept="image/png, image/jpeg, image/jpg, image/webp"
                 className="bg-primary text-light"
-                disabled // 🔒 por ahora solo visual
+                disabled
               />
               <Form.Text className="text-warning">
                 Próximamente podrás subir imágenes directamente desde tu equipo.
