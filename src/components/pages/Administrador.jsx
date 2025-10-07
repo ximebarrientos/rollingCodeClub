@@ -5,15 +5,32 @@ import TablaProducto from "./producto/TablaProducto";
 import TablaUsuario from "./usuario/TablaUsuario";
 import TablaCancha from "./cancha/TablaCancha";
 import TablaTurnos from "./turnos/TablaTurnos";
-
+import FormularioProducto from "./producto/FormularioProducto";
 
 const Administrador = () => {
   const [seleccion, setSeleccion] = useState("productos");
+  const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [productoEditado, setProductoEditado] = useState(null);
 
-  const renderTabla = () => {
+  const renderContenido = () => {
     switch (seleccion) {
       case "productos":
-        return <TablaProducto />;
+        if (mostrarFormulario) {
+          return (
+            <FormularioProducto
+              setMostrarFormulario={setMostrarFormulario}
+              productoEditado={productoEditado}
+              setProductoEditado={setProductoEditado}
+            />
+          );
+        }
+        return (
+          <TablaProducto
+            setMostrarFormulario={setMostrarFormulario}
+            setProductoEditado={setProductoEditado}
+          />
+        );
+
       case "usuarios":
         return <TablaUsuario />;
       case "canchas":
@@ -34,7 +51,10 @@ const Administrador = () => {
             <ListGroup.Item
               action
               active={seleccion === "productos"}
-              onClick={() => setSeleccion("productos")}
+              onClick={() => {
+                setSeleccion("productos");
+                setMostrarFormulario(false);
+              }}
             >
               Productos
             </ListGroup.Item>
@@ -61,9 +81,8 @@ const Administrador = () => {
             </ListGroup.Item>
           </ListGroup>
         </Col>
-        <Col md={9}>
-          {renderTabla()}
-        </Col>
+
+        <Col md={9}>{renderContenido()}</Col>
       </Row>
     </Container>
   );
