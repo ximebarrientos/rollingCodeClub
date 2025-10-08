@@ -14,7 +14,7 @@ export default function Menu() {
         <Navbar.Collapse id="mainNavbar">
           <Nav className="mx-lg-auto mb-2 mb-lg-0 gap-2">
             <NavLink to={"/"} className={"nav-link"}>Inicio</NavLink>
-            <NavLink to={"/turnos"} className={"nav-link"}>Reservar</NavLink>
+            <NavLink to={"/reserva"} className={"nav-link"}>Reservar</NavLink>
             <NavDropdown title="Tienda" id="tiendaDropdown" menuVariant="dark">
               <NavDropdown.Header>Indumentaria</NavDropdown.Header>
               <NavDropdown.Item as={Link} to="/tienda">Camisetas</NavDropdown.Item>
