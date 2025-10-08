@@ -1,6 +1,9 @@
-const urlTurnos = import.meta.env.VITE_API_TURNOS
+const urlTurnos = import.meta.env.VITE_API_TURNOS || "http://localhost:3000/turnos";
 
 export const crearTurnoAPI = async (turnoNuevo) => {
+  console.log("URL de la API:", urlTurnos);
+  console.log("Datos a enviar:", turnoNuevo);
+
   try {
     const respuesta = await fetch(urlTurnos, {
       method: "POST",
@@ -9,9 +12,10 @@ export const crearTurnoAPI = async (turnoNuevo) => {
       },
       body: JSON.stringify(turnoNuevo),
     });
+    console.log("Status de respuesta:", respuesta.status);
     return respuesta;
   } catch (error) {
-    console.error(error);
+    console.error("Error en fetch:", error);
     return null;
   }
 };

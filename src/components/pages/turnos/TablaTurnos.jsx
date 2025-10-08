@@ -19,6 +19,7 @@ const TablaTurnos = () => {
         obtenerTurnosAPI(),
         obtenerCanchasAPI()
       ]);
+
       setTurnos(turnosData);
       setCanchas(canchasData);
     } catch (error) {
@@ -41,15 +42,12 @@ const TablaTurnos = () => {
     );
   }
 
-  // Combinar turnos con información de canchas
-  const turnosConCancha = turnos.map(turno => {
-    const cancha = canchas.find(c => c._id === turno.canchaId);
-    return {
-      ...turno,
-      nombreCancha: cancha ? cancha.nombreCancha : 'Cancha no encontrada',
-      categoriaCancha: cancha ? cancha.categoriaCancha : 'N/A'
-    };
-  });
+  // Los turnos ya vienen con canchaId populado, usar la info directamente
+  const turnosConCancha = turnos.map(turno => ({
+    ...turno,
+    nombreCancha: turno.canchaId ? turno.canchaId.nombreCancha : 'Cancha no encontrada',
+    categoriaCancha: turno.canchaId ? turno.canchaId.categoriaCancha : 'N/A'
+  }));
 
   return (
     <>

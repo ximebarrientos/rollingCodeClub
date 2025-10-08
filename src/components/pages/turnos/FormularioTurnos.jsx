@@ -12,35 +12,44 @@ const FormularioTurnos = ({
   const [fechaSeleccionada, setFechaSeleccionada] = useState("");
   const [horarioSeleccionado, setHorarioSeleccionado] = useState("");
 
-  const handleReservar = async () => {
-    if (!fechaSeleccionada || !horarioSeleccionado) {
-      Swal.fire("Error", "Por favor selecciona fecha y horario", "error");
-      return;
-    }
+  console.log("Estado del formulario - Fecha:", fechaSeleccionada, "Horario:", horarioSeleccionado);
 
-    const nuevoTurno = {
-      fecha: fechaSeleccionada,
-      horario: horarioSeleccionado,
-      canchaId: cancha._id
-    };
-
-    try {
-      const respuesta = await crearTurnoAPI(nuevoTurno);
-      if (respuesta.ok) {
-        Swal.fire("¡Turno reservado!", "Tu turno ha sido confirmado.", "success");
-        limparFormulario();
-        onHide();
-        if (onTurnoReservado) {
-          onTurnoReservado();
+    const handleReservar = async () => {
+        if (!fechaSeleccionada || !horarioSeleccionado) {
+            Swal.fire("Error", "Por favor selecciona fecha y horario", "error");
+            return;
         }
-      } else {
-        Swal.fire("Error", "No se pudo reservar el turno", "error");
-      }
-    } catch (error) {
-      console.error("Error al crear turno", error);
-      Swal.fire("Error", "Ocurrió un error al reservar", "error");
-    }
-  };
+
+        const nuevoTurno = {
+            fecha: fechaSeleccionada,
+            horario: horarioSeleccionado,
+            canchaId: cancha._id
+        };
+
+        console.log("Fecha enviada:", fechaSeleccionada);
+        console.log("Enviando payload de turno:", nuevoTurno);
+
+        try {
+            const respuesta = await crearTurnoAPI(nuevoTurno);
+            console.log("Respuesta de API:", respuesta);
+
+            if (respuesta.ok) {
+                Swal.fire("¡Turno reservado!", "Tu turno ha sido confirmado.", "success");
+                limparFormulario();
+                onHide();
+                if (onTurnoReservado) {
+                    onTurnoReservado();
+                }
+            } else {
+                const errorData = await respuesta.json().catch(() => ({}));
+                console.error("Error detallado del backend:", errorData);
+                Swal.fire("Error", `No se pudo reservar el turno: ${respuesta.status} ${respuesta.statusText}`, "error");
+            }
+        } catch (error) {
+            console.error("Error al crear turno", error);
+            Swal.fire("Error", "Ocurrió un error al reservar", "error");
+        }
+    };
 
   const limparFormulario = () => {
     setFechaSeleccionada("");
@@ -65,7 +74,11 @@ const FormularioTurnos = ({
               type="date"
               value={fechaSeleccionada}
               onChange={(e) => setFechaSeleccionada(e.target.value)}
-              min={new Date().toISOString().split('T')[0]}
+              min={(() => {
+                  const tomorrow = new Date();
+                  tomorrow.setDate(tomorrow.getDate() + 1);
+                  return tomorrow.toISOString().split('T')[0];
+              })()}
               required
             />
           </Form.Group>
