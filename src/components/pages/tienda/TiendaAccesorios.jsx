@@ -1,56 +1,122 @@
-import { useState } from "react";
-import { Container, Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Spinner,
+  Form,
+  Button,
+  Modal,
+} from "react-bootstrap";
+import { listarProductos } from "../../../helpers/queries.js";
 import "./tienda.css";
+import Swal from "sweetalert2";
 
 export default function TiendaAccesorios() {
+  const [productos, setProductos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [busqueda, setBusqueda] = useState("");
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
+  const [carrito, setCarrito] = useState(
+    JSON.parse(localStorage.getItem("carrito")) || []
+  );
+
+  useEffect(() => {
+    const cargar = async () => {
+      try {
+        const respuesta = await listarProductos();
+        if (respuesta && respuesta.ok) {
+          const data = await respuesta.json();
+          const accesorios = data.filter((p) => p.categoria === "Accesorios");
+          setProductos(accesorios);
+        }
+      } catch (error) {
+        console.error("Error al cargar productos:", error);
+      } finally {
+        setCargando(false);
+      }
+    };
+    cargar();
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+  }, [carrito]);
+
+  const productosFiltrados = productos.filter((p) =>
+    p.nombreProducto?.toLowerCase().includes(busqueda.toLowerCase())
+  );
 
   const handleShow = (producto) => setProductoSeleccionado(producto);
   const handleClose = () => setProductoSeleccionado(null);
 
-  const kitsdeentrenamiento = [
-    { nombre: "Kit de entrenamiento Umbro", img: "/kitentrenamiento1.jpg", precio: "$45.000" },
-    { nombre: "Kit de entrenamiento Adidas", img: "/kitentrenamiento2.webp", precio: "$42.500" },
-    { nombre: "Kit de entrenamiento Puma", img: "/kitentrenamiento3.jpg", precio: "$40.000" },
-    { nombre: "Kit de entrenamiento Nike", img: "/kitentrenamiento4.webp", precio: "$38.000" },
-    { nombre: "Kit de entrenamiento Umbro", img: "/kitentrenamiento5.jpg", precio: "$41.000" },
-    { nombre: "Kit de entrenamiento New Balance", img: "/kitentrenamiento6.jpg", precio: "$39.500" },
-  ];
+  const agregarAlCarrito = (producto) => {
+    setCarrito((prev) => {
+      const nuevoCarrito = [...prev, producto];
+      localStorage.setItem("carrito", JSON.stringify(nuevoCarrito));
 
-  const pelotas = [
-    { nombre: "Pelota River Plate", img: "/pelotafutbol1.jpg", precio: "$25.000" },
-    { nombre: "Pelota Argentina", img: "/pelotafutbol2.jpg", precio: "$25.000" },
-    { nombre: "Pelota Munich", img: "/pelotafutbol3.jpg", precio: "$30.000" },
-    { nombre: "Pelota Argentina", img: "/pelotafutbol4.webp", precio: "$28.000" },
-    { nombre: "Pelota Independiente", img: "/pelotafutbol5.webp", precio: "$29.000" },
-    { nombre: "Pelota Boca Juniors", img: "/pelotafutbol6.jpg", precio: "$29.500" },
-  ];
+      Swal.fire({
+        icon: "success",
+        title: "Producto agregado con éxito 🛒",
+        text: `"${producto.nombreProducto}" fue añadido al carrito.`,
+        showConfirmButton: false,
+        timer: 1500,
+        background: "#212529",
+        color: "#fff",
+        iconColor: "#28a745",
+      });
 
-  const renderCards = (productos) =>
-    productos.map((item, idx) => (
-      <Col md={4} sm={6} key={idx} className="mb-4">
-        <Card className="bg-success text-light text-center producto-card sombra-verde h-100">
-          <Card.Img src={item.img} alt={item.nombre} className="p-3 producto-img" />
-          <Card.Body>
-            <Card.Title>{item.nombre}</Card.Title>
-            <Card.Text className="fw-bold">{item.precio}</Card.Text>
-            <div className="d-flex justify-content-center gap-2">
-              <Button variant="warning" onClick={() => handleShow(item)}>
-                Ver más
-              </Button>
-              <Button variant="dark">Comprar</Button>
-            </div>
-          </Card.Body>
-        </Card>
-      </Col>
-    ));
+      return nuevoCarrito;
+    });
+  };
+
+  const renderCard = (item) => (
+    <Col md={4} sm={6} key={item._id} className="mb-4">
+      <Card className="bg-success text-light text-center producto-card sombra-verde h-100">
+        <Card.Img
+          src={item.imagen || "/noimage.png"}
+          alt={item.nombreProducto}
+          className="p-3 producto-img"
+        />
+        <Card.Body>
+          <Card.Title className="text-light">{item.nombreProducto}</Card.Title>
+          <Card.Text className="fw-bold text-light">${item.precio}</Card.Text>
+          <div className="d-flex justify-content-center gap-2">
+            <Button variant="warning" onClick={() => handleShow(item)}>
+              Ver más
+            </Button>
+            <Button variant="dark" onClick={() => agregarAlCarrito(item)}>
+              Comprar
+            </Button>
+          </div>
+        </Card.Body>
+      </Card>
+    </Col>
+  );
 
   return (
     <div className="bg-dark text-light py-5">
       <Container>
-        <Row className="text-center mb-4">
-          <Col>
-            <h2 className="fw-bold">Accesorios</h2>
+
+        <Row className="align-items-center mb-4">
+          <Col xs={12} md={4}></Col>
+          <Col xs={12} md={4} className="text-center">
+            <h2 className="fw-bold text-success mb-0">Accesorios</h2>
+          </Col>
+          <Col xs={12} md={4} className="text-end mt-3 mt-md-0">
+            <Button
+              variant="success"
+              href="/carrito"
+              className="position-relative shadow-sm"
+            >
+              Ver carrito 🛒
+              {carrito.length > 0 && (
+                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-light text-dark">
+                  {carrito.length}
+                </span>
+              )}
+            </Button>
           </Col>
         </Row>
 
@@ -60,45 +126,86 @@ export default function TiendaAccesorios() {
               type="text"
               placeholder="Buscar productos..."
               className="text-center"
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
             />
           </Col>
         </Row>
 
-        <Row id="kitsdeentrenamiento" className="mb-4">
-          <h3 className="mb-4 text-light text-center">Kits de entrenamiento</h3>
-          {renderCards(kitsdeentrenamiento)}
-        </Row>
+        {cargando ? (
+          <div className="text-center py-5">
+            <Spinner animation="border" variant="success" />
+          </div>
+        ) : busqueda ? (
+          productosFiltrados.length > 0 ? (
+            <Row className="mb-5 justify-content-center">
+              {productosFiltrados.map((p) => renderCard(p))}
+            </Row>
+          ) : (
+            <h5 className="text-center text-muted mt-5">
+              No encontramos productos que coincidan con tu búsqueda.
+            </h5>
+          )
+        ) : productos.length > 0 ? (
+          <>
+            <Row id="kits" className="mb-5">
+              <h3 className="text-center text-light mb-4">
+                Kits de entrenamiento
+              </h3>
+              {productos
+                .filter((p) => p.subcategoria === "Kits de entrenamiento")
+                .map((p) => renderCard(p))}
+            </Row>
 
-        <Row id="pelotas" className="mb-4">
-          <h3 className="mb-4 text-light text-center">Pelotas</h3>
-          {renderCards(pelotas)}
-        </Row>
+            <Row id="pelotas" className="mb-5">
+              <h3 className="text-center text-light mb-4">Pelotas</h3>
+              {productos
+                .filter((p) => p.subcategoria === "Pelotas")
+                .map((p) => renderCard(p))}
+            </Row>
+          </>
+        ) : (
+          <h5 className="text-center text-muted mt-5">
+            No hay productos cargados aún.
+          </h5>
+        )}
       </Container>
 
       <Modal show={!!productoSeleccionado} onHide={handleClose} centered>
         {productoSeleccionado && (
           <>
             <Modal.Header closeButton className="bg-success text-light">
-              <Modal.Title>{productoSeleccionado.nombre}</Modal.Title>
+              <Modal.Title>{productoSeleccionado.nombreProducto}</Modal.Title>
             </Modal.Header>
             <Modal.Body className="bg-dark text-light">
               <img
-                src={productoSeleccionado.img}
-                alt={productoSeleccionado.nombre}
-                style={{ width: "100%", borderRadius: "8px", marginBottom: "15px" }}
+                src={productoSeleccionado.imagen || "/noimage.png"}
+                alt={productoSeleccionado.nombreProducto}
+                style={{
+                  width: "100%",
+                  borderRadius: "8px",
+                  marginBottom: "15px",
+                }}
               />
-              <p><strong>Precio:</strong> {productoSeleccionado.precio}</p>
               <p>
-                <strong>Descripción:</strong> Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante
-                dapibus diam.
+                <strong>Precio:</strong> ${productoSeleccionado.precio}
+              </p>
+              <p>
+                <strong>Descripción:</strong>{" "}
+                {productoSeleccionado.descripcion ||
+                  "Sin descripción disponible"}
               </p>
             </Modal.Body>
             <Modal.Footer className="bg-dark">
               <Button variant="secondary" onClick={handleClose}>
                 Cerrar
               </Button>
-              <Button variant="success">Comprar</Button>
+              <Button
+                variant="success"
+                onClick={() => agregarAlCarrito(productoSeleccionado)}
+              >
+                Comprar
+              </Button>
             </Modal.Footer>
           </>
         )}
