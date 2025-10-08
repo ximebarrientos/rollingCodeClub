@@ -20,13 +20,17 @@ const FormularioTurnos = ({
             return;
         }
 
+        // Crear fecha con zona horaria Argentina (-03:00) para evitar problemas de conversión
+        const fechaConZonaHoraria = `${fechaSeleccionada}T12:00:00-03:00`;
+
         const nuevoTurno = {
-            fecha: fechaSeleccionada,
+            fecha: fechaConZonaHoraria,
             horario: horarioSeleccionado,
             canchaId: cancha._id
         };
 
-        console.log("Fecha enviada:", fechaSeleccionada);
+        console.log("Fecha original:", fechaSeleccionada);
+        console.log("Fecha con zona horaria:", fechaConZonaHoraria);
         console.log("Enviando payload de turno:", nuevoTurno);
 
         try {
