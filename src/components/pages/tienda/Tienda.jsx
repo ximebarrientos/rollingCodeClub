@@ -1,66 +1,124 @@
-import { useState } from "react";
-import { Container, Row, Col, Card, Form, Button, Modal, Table } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Spinner,
+  Form,
+  Button,
+  Modal,
+} from "react-bootstrap";
+import { listarProductos } from "../../../helpers/queries.js";
 import "./tienda.css";
+import Swal from "sweetalert2";
 
 export default function Tienda() {
+  const [productos, setProductos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [busqueda, setBusqueda] = useState("");
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
+  const [carrito, setCarrito] = useState(
+    JSON.parse(localStorage.getItem("carrito")) || []
+  );
+
+  useEffect(() => {
+    const cargar = async () => {
+      try {
+        const respuesta = await listarProductos();
+        if (respuesta && respuesta.ok) {
+          const data = await respuesta.json();
+          const indumentaria = data.filter(
+            (p) => p.categoria === "Indumentaria"
+          );
+          setProductos(indumentaria);
+        }
+      } catch (error) {
+        console.error("Error al cargar productos:", error);
+      } finally {
+        setCargando(false);
+      }
+    };
+    cargar();
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+  }, [carrito]);
+
+  const productosFiltrados = productos.filter((p) =>
+    p.nombreProducto?.toLowerCase().includes(busqueda.toLowerCase())
+  );
 
   const handleShow = (producto) => setProductoSeleccionado(producto);
   const handleClose = () => setProductoSeleccionado(null);
 
-  const botines = [
-    { nombre: "Botines Umbro", img: "/botines1.webp", precio: "$45.000" },
-    { nombre: "Botines Adidas", img: "/botines2.webp", precio: "$42.500" },
-    { nombre: "Botines Puma", img: "/botines3.webp", precio: "$40.000" },
-    { nombre: "Botines Nike", img: "/botines4.jpg", precio: "$38.000" },
-    { nombre: "Botines Umbro", img: "/botines5.png", precio: "$41.000" },
-    { nombre: "Botines New Balance", img: "/botines6.jpeg", precio: "$39.500" },
-  ];
+  const agregarAlCarrito = (producto) => {
+    setCarrito((prev) => {
+      const nuevoCarrito = [...prev, producto];
+      localStorage.setItem("carrito", JSON.stringify(nuevoCarrito));
 
-  const camisetas = [
-    { nombre: "Camiseta River Plate", img: "/camisetafutbol1.jpg", precio: "$25.000" },
-    { nombre: "Camiseta San Lorenzo", img: "/camisetafutbol2.jpg", precio: "$25.000" },
-    { nombre: "Camiseta Argentina", img: "/camisetafutbol3.webp", precio: "$30.000" },
-    { nombre: "Camiseta Argentina", img: "/camisetafutbol4.webp", precio: "$28.000" },
-    { nombre: "Camiseta Independiente", img: "/camisetafutbol5.webp", precio: "$29.000" },
-    { nombre: "Camiseta Boca Juniors", img: "/camisetafutbol6.jpg", precio: "$29.500" },
-  ];
+      Swal.fire({
+        icon: "success",
+        title: "Producto agregado con éxito 🛒",
+        text: `"${producto.nombreProducto}" fue añadido al carrito.`,
+        showConfirmButton: false,
+        timer: 1500,
+        background: "#212529",
+        color: "#fff",
+        iconColor: "#28a745",
+      });
 
-  const shorts = [
-    { nombre: "Shorts Argentina", img: "/short1.jpg", precio: "$15.000" },
-    { nombre: "Shorts Argentino Juniors", img: "/short2.png", precio: "$16.000" },
-    { nombre: "Shorts Independiente", img: "/short3.jpg", precio: "$14.500" },
-    { nombre: "Shorts Boca Juniors", img: "/short4.webp", precio: "$14.000" },
-    { nombre: "Shorts River Plate", img: "/short5.webp", precio: "$13.500" },
-    { nombre: "Shorts Argentina", img: "/short6.webp", precio: "$12.500" },
-  ];
+      return nuevoCarrito;
+    });
+  };
 
-  const renderCards = (productos) =>
-    productos.map((item, idx) => (
-      <Col md={4} sm={6} key={idx} className="mb-4">
-        <Card className="bg-success text-light text-center producto-card sombra-verde h-100">
-          <Card.Img src={item.img} alt={item.nombre} className="p-3 producto-img" />
-          <Card.Body>
-            <Card.Title className="text-light">{item.nombre}</Card.Title>
-            <Card.Text className="fw-bold text-light">{item.precio}</Card.Text>
-            <div className="d-flex justify-content-center gap-2">
-              <Button variant="warning" onClick={() => handleShow(item)}>
-                Ver más
-              </Button>
-              <Button variant="dark">Comprar</Button>
-            </div>
-          </Card.Body>
-        </Card>
-      </Col>
-    ));
+  const renderCard = (item) => (
+    <Col md={4} sm={6} key={item._id} className="mb-4">
+      <Card className="bg-success text-light text-center producto-card sombra-verde h-100">
+        <Card.Img
+          src={item.imagen || "/noimage.png"}
+          alt={item.nombreProducto}
+          className="p-3 producto-img"
+        />
+        <Card.Body>
+          <Card.Title className="text-light">{item.nombreProducto}</Card.Title>
+          <Card.Text className="fw-bold text-light">${item.precio}</Card.Text>
+          <div className="d-flex justify-content-center gap-2">
+            <Button variant="warning" onClick={() => handleShow(item)}>
+              Ver más
+            </Button>
+            <Button variant="dark" onClick={() => agregarAlCarrito(item)}>
+              Comprar
+            </Button>
+          </div>
+        </Card.Body>
+      </Card>
+    </Col>
+  );
 
   return (
     <div className="bg-dark text-light py-5">
       <Container>
-
-        <Row className="text-center mb-4">
-          <Col>
-            <h2 className="fw-bold">Indumentaria</h2>
+       
+        <Row className="align-items-center mb-4">
+          <Col xs={12} md={4}></Col>
+          <Col xs={12} md={4} className="text-center">
+            <h2 className="fw-bold text-success mb-0">Indumentaria</h2>
+          </Col>
+          <Col xs={12} md={4} className="text-end mt-3 mt-md-0">
+            <Button
+              variant="success"
+              href="/carrito"
+              className="position-relative shadow-sm"
+            >
+              Ver carrito 🛒
+              {carrito.length > 0 && (
+                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-light text-dark">
+                  {carrito.length}
+                </span>
+              )}
+            </Button>
           </Col>
         </Row>
 
@@ -70,66 +128,102 @@ export default function Tienda() {
               type="text"
               placeholder="Buscar productos..."
               className="text-center"
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
             />
           </Col>
         </Row>
 
-        <Row id="botines" className="mb-4">
-          <h3 className="mb-4 text-light text-center">Botines</h3>
-          {renderCards(botines)}
-        </Row>
+        {cargando ? (
+          <div className="text-center py-5">
+            <Spinner animation="border" variant="success" />
+          </div>
+        ) : busqueda ? (
+          productosFiltrados.length > 0 ? (
+            <Row className="mb-5 justify-content-center">
+              {productosFiltrados.map((p) => renderCard(p))}
+            </Row>
+          ) : (
+            <h5 className="text-center text-muted mt-5">
+              No encontramos productos que coincidan con tu búsqueda.
+            </h5>
+          )
+        ) : productos.length > 0 ? (
+          <>
+            <Row id="botines" className="mb-5">
+              <h3 className="text-center text-light mb-4">Botines</h3>
+              {productos
+                .filter((p) => p.subcategoria === "Botines")
+                .map((p) => renderCard(p))}
+            </Row>
 
-        <Row id="camisetas" className="mb-4">
-          <h3 className="mb-4 text-light text-center">Camisetas</h3>
-          {renderCards(camisetas)}
-        </Row>
+            <Row id="camisetas" className="mb-5">
+              <h3 className="text-center text-light mb-4">Camisetas</h3>
+              {productos
+                .filter((p) => p.subcategoria === "Camisetas")
+                .map((p) => renderCard(p))}
+            </Row>
 
-        <Row id="shorts">
-          <h3 className="mb-4 text-light text-center">Shorts</h3>
-          {renderCards(shorts)}
-        </Row>
+            <Row id="shorts" className="mb-5">
+              <h3 className="text-center text-light mb-4">Shorts</h3>
+              {productos
+                .filter((p) => p.subcategoria === "Shorts")
+                .map((p) => renderCard(p))}
+            </Row>
+          </>
+        ) : (
+          <h5 className="text-center text-muted mt-5">
+            No hay productos cargados aún.
+          </h5>
+        )}
       </Container>
 
       <Modal show={!!productoSeleccionado} onHide={handleClose} centered>
         {productoSeleccionado && (
           <>
             <Modal.Header closeButton className="bg-success text-light">
-              <Modal.Title>{productoSeleccionado.nombre}</Modal.Title>
+              <Modal.Title>{productoSeleccionado.nombreProducto}</Modal.Title>
             </Modal.Header>
             <Modal.Body className="bg-dark text-light">
               <img
-                src={productoSeleccionado.img}
-                alt={productoSeleccionado.nombre}
-                style={{ width: "100%", borderRadius: "8px", marginBottom: "15px" }}
+                src={productoSeleccionado.imagen || "/noimage.png"}
+                alt={productoSeleccionado.nombreProducto}
+                style={{
+                  width: "100%",
+                  borderRadius: "8px",
+                  marginBottom: "15px",
+                }}
               />
-              <p><strong>Precio:</strong> {productoSeleccionado.precio}</p>
               <p>
-                <strong>Descripción:</strong> Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante
-                dapibus diam.
+                <strong>Precio:</strong> ${productoSeleccionado.precio}
               </p>
-
-              <h5 className="mt-4">Tabla de Talles</h5>
-              <Table striped bordered hover size="sm" className="text-light mt-2">
-                <thead>
-                  <tr>
-                    <th>Talle</th>
-                    <th>Medida (cm)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td>S</td><td>85-90</td></tr>
-                  <tr><td>M</td><td>91-96</td></tr>
-                  <tr><td>L</td><td>97-102</td></tr>
-                  <tr><td>XL</td><td>103-110</td></tr>
-                </tbody>
-              </Table>
+              <p>
+                <strong>Descripción:</strong>{" "}
+                {productoSeleccionado.descripcion ||
+                  "Sin descripción disponible"}
+              </p>
+              {productoSeleccionado.talles?.length ? (
+                <>
+                  <h5 className="mt-4">Talles disponibles</h5>
+                  <p>{productoSeleccionado.talles.join(", ")}</p>
+                </>
+              ) : productoSeleccionado.numeros?.length ? (
+                <>
+                  <h5 className="mt-4">Números disponibles</h5>
+                  <p>{productoSeleccionado.numeros.join(", ")}</p>
+                </>
+              ) : null}
             </Modal.Body>
             <Modal.Footer className="bg-dark">
               <Button variant="secondary" onClick={handleClose}>
                 Cerrar
               </Button>
-              <Button variant="success">Comprar</Button>
+              <Button
+                variant="success"
+                onClick={() => agregarAlCarrito(productoSeleccionado)}
+              >
+                Comprar
+              </Button>
             </Modal.Footer>
           </>
         )}
