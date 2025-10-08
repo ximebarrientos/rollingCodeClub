@@ -1,58 +1,98 @@
-import { Col, Container, Form, Row, Button } from "react-bootstrap";
+import { useState } from "react";
+import { Modal, Form, Button } from "react-bootstrap";
+import { crearTurnoAPI } from "../../../helpers/turnosAPI";
+import Swal from "sweetalert2";
 
-const FormularioTurnos = () => {
+const FormularioTurnos = ({
+  show,
+  onHide,
+  cancha,
+  onTurnoReservado
+}) => {
+  const [fechaSeleccionada, setFechaSeleccionada] = useState("");
+  const [horarioSeleccionado, setHorarioSeleccionado] = useState("");
+
+  const handleReservar = async () => {
+    if (!fechaSeleccionada || !horarioSeleccionado) {
+      Swal.fire("Error", "Por favor selecciona fecha y horario", "error");
+      return;
+    }
+
+    const nuevoTurno = {
+      fecha: fechaSeleccionada,
+      horario: horarioSeleccionado,
+      canchaId: cancha._id
+    };
+
+    try {
+      const respuesta = await crearTurnoAPI(nuevoTurno);
+      if (respuesta.ok) {
+        Swal.fire("¡Turno reservado!", "Tu turno ha sido confirmado.", "success");
+        limparFormulario();
+        onHide();
+        if (onTurnoReservado) {
+          onTurnoReservado();
+        }
+      } else {
+        Swal.fire("Error", "No se pudo reservar el turno", "error");
+      }
+    } catch (error) {
+      console.error("Error al crear turno", error);
+      Swal.fire("Error", "Ocurrió un error al reservar", "error");
+    }
+  };
+
+  const limparFormulario = () => {
+    setFechaSeleccionada("");
+    setHorarioSeleccionado("");
+  };
+
+  const handleClose = () => {
+    limparFormulario();
+    onHide();
+  };
+
   return (
-    <Container>
-      <Row className="justify-content-center mb-5">
-        <Col md={8} lg={6}>
-          <Form>
-            <h2 className="text-success text-center display-5">Cargar Turno</h2>
-            <Form.Group className="mb-3" controlId="fechaTurno">
-              <Form.Label>Fecha</Form.Label>
-              <Form.Control
-                type="date"
-                className="bg-primary text-light"
-                required
-              />
-              <Form.Text className="text-danger">
-                La fecha del turno es obligatoria
-              </Form.Text>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="categoriaCancha">
-              <Form.Label>Categoría</Form.Label>
-              <Form.Select className="bg-primary text-light" required>
-                <option value="">Seleccionar</option>
-                <option value="Futbol 5 techada">Futbol 5 techada</option>
-                <option value="Futbol 5 sin techo">Futbol 5 sin techo</option>
-                <option value="Futbol 7 techada">Futbol 7 techada</option>
-                <option value="Futbol 7 sin techo">Futbol 7 sin techo</option>
-              </Form.Select>
-              <Form.Text className="text-danger">
-                La categoría de la cancha es obligatoria
-              </Form.Text>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="categoriaCancha">
-              <Form.Label>Horario</Form.Label>
-              <Form.Select className="bg-primary text-light" required>
-                <option value="">Seleccionar</option>
-                <option value="18:30-20:00">18:30-20:00</option>
-                <option value="20:00-21:30">20:00-21:30</option>
-                <option value="21:30-23:00">21:30-23:00</option>
-                <option value="23:30-00:30">23:30-00:30</option>
-              </Form.Select>
-              <Form.Text className="text-danger">
-                El horario del turno es obligatorio
-              </Form.Text>
-            </Form.Group>
-            <div className="d-grid">
-              <Button variant="success" type="submit">
-                Reservar turno
-              </Button>
-            </div>
-          </Form>
-        </Col>
-      </Row>
-    </Container>
+    <Modal show={show} onHide={handleClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>Reservar Turno - {cancha?.nombreCancha}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form>
+          <Form.Group className="mb-3">
+            <Form.Label>Fecha del Turno</Form.Label>
+            <Form.Control
+              type="date"
+              value={fechaSeleccionada}
+              onChange={(e) => setFechaSeleccionada(e.target.value)}
+              min={new Date().toISOString().split('T')[0]}
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Horario Disponible</Form.Label>
+            <Form.Select
+              value={horarioSeleccionado}
+              onChange={(e) => setHorarioSeleccionado(e.target.value)}
+              required
+            >
+              <option value="">Seleccionar horario</option>
+              {cancha?.horariosCancha.map((horario, index) => (
+                <option key={index} value={horario}>{horario}</option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+        </Form>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleClose}>
+          Cancelar
+        </Button>
+        <Button variant="success" onClick={handleReservar}>
+          Reservar
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 

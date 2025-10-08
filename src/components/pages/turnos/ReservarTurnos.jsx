@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Button, Modal, Form, Alert, Spinner } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Alert, Spinner } from "react-bootstrap";
 import { obtenerCanchasAPI } from "../../../helpers/canchasAPI";
-import { crearTurnoAPI } from "../../../helpers/turnosAPI";
-import Swal from "sweetalert2";
+import FormularioTurnos from "./FormularioTurnos";
 
 const ReservarTurnos = () => {
     const [canchas, setCanchas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [canchaSeleccionada, setCanchaSeleccionada] = useState(null);
-    const [fechaSeleccionada, setFechaSeleccionada] = useState("");
-    const [horarioSeleccionado, setHorarioSeleccionado] = useState("");
 
     useEffect(() => {
         cargarCanchas();
@@ -32,40 +29,9 @@ const ReservarTurnos = () => {
         setShowModal(true);
     };
 
-    const handleReservar = async () => {
-        if (!fechaSeleccionada || !horarioSeleccionado) {
-            Swal.fire("Error", "Por favor selecciona fecha y horario", "error");
-            return;
-        }
-
-        const nuevoTurno = {
-            fecha: fechaSeleccionada,
-            horario: horarioSeleccionado,
-            canchaId: canchaSeleccionada._id
-        };
-
-        try {
-            const respuesta = await crearTurnoAPI(nuevoTurno);
-            if (respuesta.ok) {
-                Swal.fire("¡Turno reservado!", "Tu turno ha sido confirmado.", "success");
-                setShowModal(false);
-                setFechaSeleccionada("");
-                setHorarioSeleccionado("");
-                setCanchaSeleccionada(null);
-            } else {
-                Swal.fire("Error", "No se pudo reservar el turno", "error");
-            }
-        } catch (error) {
-            console.error("Error al crear turno", error);
-            Swal.fire("Error", "Ocurrió un error al reservar", "error");
-        }
-    };
-
     const handleCloseModal = () => {
         setShowModal(false);
         setCanchaSeleccionada(null);
-        setFechaSeleccionada("");
-        setHorarioSeleccionado("");
     };
 
     if (loading) {
@@ -112,46 +78,11 @@ const ReservarTurnos = () => {
                 </Row>
             )}
 
-            <Modal show={showModal} onHide={handleCloseModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Reservar Turno - {canchaSeleccionada?.nombreCancha}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Fecha del Turno</Form.Label>
-                            <Form.Control
-                                type="date"
-                                value={fechaSeleccionada}
-                                onChange={(e) => setFechaSeleccionada(e.target.value)}
-                                min={new Date().toISOString().split('T')[0]}
-                                required
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Horario Disponible</Form.Label>
-                            <Form.Select
-                                value={horarioSeleccionado}
-                                onChange={(e) => setHorarioSeleccionado(e.target.value)}
-                                required
-                            >
-                                <option value="">Seleccionar horario</option>
-                                {canchaSeleccionada?.horariosCancha.map((horario, index) => (
-                                    <option key={index} value={horario}>{horario}</option>
-                                ))}
-                            </Form.Select>
-                        </Form.Group>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseModal}>
-                        Cancelar
-                    </Button>
-                    <Button variant="success" onClick={handleReservar}>
-                        Reservar
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            <FormularioTurnos
+                show={showModal}
+                onHide={handleCloseModal}
+                cancha={canchaSeleccionada}
+            />
         </Container>
     );
 };
