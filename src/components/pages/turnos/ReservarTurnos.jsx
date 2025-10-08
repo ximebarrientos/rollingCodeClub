@@ -39,11 +39,9 @@ const ReservarTurnos = () => {
         }
 
         const nuevoTurno = {
-            fechaTurno: fechaSeleccionada,
-            categoriaCancha: canchaSeleccionada.categoriaCancha,
+            fecha: fechaSeleccionada,
             horario: horarioSeleccionado,
-            canchaId: canchaSeleccionada._id,
-            precio: canchaSeleccionada.precioCancha
+            canchaId: canchaSeleccionada._id
         };
 
         try {

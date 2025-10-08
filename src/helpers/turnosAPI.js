@@ -1,4 +1,4 @@
-const urlTurnos = import.meta.env.VITE_API_TURNOS || "http://localhost:3000/turnos";
+const urlTurnos = import.meta.env.VITE_API_TURNOS
 
 export const crearTurnoAPI = async (turnoNuevo) => {
   try {
