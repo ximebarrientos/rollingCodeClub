@@ -55,13 +55,25 @@ export default function Tienda() {
 
   const agregarAlCarrito = (producto) => {
     setCarrito((prev) => {
-      const nuevoCarrito = [...prev, producto];
+      const existente = prev.find((item) => item._id === producto._id);
+
+      let nuevoCarrito;
+      if (existente) {
+        nuevoCarrito = prev.map((item) =>
+          item._id === producto._id
+            ? { ...item, cantidad: (item.cantidad || 1) + 1 }
+            : item
+        );
+      } else {
+        nuevoCarrito = [...prev, { ...producto, cantidad: 1 }];
+      }
+
       localStorage.setItem("carrito", JSON.stringify(nuevoCarrito));
 
       Swal.fire({
         icon: "success",
-        title: "Producto agregado con éxito 🛒",
-        text: `"${producto.nombreProducto}" fue añadido al carrito.`,
+        title: "Producto agregado 🛒",
+        text: `"${producto.nombreProducto}" se añadió al carrito.`,
         showConfirmButton: false,
         timer: 1500,
         background: "#212529",
@@ -100,7 +112,6 @@ export default function Tienda() {
   return (
     <div className="bg-dark text-light py-5">
       <Container>
-       
         <Row className="align-items-center mb-4">
           <Col xs={12} md={4}></Col>
           <Col xs={12} md={4} className="text-center">
@@ -115,7 +126,10 @@ export default function Tienda() {
               Ver carrito 🛒
               {carrito.length > 0 && (
                 <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-light text-dark">
-                  {carrito.length}
+                  {carrito.reduce(
+                    (total, prod) => total + (prod.cantidad || 1),
+                    0
+                  )}
                 </span>
               )}
             </Button>

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Container,
   Row,
@@ -7,70 +8,206 @@ import {
   ListGroup,
   Alert,
 } from "react-bootstrap";
+import Swal from "sweetalert2";
 
 const CarritoCompras = () => {
+  const [carrito, setCarrito] = useState(
+    JSON.parse(localStorage.getItem("carrito")) || []
+  );
+
+  useEffect(() => {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+  }, [carrito]);
+
+  const total = carrito.reduce(
+    (acc, prod) => acc + prod.precio * (prod.cantidad || 1),
+    0
+  );
+
+  const aumentarCantidad = (id) => {
+    const actualizado = carrito.map((item) =>
+      item._id === id ? { ...item, cantidad: (item.cantidad || 1) + 1 } : item
+    );
+    setCarrito(actualizado);
+  };
+
+  const disminuirCantidad = (id) => {
+    const actualizado = carrito
+      .map((item) =>
+        item._id === id
+          ? { ...item, cantidad: Math.max((item.cantidad || 1) - 1, 1) }
+          : item
+      )
+      .filter((item) => item.cantidad > 0);
+    setCarrito(actualizado);
+  };
+
+  const eliminarProducto = (id) => {
+    Swal.fire({
+      title: "¿Eliminar producto?",
+      text: "Se eliminará del carrito.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Sí, eliminar",
+      background: "#212529",
+      color: "#fff",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const actualizado = carrito.filter((item) => item._id !== id);
+        setCarrito(actualizado);
+        Swal.fire({
+          icon: "success",
+          title: "Eliminado",
+          text: "El producto fue eliminado del carrito.",
+          timer: 1200,
+          showConfirmButton: false,
+          background: "#212529",
+          color: "#fff",
+        });
+      }
+    });
+  };
+
+  const vaciarCarrito = () => {
+    Swal.fire({
+      title: "¿Vaciar carrito?",
+      text: "Se eliminarán todos los productos.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Sí, vaciar",
+      background: "#212529",
+      color: "#fff",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setCarrito([]);
+        Swal.fire({
+          icon: "success",
+          title: "Carrito vaciado",
+          timer: 1200,
+          showConfirmButton: false,
+          background: "#212529",
+          color: "#fff",
+        });
+      }
+    });
+  };
+
+  const finalizarCompra = () => {
+    if (carrito.length === 0) return;
+    Swal.fire({
+      icon: "success",
+      title: "Compra realizada 🛍️",
+      text: "Gracias por tu compra.",
+      background: "#212529",
+      color: "#fff",
+      confirmButtonColor: "#28a745",
+    });
+    setCarrito([]);
+  };
+
   return (
     <Container className="my-4">
       <Row>
         <Col xs={12} md={8}>
           <h2 className="mb-4 display-5">Carrito de Compras</h2>
 
-          <Alert variant="info">No hay productos en el carrito.</Alert>
-          <Table striped bordered hover responsive>
-            <thead>
-              <tr>
-                <th>Producto</th>
-                <th>Precio</th>
-                <th>Cantidad</th>
-                <th>Subtotal</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>remera nike</td>
-                <td>$500</td>
-                <td>
-                  <Button size="sm" variant="secondary">
-                    -
-                  </Button>
-                  <span className="mx-2">cantidad</span>
-                  <Button size="sm" variant="secondary">
-                    +
-                  </Button>
-                </td>
-                <td>precio*cantidad</td>
-                <td>
-                  <Button size="sm" variant="danger">
-                    <i class="bi bi-trash"></i>
-                  </Button>
-                </td>
-              </tr>
-            </tbody>
-          </Table>
+          {carrito.length === 0 ? (
+            <Alert variant="info">No hay productos en el carrito.</Alert>
+          ) : (
+            <Table striped bordered hover responsive>
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Precio</th>
+                  <th>Cantidad</th>
+                  <th>Subtotal</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {carrito.map((prod) => (
+                  <tr key={prod._id}>
+                    <td>{prod.nombreProducto}</td>
+                    <td>${prod.precio}</td>
+                    <td>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => disminuirCantidad(prod._id)}
+                      >
+                        -
+                      </Button>
+                      <span className="mx-2">{prod.cantidad || 1}</span>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => aumentarCantidad(prod._id)}
+                      >
+                        +
+                      </Button>
+                    </td>
+                    <td>${(prod.precio * (prod.cantidad || 1)).toFixed(2)}</td>
+                    <td>
+                      <Button
+                        size="sm"
+                        variant="danger"
+                        onClick={() => eliminarProducto(prod._id)}
+                      >
+                        <i className="bi bi-trash"></i>
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          )}
         </Col>
+
         <Col xs={12} md={4}>
           <div
-            className="p-3 border rounded shadow-sm sticky-top"
+            className="p-3 border rounded shadow-sm sticky-top bg-dark text-light"
             style={{ top: 80 }}
           >
             <h4>Resumen</h4>
-            <ListGroup variant="flush" className="mb-3">
-              <ListGroup.Item
-                className="d-flex justify-content-between align-items-center"
-              >
-                <span>precio * cantidad</span>
-                <span>$precio*cantidad</span>
-              </ListGroup.Item>
+            {carrito.length === 0 ? (
+              <p className="text-muted mt-3">Tu carrito está vacío.</p>
+            ) : (
+              <>
+                <ListGroup variant="flush" className="mb-3">
+                  {carrito.map((prod) => (
+                    <ListGroup.Item
+                      key={prod._id}
+                      className="d-flex justify-content-between align-items-center bg-dark text-light border-secondary"
+                    >
+                      <span>
+                        {prod.nombreProducto} x {prod.cantidad || 1}
+                      </span>
+                      <span>
+                        ${(prod.precio * (prod.cantidad || 1)).toFixed(2)}
+                      </span>
+                    </ListGroup.Item>
+                  ))}
 
-              <ListGroup.Item className="fw-bold d-flex justify-content-between align-items-center">
-                <span>Total</span>
-                <span>$total</span>
-              </ListGroup.Item>
-            </ListGroup>
-            <Button variant="success" className="w-100" size="lg">
-              Pagar
-            </Button>
+                  <ListGroup.Item className="fw-bold d-flex justify-content-between align-items-center bg-success text-light">
+                    <span>Total</span>
+                    <span>${total.toFixed(2)}</span>
+                  </ListGroup.Item>
+                </ListGroup>
+
+                <div className="d-grid gap-2">
+                  <Button variant="outline-danger" onClick={vaciarCarrito}>
+                    Vaciar carrito
+                  </Button>
+                  <Button variant="success" size="lg" onClick={finalizarCompra}>
+                    Pagar
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         </Col>
       </Row>
