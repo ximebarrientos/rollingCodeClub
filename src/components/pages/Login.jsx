@@ -1,11 +1,17 @@
 import { Form, Button, Container } from "react-bootstrap";
 
 const Login = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    //Limpiar carrito al iniciar sesión
+    localStorage.removeItem("carrito");
+  };
+
   return (
     <div className="container">
       <Container className="my-5 px-4 border border-1 rounded-4 border-secondary">
         <h2 className="text-center my-4">Iniciar Sesión</h2>
-        <Form>
+        <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3" controlId="formEmailSesion">
             <Form.Label>Correo Electrónico</Form.Label>
             <Form.Control
