@@ -42,8 +42,18 @@ const TablaTurnos = () => {
     );
   }
 
+  // Filtrar turnos para mostrar solo fechas de hoy o futuras
+  const fechaHoy = new Date();
+  fechaHoy.setHours(0, 0, 0, 0); // Resetear horas para comparar solo fechas
+
+  const turnosFuturos = turnos.filter(turno => {
+    const fechaTurno = new Date(turno.fecha);
+    fechaTurno.setHours(0, 0, 0, 0);
+    return fechaTurno >= fechaHoy;
+  });
+
   // Los turnos ya vienen con canchaId populado, usar la info directamente
-  const turnosConCancha = turnos.map(turno => ({
+  const turnosConCancha = turnosFuturos.map(turno => ({
     ...turno,
     nombreCancha: turno.canchaId ? turno.canchaId.nombreCancha : 'Cancha no encontrada',
     categoriaCancha: turno.canchaId ? turno.canchaId.categoriaCancha : 'N/A'
