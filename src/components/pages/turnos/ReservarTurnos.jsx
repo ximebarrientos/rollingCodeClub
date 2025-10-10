@@ -1,24 +1,30 @@
 import { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Button, Alert, Spinner } from "react-bootstrap";
 import { obtenerCanchasAPI } from "../../../helpers/canchasAPI";
+import { obtenerTurnosAPI } from "../../../helpers/turnosAPI";
 import FormularioTurnos from "./FormularioTurnos";
 
 const ReservarTurnos = () => {
     const [canchas, setCanchas] = useState([]);
+    const [turnos, setTurnos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [canchaSeleccionada, setCanchaSeleccionada] = useState(null);
 
     useEffect(() => {
-        cargarCanchas();
+        cargarCanchasYTurnos();
     }, []);
 
-    const cargarCanchas = async () => {
+    const cargarCanchasYTurnos = async () => {
         try {
-            const data = await obtenerCanchasAPI();
-            setCanchas(data);
+            const [canchasData, turnosData] = await Promise.all([
+                obtenerCanchasAPI(),
+                obtenerTurnosAPI()
+            ]);
+            setCanchas(canchasData);
+            setTurnos(turnosData);
         } catch (error) {
-            console.error("Error al cargar canchas", error);
+            console.error("Error al cargar canchas y turnos", error);
         } finally {
             setLoading(false);
         }
@@ -82,6 +88,8 @@ const ReservarTurnos = () => {
                 show={showModal}
                 onHide={handleCloseModal}
                 cancha={canchaSeleccionada}
+                turnos={turnos}
+                refreshData={cargarCanchasYTurnos}
             />
         </Container>
     );
