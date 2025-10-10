@@ -52,7 +52,7 @@ const TablaTurnos = () => {
     return fechaTurno >= fechaHoy;
   });
 
-  // Los turnos ya vienen con canchaId populado, usar la info directamente
+
   const turnosConCancha = turnosFuturos.map(turno => ({
     ...turno,
     nombreCancha: turno.canchaId ? turno.canchaId.nombreCancha : 'Cancha no encontrada',

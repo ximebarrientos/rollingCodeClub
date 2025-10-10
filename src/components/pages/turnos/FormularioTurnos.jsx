@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { Modal, Form, Button } from "react-bootstrap";
 import { crearTurnoAPI } from "../../../helpers/turnosAPI";
 import Swal from "sweetalert2";
@@ -9,59 +9,57 @@ const FormularioTurnos = ({
   cancha,
   onTurnoReservado
 }) => {
-  const [fechaSeleccionada, setFechaSeleccionada] = useState("");
-  const [horarioSeleccionado, setHorarioSeleccionado] = useState("");
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors }
+  } = useForm({
+    defaultValues: {
+      fecha: '',
+      horario: ''
+    }
+  });
 
-  console.log("Estado del formulario - Fecha:", fechaSeleccionada, "Horario:", horarioSeleccionado);
+  const onSubmit = async (data) => {
+    // Crear fecha con zona horaria Argentina (-03:00) para evitar problemas de conversión
+    const fechaConZonaHoraria = `${data.fecha}T12:00:00-03:00`;
 
-    const handleReservar = async () => {
-        if (!fechaSeleccionada || !horarioSeleccionado) {
-            Swal.fire("Error", "Por favor selecciona fecha y horario", "error");
-            return;
-        }
-
-        // Crear fecha con zona horaria Argentina (-03:00) para evitar problemas de conversión
-        const fechaConZonaHoraria = `${fechaSeleccionada}T12:00:00-03:00`;
-
-        const nuevoTurno = {
-            fecha: fechaConZonaHoraria,
-            horario: horarioSeleccionado,
-            canchaId: cancha._id
-        };
-
-        console.log("Fecha original:", fechaSeleccionada);
-        console.log("Fecha con zona horaria:", fechaConZonaHoraria);
-        console.log("Enviando payload de turno:", nuevoTurno);
-
-        try {
-            const respuesta = await crearTurnoAPI(nuevoTurno);
-            console.log("Respuesta de API:", respuesta);
-
-            if (respuesta.ok) {
-                Swal.fire("¡Turno reservado!", "Tu turno ha sido confirmado.", "success");
-                limparFormulario();
-                onHide();
-                if (onTurnoReservado) {
-                    onTurnoReservado();
-                }
-            } else {
-                const errorData = await respuesta.json().catch(() => ({}));
-                console.error("Error detallado del backend:", errorData);
-                Swal.fire("Error", `No se pudo reservar el turno: ${respuesta.status} ${respuesta.statusText}`, "error");
-            }
-        } catch (error) {
-            console.error("Error al crear turno", error);
-            Swal.fire("Error", "Ocurrió un error al reservar", "error");
-        }
+    const nuevoTurno = {
+        fecha: fechaConZonaHoraria,
+        horario: data.horario,
+        canchaId: cancha._id
     };
 
-  const limparFormulario = () => {
-    setFechaSeleccionada("");
-    setHorarioSeleccionado("");
+    console.log("Fecha original:", data.fecha);
+    console.log("Fecha con zona horaria:", fechaConZonaHoraria);
+    console.log("Enviando payload de turno:", nuevoTurno);
+
+    try {
+        const respuesta = await crearTurnoAPI(nuevoTurno);
+        console.log("Respuesta de API:", respuesta);
+
+        if (respuesta.ok) {
+            Swal.fire("¡Turno reservado!", "Tu turno ha sido confirmado.", "success");
+            reset();
+            onHide();
+            if (onTurnoReservado) {
+                onTurnoReservado();
+            }
+        } else {
+            const errorData = await respuesta.json().catch(() => ({}));
+            console.error("Error detallado del backend:", errorData);
+            Swal.fire("Error", `No se pudo reservar el turno: ${respuesta.status} ${respuesta.statusText}`, "error");
+        }
+    } catch (error) {
+        console.error("Error al crear turno", error);
+        Swal.fire("Error", "Ocurrió un error al reservar", "error");
+    }
   };
 
   const handleClose = () => {
-    limparFormulario();
+    reset();
     onHide();
   };
 
@@ -71,42 +69,68 @@ const FormularioTurnos = ({
         <Modal.Title>Reservar Turno - {cancha?.nombreCancha}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
+        <Form onSubmit={handleSubmit(onSubmit)}>
           <Form.Group className="mb-3">
-            <Form.Label>Fecha del Turno</Form.Label>
+            <Form.Label>Fecha del Turno *</Form.Label>
             <Form.Control
               type="date"
-              value={fechaSeleccionada}
-              onChange={(e) => setFechaSeleccionada(e.target.value)}
+              {...register("fecha", {
+                required: "La fecha es obligatoria",
+                validate: value => {
+                  const selectedDate = new Date(value);
+                  const tomorrow = new Date();
+                  tomorrow.setDate(tomorrow.getDate() + 1);
+                  tomorrow.setHours(0, 0, 0, 0);
+
+                  if (selectedDate < tomorrow) {
+                    return "La fecha debe ser de mañana en adelante";
+                  }
+                  return true;
+                }
+              })}
               min={(() => {
                   const tomorrow = new Date();
                   tomorrow.setDate(tomorrow.getDate() + 1);
                   return tomorrow.toISOString().split('T')[0];
               })()}
-              required
+              isInvalid={!!errors.fecha}
             />
+            <Form.Control.Feedback type="invalid">
+              {errors.fecha?.message}
+            </Form.Control.Feedback>
           </Form.Group>
+
           <Form.Group className="mb-3">
-            <Form.Label>Horario Disponible</Form.Label>
+            <Form.Label>Horario Disponible *</Form.Label>
             <Form.Select
-              value={horarioSeleccionado}
-              onChange={(e) => setHorarioSeleccionado(e.target.value)}
-              required
+              {...register("horario", {
+                required: "El horario es obligatorio",
+                validate: value =>
+                  cancha?.horariosCancha?.includes(value) || "Horario inválido"
+              })}
+              isInvalid={!!errors.horario}
             >
               <option value="">Seleccionar horario</option>
               {cancha?.horariosCancha.map((horario, index) => (
                 <option key={index} value={horario}>{horario}</option>
               ))}
             </Form.Select>
+            <Form.Control.Feedback type="invalid">
+              {errors.horario?.message}
+            </Form.Control.Feedback>
           </Form.Group>
+
+          <div className="d-grid">
+            <Button variant="success" type="submit">
+              Reservar Turno
+            </Button>
+          </div>
         </Form>
       </Modal.Body>
+
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
           Cancelar
-        </Button>
-        <Button variant="success" onClick={handleReservar}>
-          Reservar
         </Button>
       </Modal.Footer>
     </Modal>
