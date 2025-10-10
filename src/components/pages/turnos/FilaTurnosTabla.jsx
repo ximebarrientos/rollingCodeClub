@@ -45,9 +45,6 @@ const FilaTurnosTabla = ({ turno, recargarTurnos }) => {
       <td><Badge className="bg-success">{turno.horario}</Badge></td>
       <td>{turno.clienteId || "Sin asignar"}</td>
       <td>
-        <Button size="sm" variant="warning" className="me-2">
-          Editar
-        </Button>
         <Button size="sm" variant="danger" onClick={handleDelete}>
           Eliminar
         </Button>
