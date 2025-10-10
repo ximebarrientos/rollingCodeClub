@@ -12,6 +12,7 @@ import Error404 from "./components/pages/Error404.jsx";
 import Login from "./components/pages/Login.jsx";
 import Registro from "./components/pages/usuario/Registro.jsx";
 import CarritoCompras from "./components/pages/producto/CarritoCompras.jsx";
+import ReservarTurnos from './components/pages/turnos/ReservarTurnos.jsx';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <main>
           <Routes>
             <Route path="/" element={<Inicio />}></Route>
+            <Route path="/reserva" element={<ReservarTurnos/>}></Route>
             <Route path="/turnos" element={<FormularioTurnos />}></Route>
             <Route path="/tienda" element={<Tienda />}></Route>
             <Route
