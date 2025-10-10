@@ -78,20 +78,18 @@ const FormularioTurnos = ({
                 required: "La fecha es obligatoria",
                 validate: value => {
                   const selectedDate = new Date(value);
-                  const tomorrow = new Date();
-                  tomorrow.setDate(tomorrow.getDate() + 1);
-                  tomorrow.setHours(0, 0, 0, 0);
+                  const today = new Date();
+                  today.setHours(0, 0, 0, 0);
 
-                  if (selectedDate < tomorrow) {
-                    return "La fecha debe ser de mañana en adelante";
+                  if (selectedDate < today) {
+                    return "La fecha no puede ser anterior a hoy";
                   }
                   return true;
                 }
               })}
               min={(() => {
-                  const tomorrow = new Date();
-                  tomorrow.setDate(tomorrow.getDate() + 1);
-                  return tomorrow.toISOString().split('T')[0];
+                  const today = new Date();
+                  return today.toISOString().split('T')[0];
               })()}
               isInvalid={!!errors.fecha}
             />
