@@ -46,7 +46,7 @@ const FilaTurnosTabla = ({ turno, recargarTurnos }) => {
       <td>{turno.clienteId || "Sin asignar"}</td>
       <td>
         <Button size="sm" variant="danger" onClick={handleDelete}>
-          Eliminar
+          <i class="bi bi-trash-fill"></i>
         </Button>
       </td>
     </tr>
