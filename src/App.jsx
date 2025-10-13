@@ -12,17 +12,24 @@ import Error404 from "./components/pages/Error404.jsx";
 import Login from "./components/pages/Login.jsx";
 import Registro from "./components/pages/usuario/Registro.jsx";
 import CarritoCompras from "./components/pages/producto/CarritoCompras.jsx";
-import ReservarTurnos from './components/pages/turnos/ReservarTurnos.jsx';
+import ReservarTurnos from "./components/pages/turnos/ReservarTurnos.jsx";
+import ProtectorRutas from "./components/routes/ProtectorRutas.jsx";
 
 function App() {
+  const usuarioSessionStorage =
+    JSON.parse(sessionStorage.getItem("userKey")) || {};
+  const [usuarioLogueado, setUsuarioLogueado] = useState(usuarioSessionStorage);
+  useEffect(() => {
+    sessionStorage.setItem("userKey", JSON.stringify(usuarioLogueado));
+  }, [usuarioLogueado]);
   return (
     <>
       <BrowserRouter>
-        <Menu />
+        <Menu usuarioLogueado={usuarioLogueado} setUsuarioLogueado={setUsuarioLogueado}/>
         <main>
           <Routes>
             <Route path="/" element={<Inicio />}></Route>
-            <Route path="/reserva" element={<ReservarTurnos/>}></Route>
+            <Route path="/reserva" element={<ReservarTurnos />}></Route>
             <Route path="/turnos" element={<FormularioTurnos />}></Route>
             <Route path="/tienda" element={<Tienda />}></Route>
             <Route
@@ -31,9 +38,18 @@ function App() {
             ></Route>
             <Route path="/contacto" element={<Contacto />}></Route>
             <Route path="/sobre-nosotros" element={<QuienesSomos />}></Route>
-            <Route path="/login" element={<Login />}></Route>
+            <Route path="/login" element={<Login usuarioLogueado={usuarioLogueado} setUsuarioLogueado={setUsuarioLogueado} />}></Route>
             <Route path="/registro" element={<Registro />}></Route>
-            <Route path="/administrador" element={<Administrador />}></Route>
+            <Route
+              path="/administrador"
+              element={
+                <ProtectorRutas
+                  usuarioLogueado={usuarioLogueado}
+                ></ProtectorRutas>
+              }
+            >
+              <Route index element={<Administrador />}></Route>
+            </Route>
             <Route path="/carrito" element={<CarritoCompras />} />
             <Route path="*" element={<Error404 />}></Route>
           </Routes>
