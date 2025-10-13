@@ -1,8 +1,15 @@
 import { Navbar, Nav, NavDropdown, Container, Button } from "react-bootstrap";
-import { Link, NavLink } from "react-router";
+import { Link, NavLink, useNavigate } from "react-router";
 
 
-export default function Menu() {
+export default function Menu({usuarioLogueado, setUsuarioLogueado}) {
+  const navegacion = useNavigate()
+
+  const logout = ()=>{
+    //cambiar el estado del state 
+   setUsuarioLogueado({})
+   navegacion('/')
+  }
   return (
     <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
       <Container>
@@ -29,8 +36,16 @@ export default function Menu() {
             <NavLink to={"/sobre-nosotros"} className={"nav-link"}>Sobre Nosotros</NavLink>
           </Nav>
           <div className="d-flex align-items-center gap-2 ms-lg-3 mt-3 mt-lg-0">
-            <NavLink to={"/login"} size="sm" className="py-2 btn btn-outline-light">Iniciar sesión</NavLink>
-            <Button as={Link} to={"/registro"} variant="primary" size="sm" className="py-2">Crear cuenta</Button>
+            {
+              usuarioLogueado.token ? <>
+                <NavLink className='nav-link' to={'/administrador'}>Administrador</NavLink>
+                <Button size="sm" onClick={logout} className="py-2">Logout</Button>
+              </>:
+              <>
+                <Button as={Link} to={"/login"} variant="outline-light" size="sm" className="py-2">Iniciar sesión</Button>
+                <Button as={Link} to={"/registro"} variant="primary" size="sm" className="py-2">Crear cuenta</Button>
+              </>
+            }
           </div>
         </Navbar.Collapse>
       </Container>
