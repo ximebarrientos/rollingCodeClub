@@ -40,7 +40,7 @@ const Login = ({setUsuarioLogueado}) => {
     <div className="container">
       <Container className="my-5 px-4 border border-1 rounded-4 border-secondary">
         <h2 className="text-center my-4">Iniciar Sesión</h2>
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit(loginUser)}>
           <Form.Group className="mb-3" controlId="formEmailSesion">
             <Form.Label>Correo Electrónico</Form.Label>
             <Form.Control
