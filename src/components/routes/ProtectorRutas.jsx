@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router";
 
 const ProtectorRutas = ({usuarioLogueado}) => {
     //si el usuario no es el admin
-    if(!usuarioLogueado.isAdmin || !usuarioLogueado.token){
+    if(!usuarioLogueado.token || usuarioLogueado.rol !== 'admin'){
         //redireccionar al usuario
        return <Navigate to={'/'}/>
     }

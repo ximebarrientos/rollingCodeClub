@@ -2,6 +2,7 @@ import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
 import { Form, Button, Container } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { login } from "../../helpers/usuariosAPI";
 
 const Login = ({setUsuarioLogueado}) => {
   const {
@@ -11,26 +12,41 @@ const Login = ({setUsuarioLogueado}) => {
   } = useForm();
   const navegacion = useNavigate();
 
-  const loginUser = (user) => {
-    const adminEmail = import.meta.env.VITE_API_EMAIL;
-    const adminPassword = import.meta.env.VITE_API_PASSWORD;
-
-    if (user.email === adminEmail && user.password === adminPassword) {
-      setUsuarioLogueado({
-        nombreUsuario: "Administrador",
-        token: "admin-token",
-        isAdmin: true,
-      });
-      Swal.fire({
-        title: "Login exitoso",
-        text: `Bienvenido Administrador`,
-        icon: "success",
-      });
-      navegacion("/administrador");
-    } else {
+  const loginUser = async (user) => {
+    try {
+      user.correoElectronico = user.email;
+      delete user.email;
+      const respuesta = await login(user);
+      if (respuesta.status === 200) {
+        const { usuario, token } = await respuesta.json();
+        setUsuarioLogueado({
+          id: usuario.id,
+          nombreUsuario: usuario.nombreUsuario,
+          rol: usuario.rol,
+          token: token,
+        });
+        Swal.fire({
+          title: "Login exitoso",
+          text: `Bienvenido ${usuario.nombreUsuario}`,
+          icon: "success",
+        });
+        if (usuario.rol === 'admin') {
+          navegacion("/administrador");
+        } else {
+          navegacion("/");
+        }
+      } else {
+        Swal.fire({
+          title: "Ocurrio un error",
+          text: `Credenciales invalidas`,
+          icon: "error",
+        });
+      }
+    } catch (error) {
+      console.error(error);
       Swal.fire({
         title: "Ocurrio un error",
-        text: `Credenciales invalidas`,
+        text: `Error al conectar con el servidor`,
         icon: "error",
       });
     }
