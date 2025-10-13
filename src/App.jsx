@@ -14,6 +14,8 @@ import Registro from "./components/pages/usuario/Registro.jsx";
 import CarritoCompras from "./components/pages/producto/CarritoCompras.jsx";
 import ReservarTurnos from "./components/pages/turnos/ReservarTurnos.jsx";
 import ProtectorRutas from "./components/routes/ProtectorRutas.jsx";
+import { useEffect, useState } from "react";
+
 
 function App() {
   const usuarioSessionStorage =

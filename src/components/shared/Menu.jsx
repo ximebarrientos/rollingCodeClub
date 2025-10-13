@@ -21,12 +21,6 @@ export default function Menu({usuarioLogueado, setUsuarioLogueado}) {
         <Navbar.Collapse id="mainNavbar">
           <Nav className="mx-lg-auto mb-2 mb-lg-0 gap-2">
             <NavLink to={"/"} className={"nav-link"}>Inicio</NavLink>
-            {
-              usuarioLogueado.token ? <>
-                <NavLink className='nav-link' to={'/administrador'}>Administrador</NavLink>
-                <Button className="nav-link" onClick={logout}>Logout</Button>
-              </>: <NavLink to={"/login"} size="sm" className="py-2 btn btn-outline-light">Iniciar sesión</NavLink>
-            }
             <NavLink to={"/reserva"} className={"nav-link"}>Reservar</NavLink>
             <NavDropdown title="Tienda" id="tiendaDropdown" menuVariant="dark">
               <NavDropdown.Header>Indumentaria</NavDropdown.Header>
@@ -42,7 +36,16 @@ export default function Menu({usuarioLogueado, setUsuarioLogueado}) {
             <NavLink to={"/sobre-nosotros"} className={"nav-link"}>Sobre Nosotros</NavLink>
           </Nav>
           <div className="d-flex align-items-center gap-2 ms-lg-3 mt-3 mt-lg-0">
-            <Button as={Link} to={"/registro"} variant="primary" size="sm" className="py-2">Crear cuenta</Button>
+            {
+              usuarioLogueado.token ? <>
+                <NavLink className='nav-link' to={'/administrador'}>Administrador</NavLink>
+                <Button size="sm" onClick={logout} className="py-2">Logout</Button>
+              </>:
+              <>
+                <Button as={Link} to={"/login"} variant="outline-light" size="sm" className="py-2">Iniciar sesión</Button>
+                <Button as={Link} to={"/registro"} variant="primary" size="sm" className="py-2">Crear cuenta</Button>
+              </>
+            }
           </div>
         </Navbar.Collapse>
       </Container>
