@@ -1,25 +1,100 @@
 import { Form, Row, Col, Button, Container } from "react-bootstrap";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
+import { registrarUsuario } from "../../../helpers/usuariosAPI";
 
 const Registro = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+
+  const navegacion = useNavigate();
+  const passwordValue = watch("password", "");
+
+  const submitRegistro = async (usuario) => {
+    const { anio, mes, dia, repetirContrasenia, ...resto } = usuario;
+
+    const fechaNacimiento = `${anio}-${mes}-${dia.padStart(2, "0")}`;
+
+    const usuarioFinal = {
+      ...resto,
+      fechaNacimiento: fechaNacimiento,
+    };
+
+    const respuesta = await registrarUsuario(usuarioFinal);
+
+    if (!respuesta || !respuesta.ok) {
+      Swal.fire("Error", "No se pudo conectar con el servidor.", "error");
+      return;
+    }
+
+    if (respuesta.status === 201) {
+      const datosRespuesta = await respuesta.json();
+
+      const nombreUsuario =
+        datosRespuesta.usuario?.nombreUsuario || "Nuevo Usuario";
+
+      Swal.fire({
+        title: `¡Cuenta Creada!`,
+        text: `¡Bienvenido ${nombreUsuario}! Inicia sesión para continuar.`,
+        icon: "success",
+      });
+      navegacion("/login");
+    } else {
+      const datosError = await respuesta.json();
+      Swal.fire({
+        title: "Error al Registrar",
+        text: datosError.mensaje || "Ocurrió un error al crear la cuenta.",
+        icon: "error",
+      });
+    }
+  };
+
   return (
     <div className="container">
       <Container className="my-5 px-4 border border-1 rounded-4 border-secondary">
         <h2 className="text-center my-4">Crear Cuenta</h2>
-        <Form>
+        <Form onSubmit={handleSubmit(submitRegistro)}>
           <Row className="mb-3">
-            <Form.Group as={Col} md="6" controlId="formUsuario">
+            <Form.Group as={Col} md="4" controlId="formNombreUsuario">
               <Form.Label>Usuario</Form.Label>
-              <Form.Control />
-              <Form.Text id="formTextUsuario" className="text-danger">
-                Error en usuario
+              <Form.Control
+                {...register("nombreUsuario", {
+                  required: "El nombre de usuario es obligatorio",
+                  minLength: { value: 3, message: "Mínimo 3 caracteres" },
+                  maxLength: { value: 20, message: "Máximo 20 caracteres" },
+                })}
+              />
+              <Form.Text className="text-danger">
+                {errors.nombreUsuario?.message}
               </Form.Text>
             </Form.Group>
 
-            <Form.Group as={Col} md="6" controlId="formNombre">
-              <Form.Label>Nombre</Form.Label>
-              <Form.Control />
-              <Form.Text id="formTextNombre" className="text-danger">
-                Error en nombre
+            <Form.Group as={Col} md="4" controlId="formNombre">
+              <Form.Label>Nombre Completo</Form.Label>
+              <Form.Control
+                {...register("nombre", {
+                  required: "El nombre es obligatorio",
+                })}
+              />
+              <Form.Text className="text-danger">
+                {errors.nombre?.message}
+              </Form.Text>
+            </Form.Group>
+
+            <Form.Group as={Col} md="4" controlId="formApellido">
+              <Form.Label>Apellido</Form.Label>
+              <Form.Control
+                {...register("apellido", {
+                  required: "El apellido es obligatorio",
+                })}
+              />
+              <Form.Text className="text-danger">
+                {errors.apellido?.message}
               </Form.Text>
             </Form.Group>
           </Row>
@@ -27,8 +102,12 @@ const Registro = () => {
           <Row className="mb-3">
             <Form.Label>Fecha de Nacimiento</Form.Label>
             <Form.Group as={Col} md="4" controlId="formFechaAnio">
-              <Form.Select>
-                <option>Año</option>
+              <Form.Select
+                {...register("anio", {
+                  required: "Seleccionar Año es obligatorio",
+                })}
+              >
+                <option value="">Año</option>
                 <option value="2010">2010</option>
                 <option value="2009">2009</option>
                 <option value="2008">2008</option>
@@ -91,11 +170,18 @@ const Registro = () => {
                 <option value="1951">1951</option>
                 <option value="1950">1950</option>
               </Form.Select>
+              <Form.Text className="text-danger">
+                {errors.anio?.message}
+              </Form.Text>
             </Form.Group>
 
             <Form.Group as={Col} md="4" controlId="formFechaMes">
-              <Form.Select>
-                <option>Mes</option>
+              <Form.Select
+                {...register("mes", {
+                  required: "Seleccionar Mes es obligatorio",
+                })}
+              >
+                <option value="">Mes</option>
                 <option value="01">Enero</option>
                 <option value="02">Febrero</option>
                 <option value="03">Marzo</option>
@@ -109,11 +195,18 @@ const Registro = () => {
                 <option value="11">Noviembre</option>
                 <option value="12">Diciembre</option>
               </Form.Select>
+              <Form.Text className="text-danger">
+                {errors.mes?.message}
+              </Form.Text>
             </Form.Group>
 
             <Form.Group as={Col} md="4" controlId="formFechaDia">
-              <Form.Select>
-                <option>Día</option>
+              <Form.Select
+                {...register("dia", {
+                  required: "Seleccionar Día es obligatorio",
+                })}
+              >
+                <option value="">Día</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -146,45 +239,86 @@ const Registro = () => {
                 <option value="30">30</option>
                 <option value="31">31</option>
               </Form.Select>
+              <Form.Text className="text-danger">
+                {errors.dia?.message}
+              </Form.Text>
             </Form.Group>
           </Row>
 
           <Row className="mb-3">
             <Form.Group as={Col} md="6" controlId="formGenero">
               <Form.Label>Género</Form.Label>
-              <Form.Select>
-                <option></option>
-                <option value="Hombre">Hombre</option>
-                <option value="Mujer">Mujer</option>
+              <Form.Select
+                {...register("genero", {
+                  required: "El género es obligatorio",
+                })}
+              >
+                <option value=""></option>
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+                <option value="No Binario">No Binario</option>
+                <option value="Prefiero no decir">Prefiero no decir</option>
               </Form.Select>
+              <Form.Text className="text-danger">
+                {errors.genero?.message}
+              </Form.Text>
             </Form.Group>
 
-            <Form.Group as={Col} md="6" controlId="formCel">
+            <Form.Group as={Col} md="6" className="mb-3" controlId="formCelular">
               <Form.Label>Celular</Form.Label>
-              <Form.Control />
-              <Form.Text id="formNumCel" className="text-danger">
-                Error en Celular
+              <Form.Control
+                type="number"
+                {...register("celular", {
+                  required: "El celular es obligatorio",
+                  pattern: {
+                    value: /^\d{10}$/,
+                    message: "Número de celular inválido (ej: 3811234567)",
+                  },
+                })}
+              />
+              <Form.Text className="text-danger">
+                {errors.celular?.message}
               </Form.Text>
             </Form.Group>
           </Row>
 
-          <Form.Group className="mb-3" controlId="formEmail">
+          <Form.Group className="mb-3" controlId="formCorreoElectronico">
             <Form.Label>Correo Electrónico</Form.Label>
             <Form.Control
               type="email"
               placeholder="correo@rollinCodeClub.com"
+              {...register("correoElectronico", {
+                required: "El email es obligatorio",
+                pattern: {
+                  value:
+                    /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/,
+                  message: "El email debe tener un formato válido.",
+                },
+              })}
             />
-            <Form.Text id="formTextCorreo" className="text-danger">
-              Error en Correo
+            <Form.Text className="text-danger">
+              {errors.correoElectronico?.message}
             </Form.Text>
           </Form.Group>
 
           <Row className="mb-3">
             <Form.Group as={Col} md="6" controlId="formPassword">
               <Form.Label>Contraseña</Form.Label>
-              <Form.Control type="password" placeholder="Crea una contraseña" />
-              <Form.Text id="formTextContrasenia" className="text-danger">
-                Error en contraseña
+              <Form.Control
+                type="password"
+                placeholder="Crea una contraseña"
+                {...register("password", {
+                  required: "La contraseña es obligatoria",
+                  pattern: {
+                    value:
+                      /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/,
+                    message:
+                      "Debe tener 8-16 caracteres, 1 dígito, 1 minúscula, 1 mayúscula y 1 caracter especial.",
+                  },
+                })}
+              />
+              <Form.Text className="text-danger">
+                {errors.password?.message}
               </Form.Text>
             </Form.Group>
 
@@ -193,12 +327,14 @@ const Registro = () => {
               <Form.Control
                 type="password"
                 placeholder="Confirma la contraseña"
+                {...register("repetirContrasenia", {
+                  required: "Confirmar la contraseña es obligatorio",
+                  validate: (value) =>
+                    value === passwordValue || "Las contraseñas no coinciden.",
+                })}
               />
-              <Form.Text
-                id="formTextRepetirContrasenia"
-                className="text-danger"
-              >
-                Error en contraseña
+              <Form.Text className="text-danger">
+                {errors.repetirContrasenia?.message}
               </Form.Text>
             </Form.Group>
           </Row>
