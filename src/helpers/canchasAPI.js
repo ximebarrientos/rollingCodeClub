@@ -17,7 +17,6 @@ export const obtenerCanchasAPI = async () => {
 
 export const crearCanchaAPI = async (canchaNueva) => {
   try {
-    console.log("Enviando cancha a crear:", canchaNueva); // Debug log
     const token = JSON.parse(sessionStorage.getItem("userKey") || "{}").token;
     const respuesta = await fetch(urlCanchas, {
       method: "POST",
@@ -27,7 +26,6 @@ export const crearCanchaAPI = async (canchaNueva) => {
       },
       body: JSON.stringify(canchaNueva),
     });
-    console.log("Respuesta de crearCanchaAPI:", respuesta.status, respuesta.ok); // Debug log
     if (!respuesta.ok) {
       const errorText = await respuesta.text();
       console.error("Error del servidor:", errorText);
