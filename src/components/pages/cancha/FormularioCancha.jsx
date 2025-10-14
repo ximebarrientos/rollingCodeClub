@@ -30,6 +30,17 @@ const FormularioCancha = ({ cancha, recargarCanchas, cerrarFormulario }) => {
       .filter((key) => key.includes("horario-"))
       .map((key) => key.replace("horario-", ""));
 
+    // Validar que al menos un horario esté seleccionado
+    if (horariosSeleccionados.length === 0) {
+      Swal.fire({
+        title: "Error",
+        text: "Debe seleccionar al menos un horario",
+        icon: "error",
+        confirmButtonColor: "#dc3545",
+      });
+      return;
+    }
+
     const canchaNueva = {
       nombreCancha: data.nombreCancha,
       categoriaCancha: data.categoriaCancha,
@@ -40,22 +51,31 @@ const FormularioCancha = ({ cancha, recargarCanchas, cerrarFormulario }) => {
     };
 
     try {
+      let respuesta;
       if (cancha && cancha.nueva) {
-        await crearCanchaAPI(canchaNueva);
-        Swal.fire({
-          title: "Cancha creada",
-          text: "La cancha ha sido creada con éxito",
-          icon: "success",
-          confirmButtonColor: "#0066cc",
-        });
+        respuesta = await crearCanchaAPI(canchaNueva);
+        if (respuesta && respuesta.ok) {
+          Swal.fire({
+            title: "Cancha creada",
+            text: "La cancha ha sido creada con éxito",
+            icon: "success",
+            confirmButtonColor: "#0066cc",
+          });
+        } else {
+          throw new Error("Error al crear la cancha");
+        }
       } else if (cancha) {
-        await editarCanchaAPI(cancha._id, canchaNueva);
-        Swal.fire({
-          title: "Cancha editada",
-          text: "La cancha ha sido editada con éxito",
-          icon: "success",
-          confirmButtonColor: "#0066cc",
-        });
+        respuesta = await editarCanchaAPI(cancha._id, canchaNueva);
+        if (respuesta && respuesta.ok) {
+          Swal.fire({
+            title: "Cancha editada",
+            text: "La cancha ha sido editada con éxito",
+            icon: "success",
+            confirmButtonColor: "#0066cc",
+          });
+        } else {
+          throw new Error("Error al editar la cancha");
+        }
       }
       reset();
       recargarCanchas();

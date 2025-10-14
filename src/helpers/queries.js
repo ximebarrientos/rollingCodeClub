@@ -22,12 +22,13 @@ export const obtenerProducto = async (id) => {
 
 export const crearProducto = async (productoNuevo) => {
   try {
+    const token = JSON.parse(sessionStorage.getItem("userKey") || "{}").token;
     const respuesta = await fetch(urlProductos, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
       },
-      body: JSON.stringify(productoNuevo),
+      body: productoNuevo, // Nota: para multipart/form-data, no se establece Content-Type
     });
     return respuesta;
   } catch (error) {
@@ -38,12 +39,13 @@ export const crearProducto = async (productoNuevo) => {
 
 export const editarProducto = async (id, productoEditado) => {
   try {
+    const token = JSON.parse(sessionStorage.getItem("userKey") || "{}").token;
     const respuesta = await fetch(`${urlProductos}/${id}`, {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
       },
-      body: JSON.stringify(productoEditado),
+      body: productoEditado, // Nota: para multipart/form-data, no se establece Content-Type
     });
     return respuesta;
   } catch (error) {
@@ -54,8 +56,12 @@ export const editarProducto = async (id, productoEditado) => {
 
 export const borrarProducto = async (id) => {
   try {
+    const token = JSON.parse(sessionStorage.getItem("userKey") || "{}").token;
     const respuesta = await fetch(`${urlProductos}/${id}`, {
       method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
     });
     return respuesta;
   } catch (error) {

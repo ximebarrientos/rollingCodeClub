@@ -17,26 +17,34 @@ export const obtenerCanchasAPI = async () => {
 
 export const crearCanchaAPI = async (canchaNueva) => {
   try {
+    const token = JSON.parse(sessionStorage.getItem("userKey") || "{}").token;
     const respuesta = await fetch(urlCanchas, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify(canchaNueva),
     });
+    if (!respuesta.ok) {
+      const errorText = await respuesta.text();
+      console.error("Error del servidor:", errorText);
+    }
     return respuesta;
   } catch (error) {
-    console.error(error);
+    console.error("Error en crearCanchaAPI:", error);
     return null;
   }
 };
 
 export const editarCanchaAPI = async (id, canchaActualizada) => {
     try {
+        const token = JSON.parse(sessionStorage.getItem("userKey") || "{}").token;
         const respuesta = await fetch(`${urlCanchas}/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             },
             body: JSON.stringify(canchaActualizada),
         });
@@ -49,8 +57,12 @@ export const editarCanchaAPI = async (id, canchaActualizada) => {
 
 export const eliminarCanchaAPI = async (id) => {
     try {
+        const token = JSON.parse(sessionStorage.getItem("userKey") || "{}").token;
         const respuesta = await fetch(`${urlCanchas}/${id}`, {
             method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+            },
         });
         return respuesta;
     } catch (error) {

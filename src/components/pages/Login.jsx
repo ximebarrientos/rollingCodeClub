@@ -30,7 +30,7 @@ const Login = ({setUsuarioLogueado}) => {
           text: `Bienvenido ${usuario.nombreUsuario}`,
           icon: "success",
         });
-        if (usuario.rol === 'admin') {
+        if (usuario.rol && usuario.rol.toLowerCase() === 'administrador') {
           navegacion("/administrador");
         } else {
           navegacion("/");

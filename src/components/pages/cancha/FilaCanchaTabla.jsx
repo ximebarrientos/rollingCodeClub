@@ -35,10 +35,10 @@ const FilaCanchaTabla = ({ cancha, recargarCanchas, onEditar }) => {
       <td>${cancha.precioCancha}</td>
       <td>
         <Button size="sm" variant="warning" className="me-2" onClick={onEditar}>
-          <i class="bi bi-pencil-square"></i>
+          <i className="bi bi-pencil-square"></i>
         </Button>
         <Button size="sm" variant="danger" onClick={handleDelete}>
-          <i class="bi bi-trash-fill"></i>
+          <i className="bi bi-trash-fill"></i>
         </Button>
       </td>
     </tr>
