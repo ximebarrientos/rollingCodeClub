@@ -2,7 +2,7 @@ import { Form, Row, Col, Button, Container } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
-import { registrarUsuario } from "../../../helpers/queries";
+import { registrarUsuario } from "../../../helpers/usuariosAPI";
 
 const Registro = () => {
   const {
@@ -60,7 +60,7 @@ const Registro = () => {
         <h2 className="text-center my-4">Crear Cuenta</h2>
         <Form onSubmit={handleSubmit(submitRegistro)}>
           <Row className="mb-3">
-            <Form.Group as={Col} md="6" controlId="formNombreUsuario">
+            <Form.Group as={Col} md="4" controlId="formNombreUsuario">
               <Form.Label>Usuario</Form.Label>
               <Form.Control
                 {...register("nombreUsuario", {
@@ -74,7 +74,7 @@ const Registro = () => {
               </Form.Text>
             </Form.Group>
 
-            <Form.Group as={Col} md="6" controlId="formNombre">
+            <Form.Group as={Col} md="4" controlId="formNombre">
               <Form.Label>Nombre Completo</Form.Label>
               <Form.Control
                 {...register("nombre", {
@@ -85,19 +85,19 @@ const Registro = () => {
                 {errors.nombre?.message}
               </Form.Text>
             </Form.Group>
-          </Row>
 
-          <Form.Group className="mb-3" controlId="formApellido">
-            <Form.Label>Apellido</Form.Label>
-            <Form.Control
-              {...register("apellido", {
-                required: "El apellido es obligatorio",
-              })}
-            />
-            <Form.Text className="text-danger">
-              {errors.apellido?.message}
-            </Form.Text>
-          </Form.Group>
+            <Form.Group as={Col} md="4" controlId="formApellido">
+              <Form.Label>Apellido</Form.Label>
+              <Form.Control
+                {...register("apellido", {
+                  required: "El apellido es obligatorio",
+                })}
+              />
+              <Form.Text className="text-danger">
+                {errors.apellido?.message}
+              </Form.Text>
+            </Form.Group>
+          </Row>
 
           <Row className="mb-3">
             <Form.Label>Fecha de Nacimiento</Form.Label>
@@ -264,7 +264,7 @@ const Registro = () => {
               </Form.Text>
             </Form.Group>
 
-            <Form.Group as={Col} md="6" controlId="formCelular">
+            <Form.Group as={Col} md="6" className="mb-3" controlId="formCelular">
               <Form.Label>Celular</Form.Label>
               <Form.Control
                 type="number"
