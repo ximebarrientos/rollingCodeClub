@@ -12,6 +12,7 @@ const TablaCancha = () => {
   const cargarCanchas = async () => {
     try {
       const data = await obtenerCanchasAPI();
+      console.log("Canchas obtenidas:", data); // Debug log
       setCanchas(data);
     } catch (error) {
       console.error("Error al cargar canchas", error);
