@@ -1,21 +1,19 @@
 const urlTurnos = import.meta.env.VITE_API_TURNOS
 
 export const crearTurnoAPI = async (turnoNuevo) => {
-  console.log("URL de la API:", urlTurnos);
-  console.log("Datos a enviar:", turnoNuevo);
-
   try {
+    const token = JSON.parse(sessionStorage.getItem("userKey") || "{}").token;
     const respuesta = await fetch(urlTurnos, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify(turnoNuevo),
     });
-    console.log("Status de respuesta:", respuesta.status);
     return respuesta;
   } catch (error) {
-    console.error("Error en fetch:", error);
+    console.error("Error en crearTurnoAPI:", error);
     return null;
   }
 };
@@ -37,10 +35,12 @@ export const obtenerTurnosAPI = async () => {
 
 export const editarTurnoAPI = async (id, turnoActualizado) => {
   try {
+    const token = JSON.parse(sessionStorage.getItem("userKey") || "{}").token;
     const respuesta = await fetch(`${urlTurnos}/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify(turnoActualizado),
     });
@@ -53,8 +53,12 @@ export const editarTurnoAPI = async (id, turnoActualizado) => {
 
 export const eliminarTurnoAPI = async (id) => {
   try {
+    const token = JSON.parse(sessionStorage.getItem("userKey") || "{}").token;
     const respuesta = await fetch(`${urlTurnos}/${id}`, {
       method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
     });
     return respuesta;
   } catch (error) {
