@@ -1,4 +1,7 @@
+
 import { Container, Row, Col, Card } from "react-bootstrap";
+import "./contacto.css";
+
 
 const Contacto = () => {
   return (
@@ -6,10 +9,10 @@ const Contacto = () => {
       <h2 className="mb-4 text-center text-success display-6">
         Información de Contacto
       </h2>
-      <Row className="g-4 justify-content-center">
+      <Row className="g-4 justify-content-center cajaCardContacto">
         <Col xs={12} md={6} lg={4}>
           <a href="tel:3811234567" className="text-decoration-none">
-            <Card className="h-100 text-center shadow-sm">
+            <Card className="h-100 text-center bg-primary cardContacto">
               <Card.Body>
                 <i className="bi bi-telephone-fill display-4 text-secondary mb-3"></i>
                 <Card.Title>Teléfono</Card.Title>
@@ -20,7 +23,7 @@ const Contacto = () => {
         </Col>
         <Col xs={12} md={6} lg={4}>
           <a href="mailto:info@rollingcodeclub.com" className="text-decoration-none">
-            <Card className="h-100 text-center shadow-sm">
+            <Card className="h-100 text-center bg-primary cardContacto">
               <Card.Body>
                 <i className="bi bi-envelope-fill display-4 text-danger mb-3"></i>
                 <Card.Title>Email</Card.Title>
@@ -31,7 +34,7 @@ const Contacto = () => {
         </Col>
         <Col xs={12} md={6} lg={4}>
           <a href="https://wa.me/+5493811234567" target="_blank" className="text-decoration-none">
-            <Card className="h-100 text-center shadow-sm">
+            <Card className="h-100 text-center bg-primary cardContacto">
               <Card.Body>
                 <i className="bi bi-whatsapp display-4 text-success mb-3"></i>
                 <Card.Title>WhatsApp</Card.Title>
@@ -41,7 +44,7 @@ const Contacto = () => {
           </a>
         </Col>
         <Col xs={12} md={6} lg={4}>
-          <Card className="h-100 text-center shadow-sm">
+          <Card className="h-100 text-center bg-primary cardContacto">
             <Card.Body>
               <i className="bi bi-clock-fill display-4 text-warning mb-3"></i>
               <Card.Title>Horarios</Card.Title>
@@ -51,7 +54,7 @@ const Contacto = () => {
         </Col>
         <Col xs={12} md={6} lg={4}>
           <a href="https://maps.google.com/?q=Gral.+José+María+Paz+576,+San+Miguel+de+Tucumán,+Tucumán" target="_blank" className="text-decoration-none">
-            <Card className="h-100 text-center shadow-sm">
+            <Card className="h-100 text-center bg-primary cardContacto">
               <Card.Body>
                 <i className="bi bi-geo-alt-fill display-4 text-info mb-3"></i>
                 <Card.Title>Visítanos</Card.Title>
@@ -63,7 +66,7 @@ const Contacto = () => {
           </a>
         </Col>
         <Col xs={12} md={6} lg={4}>
-          <Card className="h-100 text-center shadow-sm">
+          <Card className="h-100 text-center bg-primary cardContacto">
             <Card.Body>
               <i className="bi bi-share-fill display-4 text-secondary mb-3"></i>
               <Card.Title>Redes Sociales</Card.Title>
