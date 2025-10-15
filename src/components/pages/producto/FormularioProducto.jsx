@@ -19,7 +19,7 @@ const FormularioProducto = ({
     reset,
     formState: { errors },
     resetField,
-    watch, 
+    watch,
   } = useForm();
 
   const subcategoriasPorCategoria = {
@@ -60,20 +60,20 @@ const FormularioProducto = ({
       formData.append("descripcion", data.descripcion);
 
       if (data.tallesTexto) {
-  const tallesArray = data.tallesTexto
-    .split(",")
-    .map((t) => t.trim().toUpperCase())
-    .filter((t) => t !== "");
-  tallesArray.forEach((talle) => formData.append("talles", talle)); 
-}
+        const tallesArray = data.tallesTexto
+          .split(",")
+          .map((t) => t.trim().toUpperCase())
+          .filter((t) => t !== "");
+        tallesArray.forEach((talle) => formData.append("talles", talle));
+      }
 
-if (data.numerosTexto) {
-  const numerosArray = data.numerosTexto
-    .split(",")
-    .map((n) => n.trim())
-    .filter((n) => n !== "");
-  numerosArray.forEach((num) => formData.append("numeros", num));
-}
+      if (data.numerosTexto) {
+        const numerosArray = data.numerosTexto
+          .split(",")
+          .map((n) => n.trim())
+          .filter((n) => n !== "");
+        numerosArray.forEach((num) => formData.append("numeros", num));
+      }
 
       if (data.imagen && data.imagen[0]) {
         formData.append("imagen", data.imagen[0]);

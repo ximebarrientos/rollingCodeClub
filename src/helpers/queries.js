@@ -34,7 +34,6 @@ export const crearProducto = async (productoNuevo) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-
       },
       body: productoNuevo,
     });
@@ -91,4 +90,3 @@ export const borrarProducto = async (id) => {
     return null;
   }
 };
-
