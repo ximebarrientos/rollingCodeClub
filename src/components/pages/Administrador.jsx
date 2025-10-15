@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Col, Container, Row, ListGroup } from "react-bootstrap";
 import TablaProducto from "./producto/TablaProducto";
@@ -6,8 +5,10 @@ import TablaUsuario from "./usuario/TablaUsuario";
 import TablaCancha from "./cancha/TablaCancha";
 import TablaTurnos from "./turnos/TablaTurnos";
 import FormularioProducto from "./producto/FormularioProducto";
+import { useOutletContext } from "react-router";
 
 const Administrador = () => {
+  const { usuarioLogueado } = useOutletContext();
   const [seleccion, setSeleccion] = useState("productos");
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [productoEditado, setProductoEditado] = useState(null);
@@ -28,15 +29,18 @@ const Administrador = () => {
           <TablaProducto
             setMostrarFormulario={setMostrarFormulario}
             setProductoEditado={setProductoEditado}
+            usuarioLogueado={usuarioLogueado}
           />
         );
 
       case "usuarios":
-        return <TablaUsuario />;
+        return <TablaUsuario usuarioLogueado={usuarioLogueado} />;
+
       case "canchas":
-        return <TablaCancha />;
+        return <TablaCancha usuarioLogueado={usuarioLogueado} />;
+
       case "turnos":
-        return <TablaTurnos />;
+        return <TablaTurnos usuarioLogueado={usuarioLogueado} />;
       default:
         return null;
     }

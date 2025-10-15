@@ -16,7 +16,6 @@ import ReservarTurnos from "./components/pages/turnos/ReservarTurnos.jsx";
 import ProtectorRutas from "./components/routes/ProtectorRutas.jsx";
 import { useEffect, useState } from "react";
 
-
 function App() {
   const usuarioSessionStorage =
     JSON.parse(sessionStorage.getItem("userKey")) || {};
@@ -27,7 +26,10 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <Menu usuarioLogueado={usuarioLogueado} setUsuarioLogueado={setUsuarioLogueado}/>
+        <Menu
+          usuarioLogueado={usuarioLogueado}
+          setUsuarioLogueado={setUsuarioLogueado}
+        />
         <main>
           <Routes>
             <Route path="/" element={<Inicio />}></Route>
@@ -40,13 +42,22 @@ function App() {
             ></Route>
             <Route path="/contacto" element={<Contacto />}></Route>
             <Route path="/sobre-nosotros" element={<QuienesSomos />}></Route>
-            <Route path="/login" element={<Login usuarioLogueado={usuarioLogueado} setUsuarioLogueado={setUsuarioLogueado} />}></Route>
+            <Route
+              path="/login"
+              element={
+                <Login
+                  usuarioLogueado={usuarioLogueado}
+                  setUsuarioLogueado={setUsuarioLogueado}
+                />
+              }
+            ></Route>
             <Route path="/registro" element={<Registro />}></Route>
             <Route
               path="/administrador"
               element={
                 <ProtectorRutas
                   usuarioLogueado={usuarioLogueado}
+                  context={{ usuarioLogueado }}
                 ></ProtectorRutas>
               }
             >
