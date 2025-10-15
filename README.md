@@ -118,7 +118,9 @@ La aplicación utiliza el tema **Slate** de Bootswatch, que proporciona:
 
 ## 👤 Autores
 
-- **Claudia Ximena Barrientos**
-- **Alessandra Borges Licciardi**
-- **Jose David Baza**
+- **Claudia Ximena Barrientos** [https://github.com/ximebarrientos]
+- **Alessandra Borges Licciardi** [https://github.com/Aleblok]
+- **Jose David Baza** [https://github.com/JoseBaza91]
 
+## ✨Link al repositorio del backend
+https://github.com/ximebarrientos/rollingCodeClubBackend
