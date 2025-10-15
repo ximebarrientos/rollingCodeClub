@@ -1,114 +1,108 @@
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { Form, Row, Button, Col } from "react-bootstrap";
-import { crearProducto, editarProducto } from "../../../helpers/queries.js";
-import Swal from "sweetalert2"; 
+import { crearProducto, editarProducto } from "../../../helpers/queries";
+import Swal from "sweetalert2";
 
 const FormularioProducto = ({
   setMostrarFormulario,
   productoEditado,
   setProductoEditado,
 }) => {
-  const [formData, setFormData] = useState({
-    nombreProducto: "",
-    precio: "",
-    categoria: "",
-    subcategoria: "",
-    descripcion: "",
-    imagen: "",
-    tallesTexto: "",
-    numerosTexto: "",
-  });
+  const [preview, setPreview] = useState("");
+  const [imagenActual, setImagenActual] = useState("");
 
-  useEffect(() => {
-    if (productoEditado) {
-      setFormData({
-        nombreProducto: productoEditado.nombreProducto || "",
-        precio: productoEditado.precio || "",
-        categoria: productoEditado.categoria || "",
-        subcategoria: productoEditado.subcategoria || "",
-        descripcion: productoEditado.descripcion || "",
-        imagen: productoEditado.imagen || "",
-        tallesTexto: productoEditado.talles
-          ? productoEditado.talles.join(", ")
-          : "",
-        numerosTexto: productoEditado.numeros
-          ? productoEditado.numeros.join(", ")
-          : "",
-      });
-    }
-  }, [productoEditado]);
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+    resetField,
+    watch, 
+  } = useForm();
 
   const subcategoriasPorCategoria = {
     Indumentaria: ["Camisetas", "Shorts", "Botines"],
     Accesorios: ["Kits de entrenamiento", "Pelotas"],
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  useEffect(() => {
+    if (productoEditado) {
+      setValue("nombreProducto", productoEditado.nombreProducto);
+      setValue("precio", productoEditado.precio);
+      setValue("categoria", productoEditado.categoria);
+      setValue("subcategoria", productoEditado.subcategoria);
+      setValue("descripcion", productoEditado.descripcion);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+      if (productoEditado.talles) {
+        setValue("tallesTexto", productoEditado.talles.join(", "));
+      }
+      if (productoEditado.numeros) {
+        setValue("numerosTexto", productoEditado.numeros.join(", "));
+      }
 
-    const formatoValido = /\.(jpg|jpeg|png|webp)$/i.test(formData.imagen);
-    if (!formatoValido) {
-      Swal.fire({
-        title: "Formato de imagen no válido",
-        text: "La imagen debe tener formato .jpg, .jpeg, .png o .webp",
-        icon: "warning",
-        confirmButtonColor: "#198754",
-      });
-      return;
-    }
-
-    const productoAEnviar = {
-      ...formData,
-      talles: formData.tallesTexto
-        ? formData.tallesTexto
-            .split(",")
-            .map((v) => v.trim().toUpperCase()) 
-            .filter((v) => v !== "")
-        : [],
-      numeros: formData.numerosTexto
-        ? formData.numerosTexto
-            .split(",")
-            .map((v) => v.trim())
-            .filter((v) => v !== "")
-        : [],
-    };
-
-    delete productoAEnviar.tallesTexto;
-    delete productoAEnviar.numerosTexto;
-
-    const respuesta = productoEditado
-      ? await editarProducto(productoEditado._id, productoAEnviar)
-      : await crearProducto(productoAEnviar);
-
-    if (respuesta && respuesta.ok) {
-      Swal.fire({
-        title: productoEditado
-          ? "Producto editado con éxito"
-          : "Producto creado con éxito",
-        text: "Los cambios fueron guardados correctamente.",
-        icon: "success",
-        confirmButtonColor: "#198754",
-        timer: 2000,
-      });
-
-      setFormData({
-        nombreProducto: "",
-        precio: "",
-        categoria: "",
-        subcategoria: "",
-        descripcion: "",
-        imagen: "",
-        tallesTexto: "",
-        numerosTexto: "",
-      });
-      setProductoEditado(null);
-      setMostrarFormulario(false);
+      setImagenActual(productoEditado.imagen);
     } else {
+      reset();
+      setPreview("");
+      setImagenActual("");
+    }
+  }, [productoEditado, setValue, reset]);
+
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+      formData.append("nombreProducto", data.nombreProducto);
+      formData.append("precio", data.precio);
+      formData.append("categoria", data.categoria);
+      formData.append("subcategoria", data.subcategoria);
+      formData.append("descripcion", data.descripcion);
+
+      if (data.tallesTexto) {
+  const tallesArray = data.tallesTexto
+    .split(",")
+    .map((t) => t.trim().toUpperCase())
+    .filter((t) => t !== "");
+  tallesArray.forEach((talle) => formData.append("talles", talle)); 
+}
+
+if (data.numerosTexto) {
+  const numerosArray = data.numerosTexto
+    .split(",")
+    .map((n) => n.trim())
+    .filter((n) => n !== "");
+  numerosArray.forEach((num) => formData.append("numeros", num));
+}
+
+      if (data.imagen && data.imagen[0]) {
+        formData.append("imagen", data.imagen[0]);
+      }
+
+      const respuesta = productoEditado
+        ? await editarProducto(productoEditado._id, formData)
+        : await crearProducto(formData);
+
+      if (respuesta && respuesta.ok) {
+        Swal.fire({
+          title: productoEditado
+            ? "Producto editado con éxito"
+            : "Producto creado con éxito",
+          icon: "success",
+          confirmButtonColor: "#198754",
+          timer: 2000,
+        });
+
+        reset();
+        setPreview("");
+        setImagenActual("");
+        setProductoEditado(null);
+        setMostrarFormulario(false);
+      } else {
+        throw new Error("Error en la respuesta del servidor");
+      }
+    } catch (error) {
+      console.error(error);
       Swal.fire({
         title: "Error al guardar el producto",
         text: "Revisa los datos e intenta nuevamente.",
@@ -122,96 +116,94 @@ const FormularioProducto = ({
     <div>
       <Row className="justify-content-center mb-5">
         <Col md={8}>
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit(onSubmit)}>
             <h2 className="text-success text-center display-5 mb-4">
               {productoEditado ? "Editar producto" : "Cargar producto"}
             </h2>
 
-            <Form.Group className="mb-3" controlId="nombreProducto">
+            <Form.Group className="mb-3">
               <Form.Label>Nombre del producto</Form.Label>
               <Form.Control
                 type="text"
-                name="nombreProducto"
                 placeholder="Ingrese el nombre del producto"
                 className="bg-primary text-light"
-                value={formData.nombreProducto}
-                onChange={handleChange}
-                required
-                minLength={3}
-                maxLength={100}
+                {...register("nombreProducto", {
+                  required: "El nombre es obligatorio",
+                  minLength: { value: 3, message: "Mínimo 3 caracteres" },
+                  maxLength: { value: 100, message: "Máximo 100 caracteres" },
+                })}
               />
+              <Form.Text className="text-danger">
+                {errors.nombreProducto?.message}
+              </Form.Text>
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="precioProducto">
+            <Form.Group className="mb-3">
               <Form.Label>Precio</Form.Label>
               <Form.Control
                 type="number"
-                name="precio"
-                placeholder="Ingrese el precio del producto"
+                placeholder="Ingrese el precio"
                 className="bg-primary text-light"
-                value={formData.precio}
-                onChange={handleChange}
-                required
-                min={50}
-                max={1000000}
+                {...register("precio", {
+                  required: "El precio es obligatorio",
+                  min: { value: 50, message: "Mínimo 50" },
+                  max: { value: 1000000, message: "Máximo 1.000.000" },
+                })}
               />
+              <Form.Text className="text-danger">
+                {errors.precio?.message}
+              </Form.Text>
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="categoriaProducto">
+            <Form.Group className="mb-3">
               <Form.Label>Categoría</Form.Label>
               <Form.Select
-                name="categoria"
                 className="bg-primary text-light"
-                value={formData.categoria}
-                onChange={(e) => {
-                  setFormData({
-                    ...formData,
-                    categoria: e.target.value,
-                    subcategoria: "",
-                    tallesTexto: "",
-                    numerosTexto: "",
-                  });
-                }}
-                required
+                {...register("categoria", {
+                  required: "Seleccione una categoría",
+                })}
               >
                 <option value="">Seleccionar</option>
                 <option value="Indumentaria">Indumentaria</option>
                 <option value="Accesorios">Accesorios</option>
               </Form.Select>
+              <Form.Text className="text-danger">
+                {errors.categoria?.message}
+              </Form.Text>
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="subcategoriaProducto">
+            <Form.Group className="mb-3">
               <Form.Label>Subcategoría</Form.Label>
               <Form.Select
-                name="subcategoria"
                 className="bg-primary text-light"
-                value={formData.subcategoria}
-                onChange={handleChange}
-                required
-                disabled={!formData.categoria}
+                {...register("subcategoria", {
+                  required: "Seleccione una subcategoría",
+                })}
+                disabled={!watch("categoria")}
               >
                 <option value="">Seleccionar</option>
-                {formData.categoria &&
-                  subcategoriasPorCategoria[formData.categoria].map((sub) => (
+                {watch("categoria") &&
+                  subcategoriasPorCategoria[watch("categoria")]?.map((sub) => (
                     <option key={sub} value={sub}>
                       {sub}
                     </option>
                   ))}
               </Form.Select>
+              <Form.Text className="text-danger">
+                {errors.subcategoria?.message}
+              </Form.Text>
             </Form.Group>
 
-            {formData.categoria === "Indumentaria" && (
+            {watch("categoria") === "Indumentaria" && (
               <>
-                {["Camisetas", "Shorts"].includes(formData.subcategoria) && (
-                  <Form.Group className="mb-3" controlId="tallesProducto">
+                {["Camisetas", "Shorts"].includes(watch("subcategoria")) && (
+                  <Form.Group className="mb-3">
                     <Form.Label>Talles (separados por coma)</Form.Label>
                     <Form.Control
                       type="text"
-                      name="tallesTexto"
                       placeholder="Ejemplo: S, M, L, XL"
                       className="bg-primary text-light"
-                      value={formData.tallesTexto}
-                      onChange={handleChange}
+                      {...register("tallesTexto")}
                     />
                     <Form.Text className="text-muted">
                       Se convertirán automáticamente a mayúsculas.
@@ -219,65 +211,93 @@ const FormularioProducto = ({
                   </Form.Group>
                 )}
 
-                {formData.subcategoria === "Botines" && (
-                  <Form.Group className="mb-3" controlId="numerosProducto">
+                {watch("subcategoria") === "Botines" && (
+                  <Form.Group className="mb-3">
                     <Form.Label>Números (separados por coma)</Form.Label>
                     <Form.Control
                       type="text"
-                      name="numerosTexto"
                       placeholder="Ejemplo: 38, 39, 40, 41"
                       className="bg-primary text-light"
-                      value={formData.numerosTexto}
-                      onChange={handleChange}
+                      {...register("numerosTexto")}
                     />
                   </Form.Group>
                 )}
               </>
             )}
 
-            <Form.Group className="mb-3" controlId="descripcionProducto">
+            <Form.Group className="mb-3">
               <Form.Label>Descripción</Form.Label>
               <Form.Control
                 as="textarea"
-                name="descripcion"
                 rows={3}
-                placeholder="Ingrese una descripción del producto"
+                placeholder="Ingrese una descripción"
                 className="bg-primary text-light"
-                value={formData.descripcion}
-                onChange={handleChange}
-                required
-                minLength={10}
-                maxLength={500}
+                {...register("descripcion", {
+                  required: "La descripción es obligatoria",
+                  minLength: { value: 10, message: "Mínimo 10 caracteres" },
+                  maxLength: { value: 500, message: "Máximo 500 caracteres" },
+                })}
               />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="imagenLocal">
-              <Form.Label>Subir imagen (opcional, futura integración)</Form.Label>
-              <Form.Control
-                type="file"
-                accept="image/png, image/jpeg, image/jpg, image/webp"
-                className="bg-primary text-light"
-                disabled
-              />
-              <Form.Text className="text-warning">
-                Próximamente podrás subir imágenes directamente desde tu equipo.
+              <Form.Text className="text-danger">
+                {errors.descripcion?.message}
               </Form.Text>
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="imagenProducto">
-              <Form.Label>URL de imagen del producto</Form.Label>
+            <Form.Group className="mb-3">
+              <Form.Label>Imagen del producto</Form.Label>
               <Form.Control
-                type="text"
-                name="imagen"
-                placeholder="Pegue la URL (https://...)"
-                className="bg-primary text-light"
-                value={formData.imagen}
-                onChange={handleChange}
-                required
+                type="file"
+                accept="image/png, image/jpeg, image/jpg, image/webp"
+                {...register("imagen", {
+                  required: !productoEditado
+                    ? "La imagen es obligatoria"
+                    : false,
+                  validate: {
+                    fileSize: (files) =>
+                      !files[0] ||
+                      files[0].size <= 2 * 1024 * 1024 ||
+                      "La imagen no debe superar los 2MB.",
+                  },
+                })}
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    setPreview(URL.createObjectURL(file));
+                  } else {
+                    setPreview("");
+                  }
+                }}
               />
+
+              {(preview || imagenActual) && (
+                <div className="mb-2 position-relative d-inline-block mt-3">
+                  <img
+                    className="rounded-3 img-preview"
+                    src={preview || imagenActual}
+                    alt="Vista previa"
+                    width={200}
+                  />
+                  <Button
+                    variant="light"
+                    size="sm"
+                    className="p-0 d-flex align-items-center justify-content-center shadow btn-img-preview"
+                    onClick={() => {
+                      setPreview("");
+                      setImagenActual("");
+                      resetField("imagen");
+                    }}
+                  >
+                    <i className="bi bi-x fs-5 text-danger"></i>
+                  </Button>
+                </div>
+              )}
+
+              <Form.Text className="text-danger">
+                {errors.imagen?.message}
+              </Form.Text>
             </Form.Group>
 
-            <div className="d-flex justify-content-between">
+            <div className="d-flex justify-content-between mt-4">
               <Button
                 variant="secondary"
                 onClick={() => {
@@ -287,7 +307,6 @@ const FormularioProducto = ({
               >
                 Cancelar
               </Button>
-
               <Button variant="success" type="submit">
                 {productoEditado ? "Guardar cambios" : "Cargar producto"}
               </Button>
