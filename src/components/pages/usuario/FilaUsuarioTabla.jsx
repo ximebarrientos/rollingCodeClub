@@ -1,9 +1,38 @@
 import { Button } from "react-bootstrap";
-import { Link } from "react-router";
 import Swal from "sweetalert2";
-import { borrarUsuario } from "../../../helpers/usuariosAPI";
+import {
+  borrarUsuario,
+  alternarEstadoUsuario,
+} from "../../../helpers/usuariosAPI";
 
 const FilaUsuarioTabla = ({ usuario, cargarUsuarios, token }) => {
+  const handleAlternarEstado = async () => {
+    const nuevoEstado = usuario.estado === "activo" ? "bloqueado" : "activo";
+
+    const respuesta = await alternarEstadoUsuario(
+      usuario._id,
+      nuevoEstado,
+      token
+    );
+
+    if (respuesta.status === 200) {
+      Swal.fire(
+        "Éxito",
+        `Usuario ${usuario.nombreUsuario} ha sido ${nuevoEstado}.`,
+        "success"
+      );
+      cargarUsuarios();
+    } else {
+      const error = await respuesta.json();
+      Swal.fire(
+        "Error",
+        error.mensaje ||
+          "No se pudo cambiar el estado del usuario. Revise la consola del backend.",
+        "error"
+      );
+    }
+  };
+
   const handleBorrarUsuario = () => {
     Swal.fire({
       title: `¿Estás seguro de borrar a ${usuario.nombreUsuario}?`,
@@ -20,7 +49,6 @@ const FilaUsuarioTabla = ({ usuario, cargarUsuarios, token }) => {
 
         if (respuesta.status === 200) {
           Swal.fire("¡Borrado!", "El usuario ha sido eliminado.", "success");
-
           cargarUsuarios();
         } else {
           Swal.fire("Error", "No se pudo eliminar el usuario.", "error");
@@ -29,12 +57,16 @@ const FilaUsuarioTabla = ({ usuario, cargarUsuarios, token }) => {
     });
   };
 
+  const getEstadoVariant = (estado) => {
+    return estado === "activo" ? "success" : "secondary";
+  };
+
   const getRolVariant = (rol) => {
     switch (rol) {
       case "administrador":
         return "danger";
       case "usuario":
-        return "success";
+        return "primary";
       default:
         return "secondary";
     }
@@ -48,20 +80,19 @@ const FilaUsuarioTabla = ({ usuario, cargarUsuarios, token }) => {
       </td>
       <td>{usuario.correoElectronico}</td>
       <td>
-        <Button size="sm" variant={getRolVariant(usuario.rol)}>
+        <Button size="sm" variant={getRolVariant(usuario.rol)} disabled>
           {usuario.rol}
         </Button>
       </td>
-
       <td>
         <div className="d-flex justify-content-center gap-2">
-          <Link
-            to={`/administrador/editar-usuario/${usuario._id}`}
-            className="btn btn-warning btn-sm"
+          <Button
+            size="sm"
+            variant={getEstadoVariant(usuario.estado)}
+            onClick={handleAlternarEstado}
           >
-            Editar
-          </Link>
-
+            {usuario.estado === "activo" ? "Activo" : "Bloqueado"}
+          </Button>
           <Button variant="danger" size="sm" onClick={handleBorrarUsuario}>
             Borrar
           </Button>

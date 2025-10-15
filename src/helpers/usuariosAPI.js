@@ -98,3 +98,31 @@ export const borrarUsuario = async (id, token) => {
   }
 };
 
+// ... (resto del código sin cambios)
+
+export const alternarEstadoUsuario = async (idUsuario, nuevoEstado, token) => {
+  try {
+    // 🎯 CORRECCIÓN: Usar 'urlUsuarios' en lugar de 'URL_BASE'
+    const respuesta = await fetch(`${urlUsuarios}/${idUsuario}/estado`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        // OJO: La cabecera del token aquí es "x-token"
+        Authorization: `Bearer ${token}`, 
+      },
+      body: JSON.stringify({ estado: nuevoEstado }),
+    });
+
+    return respuesta;
+  } catch (error) {
+    console.error(
+      "Error al comunicarse con el backend para alternar estado:",
+      error
+    );
+
+    return {
+      status: 500,
+      json: async () => ({ mensaje: "Error de conexión con el servidor." }),
+    };
+  }
+};
