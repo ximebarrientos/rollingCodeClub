@@ -1,14 +1,17 @@
 
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import "./contacto.css";
 
 
 const Contacto = () => {
+
   return (
     <Container className="my-5">
-      <h2 className="mb-4 text-center text-success display-6">
-        Información de Contacto
-      </h2>
+      <div className="d-flex justify-content-center align-items-center mb-4">
+        <h2 className="text-success display-6 me-3">
+          Información de Contacto
+        </h2>
+      </div>
       <Row className="g-4 justify-content-center cajaCardContacto">
         <Col xs={12} md={6} lg={4}>
           <a href="tel:3811234567" className="text-decoration-none">
