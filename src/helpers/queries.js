@@ -22,13 +22,20 @@ export const obtenerProducto = async (id) => {
 
 export const crearProducto = async (productoNuevo) => {
   try {
-    const token = JSON.parse(sessionStorage.getItem("userKey") || "{}").token;
+    const userData = JSON.parse(sessionStorage.getItem("userKey") || "{}");
+    const token = userData?.token;
+
+    if (!token) {
+      console.error("No se encontró token en sessionStorage");
+      return null;
+    }
+
     const respuesta = await fetch(urlProductos, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
-      body: productoNuevo, // Nota: para multipart/form-data, no se establece Content-Type
+      body: productoNuevo,
     });
     return respuesta;
   } catch (error) {
@@ -39,13 +46,20 @@ export const crearProducto = async (productoNuevo) => {
 
 export const editarProducto = async (id, productoEditado) => {
   try {
-    const token = JSON.parse(sessionStorage.getItem("userKey") || "{}").token;
+    const userData = JSON.parse(sessionStorage.getItem("userKey") || "{}");
+    const token = userData?.token;
+
+    if (!token) {
+      console.error("No se encontró token en sessionStorage");
+      return null;
+    }
+
     const respuesta = await fetch(`${urlProductos}/${id}`, {
       method: "PUT",
       headers: {
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
-      body: productoEditado, // Nota: para multipart/form-data, no se establece Content-Type
+      body: productoEditado,
     });
     return respuesta;
   } catch (error) {
@@ -56,11 +70,18 @@ export const editarProducto = async (id, productoEditado) => {
 
 export const borrarProducto = async (id) => {
   try {
-    const token = JSON.parse(sessionStorage.getItem("userKey") || "{}").token;
+    const userData = JSON.parse(sessionStorage.getItem("userKey") || "{}");
+    const token = userData?.token;
+
+    if (!token) {
+      console.error("No se encontró token en sessionStorage");
+      return null;
+    }
+
     const respuesta = await fetch(`${urlProductos}/${id}`, {
       method: "DELETE",
       headers: {
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     return respuesta;
@@ -69,4 +90,3 @@ export const borrarProducto = async (id) => {
     return null;
   }
 };
-

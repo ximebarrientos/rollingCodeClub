@@ -1,12 +1,23 @@
+import { useEffect, useState } from "react";
 import { Container, Row, Form, Button } from "react-bootstrap";
-import { crearCanchaAPI, editarCanchaAPI } from "../../../helpers/canchasAPI";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { crearCanchaAPI, editarCanchaAPI } from "../../../helpers/canchasAPI";
 import Swal from "sweetalert2";
 
-
 const FormularioCancha = ({ cancha, recargarCanchas, cerrarFormulario }) => {
-  const { register, handleSubmit, reset, setValue } = useForm();
+  const [preview, setPreview] = useState("");
+  const [imagenActual, setImagenActual] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    setError,
+    clearErrors,
+    resetField,
+    formState: { errors },
+  } = useForm();
 
   useEffect(() => {
     if (cancha && !cancha.nueva) {
@@ -14,46 +25,48 @@ const FormularioCancha = ({ cancha, recargarCanchas, cerrarFormulario }) => {
       setValue("categoriaCancha", cancha.categoriaCancha);
       setValue("precioCancha", cancha.precioCancha);
       setValue("descripcionCancha", cancha.descripcionCancha);
-      setValue("imagenCancha", cancha.imagenCancha);
-      // Para horarios, limpiar primero y marcar los seleccionados
+      setImagenActual(cancha.imagenCancha);
+
       cancha.horariosCancha.forEach((horario) => {
         setValue(`horario-${horario}`, true);
       });
     } else {
       reset();
+      setPreview("");
+      setImagenActual("");
     }
   }, [cancha, setValue, reset]);
 
   const onSubmit = async (data) => {
     const horariosSeleccionados = Object.keys(data)
-      .filter((key) => data[key] === true)
-      .filter((key) => key.includes("horario-"))
+      .filter((key) => data[key] === true && key.includes("horario-"))
       .map((key) => key.replace("horario-", ""));
 
-    // Validar que al menos un horario esté seleccionado
     if (horariosSeleccionados.length === 0) {
-      Swal.fire({
-        title: "Error",
-        text: "Debe seleccionar al menos un horario",
-        icon: "error",
-        confirmButtonColor: "#dc3545",
+      setError("horariosCancha", {
+        type: "manual",
+        message: "Debe seleccionar al menos un horario disponible.",
       });
       return;
+    } else {
+      clearErrors("horariosCancha");
     }
 
-    const canchaNueva = {
-      nombreCancha: data.nombreCancha,
-      categoriaCancha: data.categoriaCancha,
-      precioCancha: Number(data.precioCancha),
-      horariosCancha: horariosSeleccionados,
-      descripcionCancha: data.descripcionCancha,
-      imagenCancha: data.imagenCancha,
-    };
+    const formData = new FormData();
+    formData.append("nombreCancha", data.nombreCancha);
+    formData.append("categoriaCancha", data.categoriaCancha);
+    formData.append("precioCancha", data.precioCancha);
+    formData.append("descripcionCancha", data.descripcionCancha);
+    horariosSeleccionados.forEach((h) => formData.append("horariosCancha", h));
+
+    if (data.imagenCancha && data.imagenCancha[0]) {
+      formData.append("imagen", data.imagenCancha[0]);
+    }
 
     try {
       let respuesta;
       if (cancha && cancha.nueva) {
-        respuesta = await crearCanchaAPI(canchaNueva);
+        respuesta = await crearCanchaAPI(formData);
         if (respuesta && respuesta.ok) {
           Swal.fire({
             title: "Cancha creada",
@@ -61,11 +74,9 @@ const FormularioCancha = ({ cancha, recargarCanchas, cerrarFormulario }) => {
             icon: "success",
             confirmButtonColor: "#0066cc",
           });
-        } else {
-          throw new Error("Error al crear la cancha");
-        }
+        } else throw new Error("Error al crear la cancha");
       } else if (cancha) {
-        respuesta = await editarCanchaAPI(cancha._id, canchaNueva);
+        respuesta = await editarCanchaAPI(cancha._id, formData);
         if (respuesta && respuesta.ok) {
           Swal.fire({
             title: "Cancha editada",
@@ -73,11 +84,12 @@ const FormularioCancha = ({ cancha, recargarCanchas, cerrarFormulario }) => {
             icon: "success",
             confirmButtonColor: "#0066cc",
           });
-        } else {
-          throw new Error("Error al editar la cancha");
-        }
+        } else throw new Error("Error al editar la cancha");
       }
+
       reset();
+      setPreview("");
+      setImagenActual("");
       recargarCanchas();
       cerrarFormulario();
     } catch (error) {
@@ -90,35 +102,39 @@ const FormularioCancha = ({ cancha, recargarCanchas, cerrarFormulario }) => {
       });
     }
   };
+
   return (
     <Container>
       <Row className="justify-content-center mb-5">
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <h2 className="text-info text-center display-5">{cancha && cancha.nueva ? "Cargar Cancha" : "Editar Cancha"}</h2>
+          <h2 className="text-info text-center display-5 mb-4">
+            {cancha && cancha.nueva ? "Cargar Cancha" : "Editar Cancha"}
+          </h2>
+
           <Form.Group className="mb-3" controlId="nombreCancha">
             <Form.Label>Nombre de Cancha</Form.Label>
             <Form.Control
               type="text"
               placeholder="Ingrese el nombre de la cancha"
               className="bg-primary text-light"
-              required
-              minLength={2}
-              maxLength={100}
               {...register("nombreCancha", {
-                required: true,
-                minLength: 2,
-                maxLength: 100,
+                required: "El nombre es obligatorio",
+                minLength: { value: 2, message: "Mínimo 2 caracteres" },
+                maxLength: { value: 100, message: "Máximo 100 caracteres" },
               })}
             />
             <Form.Text className="text-danger">
-              El nombre de la cancha es obligatorio
+              {errors.nombreCancha?.message}
             </Form.Text>
           </Form.Group>
+
           <Form.Group className="mb-3" controlId="categoriaCancha">
             <Form.Label>Categoría</Form.Label>
             <Form.Select
               className="bg-primary text-light"
-              {...register("categoriaCancha", { required: true })}
+              {...register("categoriaCancha", {
+                required: "Seleccione una categoría",
+              })}
             >
               <option value="">Seleccionar</option>
               <option value="Fútbol 5 techada">Fútbol 5 techada</option>
@@ -127,29 +143,31 @@ const FormularioCancha = ({ cancha, recargarCanchas, cerrarFormulario }) => {
               <option value="Fútbol 7 descubierta">Fútbol 7 descubierta</option>
             </Form.Select>
             <Form.Text className="text-danger">
-              La categoría de la cancha es obligatoria
+              {errors.categoriaCancha?.message}
             </Form.Text>
           </Form.Group>
+
           <Form.Group className="mb-3" controlId="precioCancha">
             <Form.Label>Precio</Form.Label>
             <Form.Control
               type="number"
-              placeholder="Ingrese el precio de la cancha"
+              placeholder="Ingrese el precio"
               className="bg-primary text-light"
-              step={1}
-              required
-              min={50}
-              max={1000000}
-              {...register("precioCancha", { required: true })}
+              {...register("precioCancha", {
+                required: "El precio es obligatorio",
+                min: { value: 1000, message: "Mínimo $1000" },
+                max: { value: 1000000, message: "Máximo $1.000.000" },
+              })}
             />
             <Form.Text className="text-danger">
-              El precio de la cancha es obligatorio
+              {errors.precioCancha?.message}
             </Form.Text>
           </Form.Group>
+
           <Form.Group className="mb-3" controlId="horariosCancha">
-            <Form.Label>Horarios</Form.Label>
+            <Form.Label>Horarios disponibles</Form.Label>
             <div className="d-flex flex-wrap gap-3">
-               {["18:30-20:00", "20:00-21:30", "21:30-23:00", "23:30-00:30"].map(
+              {["18:30-20:00", "20:00-21:30", "21:30-23:00", "23:30-00:30"].map(
                 (h) => (
                   <Form.Check
                     key={h}
@@ -157,26 +175,78 @@ const FormularioCancha = ({ cancha, recargarCanchas, cerrarFormulario }) => {
                     id={`horario-${h}`}
                     label={h}
                     {...register(`horario-${h}`)}
+                    onChange={() => clearErrors("horariosCancha")}
                   />
                 )
               )}
             </div>
-            <Form.Text className="text-danger">
-              Debe seleccionar al menos un horario
-            </Form.Text>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="imagenCancha">
-            <Form.Label>URL de la Imagen</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Ingrese la URL de la imagen de la cancha"
-              className="bg-primary text-light"
-              {...register("imagenCancha", { required: true })}
+
+            <input
+              type="hidden"
+              {...register("horariosCancha")}
+              aria-invalid={!!errors.horariosCancha}
             />
+
             <Form.Text className="text-danger">
-              La imagen de la cancha es obligatoria
+              {errors.horariosCancha?.message}
             </Form.Text>
           </Form.Group>
+
+          <Form.Group className="mb-3" controlId="imagenCancha">
+            <Form.Label>Imagen de la cancha</Form.Label>
+            <Form.Control
+              type="file"
+              accept="image/png, image/jpeg, image/jpg, image/webp"
+              {...register("imagenCancha", {
+                required: !cancha || cancha.nueva
+                  ? "La imagen es obligatoria"
+                  : false,
+                validate: {
+                  fileSize: (files) =>
+                    !files[0] ||
+                    files[0].size <= 2 * 1024 * 1024 ||
+                    "La imagen no debe superar los 2MB.",
+                },
+              })}
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (file) {
+                  setPreview(URL.createObjectURL(file));
+                  clearErrors("imagenCancha");
+                } else {
+                  setPreview("");
+                }
+              }}
+            />
+
+            {(preview || imagenActual) && (
+              <div className="mb-2 position-relative d-inline-block mt-3">
+                <img
+                  className="rounded-3 img-preview"
+                  src={preview || imagenActual}
+                  alt="Imagen"
+                  width={220}
+                />
+                <Button
+                  variant="light"
+                  size="sm"
+                  className="p-0 d-flex align-items-center justify-content-center shadow btn-img-preview"
+                  onClick={() => {
+                    setPreview("");
+                    setImagenActual("");
+                    resetField("imagenCancha");
+                  }}
+                >
+                  <i className="bi bi-x fs-5 text-danger"></i>
+                </Button>
+              </div>
+            )}
+
+            <Form.Text className="text-danger">
+              {errors.imagenCancha?.message}
+            </Form.Text>
+          </Form.Group>
+
           <Form.Group className="mb-3" controlId="descripcionCancha">
             <Form.Label>Descripción</Form.Label>
             <Form.Control
@@ -184,14 +254,17 @@ const FormularioCancha = ({ cancha, recargarCanchas, cerrarFormulario }) => {
               rows={3}
               placeholder="Ingrese una descripción de la cancha"
               className="bg-primary text-light"
-              minLength={10}
-              maxLength={500}
-              {...register("descripcionCancha", { required: true })}
+              {...register("descripcionCancha", {
+                required: "La descripción es obligatoria",
+                minLength: { value: 10, message: "Mínimo 10 caracteres" },
+                maxLength: { value: 500, message: "Máximo 500 caracteres" },
+              })}
             />
             <Form.Text className="text-danger">
-              La descripción de la cancha es obligatoria
+              {errors.descripcionCancha?.message}
             </Form.Text>
           </Form.Group>
+
           <div className="d-grid">
             <Button variant="info" type="submit">
               {cancha && cancha.nueva ? "Cargar cancha" : "Editar cancha"}
