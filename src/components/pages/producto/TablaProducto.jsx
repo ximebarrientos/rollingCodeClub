@@ -5,7 +5,6 @@ import {
   listarProductos,
   listarProductosPaginados,
 } from "../../../helpers/queries.js";
-import { set } from "react-hook-form";
 
 const TablaProducto = ({ setMostrarFormulario, setProductoEditado }) => {
   const [productos, setProductos] = useState([]);
