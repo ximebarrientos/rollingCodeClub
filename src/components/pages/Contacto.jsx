@@ -2,6 +2,7 @@
 import { Container, Row, Col, Card, Button, Modal, Form } from "react-bootstrap";
 import "./contacto.css";
 import { useState } from "react";
+import Swal from 'sweetalert2';
 
 const Contacto = () => {
   const [showModal, setShowModal] = useState(false);
@@ -25,7 +26,13 @@ const Contacto = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Datos del formulario:', formData);
-    alert('Mensaje enviado exitosamente');
+    Swal.fire({
+      title: 'Mensaje enviado exitosamente',
+      text: 'Gracias por contactarnos. Te responderemos pronto.',
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: '#198754'
+    });
     setFormData({
       nombreContacto: '',
       mailContacto: '',
@@ -40,7 +47,7 @@ const Contacto = () => {
         <h2 className="text-success display-6 me-3">
           Información de Contacto
         </h2>
-        <Button variant="outline-success" onClick={handleShow}>
+        <Button variant="success" onClick={handleShow}>
           Contactanos
         </Button>
       </div>
@@ -146,6 +153,7 @@ const Contacto = () => {
                 name="nombreContacto"
                 value={formData.nombreContacto}
                 onChange={handleChange}
+                className="bg-primary text-white"
                 required
               />
             </Form.Group>
@@ -157,6 +165,7 @@ const Contacto = () => {
                 name="mailContacto"
                 value={formData.mailContacto}
                 onChange={handleChange}
+                className="bg-primary text-white"
                 required
               />
             </Form.Group>
@@ -169,10 +178,11 @@ const Contacto = () => {
                 name="mensajeContacto"
                 value={formData.mensajeContacto}
                 onChange={handleChange}
+                className="bg-primary text-white"
                 required
               />
             </Form.Group>
-            <Button variant="primary" type="submit">
+            <Button variant="success" type="submit">
               Enviar
             </Button>
           </Form>
