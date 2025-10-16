@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Col, Container, Row, ListGroup } from "react-bootstrap";
 import TablaProducto from "./producto/TablaProducto";
@@ -6,6 +5,7 @@ import TablaUsuario from "./usuario/TablaUsuario";
 import TablaCancha from "./cancha/TablaCancha";
 import TablaTurnos from "./turnos/TablaTurnos";
 import FormularioProducto from "./producto/FormularioProducto";
+import TablaPedidos from "./pedidos/TablaPedidos";
 
 const Administrador = () => {
   const [seleccion, setSeleccion] = useState("productos");
@@ -37,6 +37,9 @@ const Administrador = () => {
         return <TablaCancha />;
       case "turnos":
         return <TablaTurnos />;
+      case "pedidos":
+        return <TablaPedidos />;
+
       default:
         return null;
     }
@@ -78,6 +81,13 @@ const Administrador = () => {
               onClick={() => setSeleccion("turnos")}
             >
               Turnos Ocupados
+            </ListGroup.Item>
+            <ListGroup.Item
+              action
+              active={seleccion === "pedidos"}
+              onClick={() => setSeleccion("pedidos")}
+            >
+              Pedidos de Compra
             </ListGroup.Item>
           </ListGroup>
         </Col>
