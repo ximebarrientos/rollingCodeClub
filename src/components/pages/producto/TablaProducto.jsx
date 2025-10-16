@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react";
 import { Table, Button } from "react-bootstrap";
 import FilaProductoTabla from "./FilaProductoTabla";
-import { listarProductos } from "../../../helpers/queries.js";
+import { listarProductos, listarProductosPaginados } from "../../../helpers/queries.js";
+import { set } from "react-hook-form";
 
 const TablaProducto = ({ setMostrarFormulario, setProductoEditado }) => {
   const [productos, setProductos] = useState([]);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(9);
+  const [totalPage, setTotalPage] = useState(1);
 
   const obtenerProductos = async () => {
     try {
-      const respuesta = await listarProductos();
+      const respuesta = await listarProductosPaginados(page, limit);
       if (respuesta && respuesta.ok) {
         const datos = await respuesta.json();
-        setProductos(datos);
+        setProductos(datos.productos);
+        setTotalPage(datos.totalPaginas);
       } else {
         console.error("Error al obtener los productos");
       }
@@ -73,6 +78,13 @@ const TablaProducto = ({ setMostrarFormulario, setProductoEditado }) => {
           )}
         </tbody>
       </Table>
+      
+      <div className= "d-flex justify-content-center gap-1 my-3 ">
+        <Button variant= "secondary">Anterior</Button>
+        <Button>1</Button>
+        <Button variant= "secondary">Siguiente</Button>
+
+      </div>
     </>
   );
 };

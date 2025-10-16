@@ -90,3 +90,13 @@ export const borrarProducto = async (id) => {
     return null;
   }
 };
+
+export const listarProductosPaginados = async (pagina = 1 , limite = 9) => {
+  try {
+    const respuesta = await fetch(`${urlProductos}/paginacion?pagina=${pagina}&limite=${limite}`);
+    return respuesta;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};

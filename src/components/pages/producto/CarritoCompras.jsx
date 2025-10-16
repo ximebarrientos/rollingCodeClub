@@ -9,7 +9,7 @@ import {
   Alert,
 } from "react-bootstrap";
 import Swal from "sweetalert2";
-import { crearOrdenCarritoAPI } from "../../../helpers/queriesPagos.js"; // 👈 ruta correcta
+import { crearOrdenCarritoAPI } from "../../../helpers/queriesPagos.js";
 
 const CarritoCompras = () => {
   const [carrito, setCarrito] = useState(
@@ -97,7 +97,6 @@ const CarritoCompras = () => {
     });
   };
 
-  // 🧾 Integración con Mercado Pago
   const handlePagar = async () => {
     if (carrito.length === 0) {
       Swal.fire({
@@ -110,10 +109,9 @@ const CarritoCompras = () => {
       return;
     }
 
-    // ✅ Adaptado exactamente a tu estructura del localStorage
     const productosFormateados = carrito.map((item) => ({
       id: item._id,
-      quantity: item.cantidad, // ya existe cantidad en tus objetos
+      quantity: item.cantidad,
     }));
 
     try {
@@ -121,7 +119,6 @@ const CarritoCompras = () => {
 
       if (respuesta && respuesta.status === 201) {
         const data = await respuesta.json();
-        // Redirigir al checkout de Mercado Pago
         window.location.href = data.init_point;
       } else {
         const errorData = await respuesta.json();
