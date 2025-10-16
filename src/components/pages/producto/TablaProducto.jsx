@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { Table, Button } from "react-bootstrap";
 import FilaProductoTabla from "./FilaProductoTabla";
-import { listarProductos, listarProductosPaginados } from "../../../helpers/queries.js";
+import {
+  listarProductos,
+  listarProductosPaginados,
+} from "../../../helpers/queries.js";
 import { set } from "react-hook-form";
 
 const TablaProducto = ({ setMostrarFormulario, setProductoEditado }) => {
@@ -27,7 +30,7 @@ const TablaProducto = ({ setMostrarFormulario, setProductoEditado }) => {
 
   useEffect(() => {
     obtenerProductos();
-  }, []);
+  }, [page]);
 
   return (
     <>
@@ -36,8 +39,8 @@ const TablaProducto = ({ setMostrarFormulario, setProductoEditado }) => {
         <Button
           variant="outline-success"
           onClick={() => {
-            setProductoEditado(null); 
-            setMostrarFormulario(true); 
+            setProductoEditado(null);
+            setMostrarFormulario(true);
           }}
         >
           Agregar Producto (+)
@@ -62,7 +65,7 @@ const TablaProducto = ({ setMostrarFormulario, setProductoEditado }) => {
             productos.map((producto, index) => (
               <FilaProductoTabla
                 key={producto._id}
-                index={index + 1}
+                index={(page - 1) * limit + index + 1}
                 producto={producto}
                 obtenerProductos={obtenerProductos}
                 setMostrarFormulario={setMostrarFormulario}
@@ -78,12 +81,23 @@ const TablaProducto = ({ setMostrarFormulario, setProductoEditado }) => {
           )}
         </tbody>
       </Table>
-      
-      <div className= "d-flex justify-content-center gap-1 my-3 ">
-        <Button variant= "secondary">Anterior</Button>
-        <Button>1</Button>
-        <Button variant= "secondary">Siguiente</Button>
 
+      <div className="d-flex justify-content-center align-items-center gap-2 my-3 flex-wrap">
+        <Button
+          variant="secondary"
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+        >
+          Anterior
+        </Button>
+        <div className="mx-3 fw-semibold">
+          Página {page} de {totalPage}
+        </div>
+        <Button
+          variant="secondary"
+          onClick={() => setPage((prev) => Math.min(prev + 1, totalPage))}
+        >
+          Siguiente
+        </Button>
       </div>
     </>
   );
