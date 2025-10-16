@@ -9,6 +9,7 @@ import {
   Alert,
 } from "react-bootstrap";
 import Swal from "sweetalert2";
+import { crearOrdenCarritoAPI } from "../../../helpers/queriesPagos.js"; // 👈 ruta correcta
 
 const CarritoCompras = () => {
   const [carrito, setCarrito] = useState(
@@ -96,17 +97,51 @@ const CarritoCompras = () => {
     });
   };
 
-  const finalizarCompra = () => {
-    if (carrito.length === 0) return;
-    Swal.fire({
-      icon: "success",
-      title: "Compra realizada 🛍️",
-      text: "Gracias por tu compra.",
-      background: "#212529",
-      color: "#fff",
-      confirmButtonColor: "#28a745",
-    });
-    setCarrito([]);
+  // 🧾 Integración con Mercado Pago
+  const handlePagar = async () => {
+    if (carrito.length === 0) {
+      Swal.fire({
+        icon: "info",
+        title: "Tu carrito está vacío",
+        text: "Agrega productos antes de continuar.",
+        background: "#212529",
+        color: "#fff",
+      });
+      return;
+    }
+
+    // ✅ Adaptado exactamente a tu estructura del localStorage
+    const productosFormateados = carrito.map((item) => ({
+      id: item._id,
+      quantity: item.cantidad, // ya existe cantidad en tus objetos
+    }));
+
+    try {
+      const respuesta = await crearOrdenCarritoAPI(productosFormateados);
+
+      if (respuesta && respuesta.status === 201) {
+        const data = await respuesta.json();
+        // Redirigir al checkout de Mercado Pago
+        window.location.href = data.init_point;
+      } else {
+        const errorData = await respuesta.json();
+        Swal.fire({
+          icon: "error",
+          title: "Error al procesar el pago",
+          text: errorData.mensaje || "Intente nuevamente en unos minutos.",
+          background: "#212529",
+          color: "#fff",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error de conexión",
+        text: "No se pudo conectar con el servidor.",
+        background: "#212529",
+        color: "#fff",
+      });
+    }
   };
 
   return (
@@ -202,7 +237,7 @@ const CarritoCompras = () => {
                   <Button variant="outline-danger" onClick={vaciarCarrito}>
                     Vaciar carrito
                   </Button>
-                  <Button variant="success" size="lg" onClick={finalizarCompra}>
+                  <Button variant="success" size="lg" onClick={handlePagar}>
                     Pagar
                   </Button>
                 </div>

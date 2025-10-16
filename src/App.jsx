@@ -14,8 +14,8 @@ import Registro from "./components/pages/usuario/Registro.jsx";
 import CarritoCompras from "./components/pages/producto/CarritoCompras.jsx";
 import ReservarTurnos from "./components/pages/turnos/ReservarTurnos.jsx";
 import ProtectorRutas from "./components/routes/ProtectorRutas.jsx";
+import PagoExitosoMercadoPago from "./components/pages/producto/PagoExitosoMercadoPago.jsx";
 import { useEffect, useState } from "react";
-
 
 function App() {
   const usuarioSessionStorage =
@@ -27,33 +27,52 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <Menu usuarioLogueado={usuarioLogueado} setUsuarioLogueado={setUsuarioLogueado}/>
+        <Menu
+          usuarioLogueado={usuarioLogueado}
+          setUsuarioLogueado={setUsuarioLogueado}
+        />
         <main>
           <Routes>
-            <Route path="/" element={<Inicio />}></Route>
-            <Route path="/reserva" element={<ReservarTurnos />}></Route>
-            <Route path="/turnos" element={<FormularioTurnos />}></Route>
-            <Route path="/tienda" element={<Tienda />}></Route>
+            <Route path="/" element={<Inicio />} />
+            <Route path="/reserva" element={<ReservarTurnos />} />
+            <Route path="/turnos" element={<FormularioTurnos />} />
+            <Route path="/tienda" element={<Tienda />} />
+            <Route path="/tiendaAccesorios" element={<TiendaAccesorios />} />
+            <Route path="/contacto" element={<Contacto />} />
+            <Route path="/sobre-nosotros" element={<QuienesSomos />} />
             <Route
-              path="/tiendaAccesorios"
-              element={<TiendaAccesorios />}
-            ></Route>
-            <Route path="/contacto" element={<Contacto />}></Route>
-            <Route path="/sobre-nosotros" element={<QuienesSomos />}></Route>
-            <Route path="/login" element={<Login usuarioLogueado={usuarioLogueado} setUsuarioLogueado={setUsuarioLogueado} />}></Route>
-            <Route path="/registro" element={<Registro />}></Route>
+              path="/login"
+              element={
+                <Login
+                  usuarioLogueado={usuarioLogueado}
+                  setUsuarioLogueado={setUsuarioLogueado}
+                />
+              }
+            />
+            <Route path="/registro" element={<Registro />} />
             <Route
               path="/administrador"
               element={
-                <ProtectorRutas
-                  usuarioLogueado={usuarioLogueado}
-                ></ProtectorRutas>
+                <ProtectorRutas usuarioLogueado={usuarioLogueado} />
               }
             >
-              <Route index element={<Administrador />}></Route>
+              <Route index element={<Administrador />} />
             </Route>
             <Route path="/carrito" element={<CarritoCompras />} />
-            <Route path="*" element={<Error404 />}></Route>
+            <Route
+              path="/pago/exitoso"
+              element={<PagoExitosoMercadoPago />}
+            />
+            <Route
+              path="/pago/fallido"
+              element={<h2 className='text-center mt-5 text-danger'>Pago fallido 😞</h2>}
+            />
+            <Route
+              path="/pago/pendiente"
+              element={<h2 className='text-center mt-5 text-warning'>Pago pendiente ⏳</h2>}
+            />
+
+            <Route path="*" element={<Error404 />} />
           </Routes>
         </main>
         <Footer />
