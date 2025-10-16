@@ -1,9 +1,38 @@
 
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Modal, Form } from "react-bootstrap";
 import "./contacto.css";
-
+import { useState } from "react";
 
 const Contacto = () => {
+  const [showModal, setShowModal] = useState(false);
+
+  const [formData, setFormData] = useState({
+    nombreContacto: '',
+    mailContacto: '',
+    mensajeContacto: ''
+  });
+
+  const handleClose = () => setShowModal(false);
+  const handleShow = () => setShowModal(true);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Datos del formulario:', formData);
+    alert('Mensaje enviado exitosamente');
+    setFormData({
+      nombreContacto: '',
+      mailContacto: '',
+      mensajeContacto: ''
+    });
+    handleClose();
+  };
 
   return (
     <Container className="my-5">
@@ -11,6 +40,9 @@ const Contacto = () => {
         <h2 className="text-success display-6 me-3">
           Información de Contacto
         </h2>
+        <Button variant="outline-success" onClick={handleShow}>
+          Contactanos
+        </Button>
       </div>
       <Row className="g-4 justify-content-center cajaCardContacto">
         <Col xs={12} md={6} lg={4}>
@@ -100,6 +132,52 @@ const Contacto = () => {
           </Card>
         </Col>
       </Row>
+      <Modal show={showModal} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Contactanos</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3" controlId="nombreContacto">
+              <Form.Label>Nombre</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Ingresa tu nombre"
+                name="nombreContacto"
+                value={formData.nombreContacto}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="mailContacto">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Ingresa tu email"
+                name="mailContacto"
+                value={formData.mailContacto}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="mensajeContacto">
+              <Form.Label>Mensaje</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                placeholder="Ingresa tu mensaje"
+                name="mensajeContacto"
+                value={formData.mensajeContacto}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Button variant="primary" type="submit">
+              Enviar
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
     </Container>
   );
 };
