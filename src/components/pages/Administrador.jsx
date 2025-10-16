@@ -5,10 +5,8 @@ import TablaUsuario from "./usuario/TablaUsuario";
 import TablaCancha from "./cancha/TablaCancha";
 import TablaTurnos from "./turnos/TablaTurnos";
 import FormularioProducto from "./producto/FormularioProducto";
-import { useOutletContext } from "react-router";
 
-const Administrador = () => {
-  const { usuarioLogueado } = useOutletContext();
+const Administrador = ({ usuarioLogueado }) => {
   const [seleccion, setSeleccion] = useState("productos");
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [productoEditado, setProductoEditado] = useState(null);

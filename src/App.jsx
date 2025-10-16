@@ -11,6 +11,7 @@ import Administrador from "./components/pages/Administrador.jsx";
 import Error404 from "./components/pages/Error404.jsx";
 import Login from "./components/pages/Login.jsx";
 import Registro from "./components/pages/usuario/Registro.jsx";
+import PerfilUsuario from "./components/pages/usuario/PerfilUsuario.jsx";
 import CarritoCompras from "./components/pages/producto/CarritoCompras.jsx";
 import ReservarTurnos from "./components/pages/turnos/ReservarTurnos.jsx";
 import ProtectorRutas from "./components/routes/ProtectorRutas.jsx";
@@ -52,13 +53,27 @@ function App() {
               }
             ></Route>
             <Route path="/registro" element={<Registro />}></Route>
+
+            <Route
+              path="/perfil"
+              element={
+                <ProtectorRutas usuarioLogueado={usuarioLogueado}>
+                  <PerfilUsuario
+                    usuarioLogueado={usuarioLogueado}
+                    setUsuarioLogueado={setUsuarioLogueado}
+                  />
+                </ProtectorRutas>
+              }
+            />
             <Route
               path="/administrador"
               element={
                 <ProtectorRutas
                   usuarioLogueado={usuarioLogueado}
-                  context={{ usuarioLogueado }}
-                ></ProtectorRutas>
+                  rol="administrador"
+                >
+                  <Administrador usuarioLogueado={usuarioLogueado} />
+                </ProtectorRutas>
               }
             >
               <Route index element={<Administrador />}></Route>

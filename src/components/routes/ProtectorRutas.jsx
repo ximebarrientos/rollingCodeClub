@@ -1,15 +1,15 @@
-import { Navigate, Outlet } from "react-router";
+import { Navigate } from "react-router";
 
-const ProtectorRutas = ({ usuarioLogueado, context }) => {
-  if (
-    !usuarioLogueado.token ||
-    !usuarioLogueado.rol ||
-    usuarioLogueado.rol.toLowerCase() !== "administrador"
-  ) {
-    return <Navigate to={"/"} />;
+const ProtectorRutas = ({ children, usuarioLogueado, rol = null }) => {
+  if (!usuarioLogueado || !usuarioLogueado.token) {
+    return <Navigate to="/login" replace />;
   }
 
-  return <Outlet context={context} />;
+  if (rol && usuarioLogueado.rol !== rol) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
 };
 
 export default ProtectorRutas;

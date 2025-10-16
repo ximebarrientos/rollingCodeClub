@@ -4,7 +4,7 @@ import { Form, Button, Container } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { login } from "../../helpers/usuariosAPI";
 
-const Login = ({setUsuarioLogueado}) => {
+const Login = ({ setUsuarioLogueado }) => {
   const {
     register,
     handleSubmit,
@@ -19,18 +19,22 @@ const Login = ({setUsuarioLogueado}) => {
       const respuesta = await login(user);
       if (respuesta.status === 200) {
         const { usuario, token } = await respuesta.json();
+        console.log("Datos de usuario recibidos del Backend:", usuario);
+        console.log("Token recibido:", token);
         setUsuarioLogueado({
-          id: usuario.id,
-          nombreUsuario: usuario.nombreUsuario,
-          rol: usuario.rol,
+          ...usuario,
           token: token,
         });
+        sessionStorage.setItem(
+          "userKey",
+          JSON.stringify({ ...usuario, token: token })
+        );
         Swal.fire({
           title: "Login exitoso",
           text: `Bienvenido ${usuario.nombreUsuario}`,
           icon: "success",
         });
-        if (usuario.rol && usuario.rol.toLowerCase() === 'administrador') {
+        if (usuario.rol && usuario.rol.toLowerCase() === "administrador") {
           navegacion("/administrador");
         } else {
           navegacion("/");
