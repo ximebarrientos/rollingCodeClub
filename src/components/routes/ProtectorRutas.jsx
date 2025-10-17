@@ -1,8 +1,26 @@
-import { Navigate } from "react-router";
+import { Navigate, useLocation, useNavigate } from "react-router";
+import { useEffect } from "react";
+import Swal from "sweetalert2";
 
 const ProtectorRutas = ({ children, usuarioLogueado, rol = null }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if ((!usuarioLogueado || !usuarioLogueado.token) && location.pathname === "/reserva") {
+      Swal.fire({
+        title: "Inicio de sesión requerido",
+        text: "Para reservar turnos necesitas estar logueado primero",
+        icon: "info",
+        confirmButtonText: "Ir al login"
+      }).then(() => {
+        navigate("/login");
+      });
+    }
+  }, [usuarioLogueado, location.pathname, navigate]);
+
   if (!usuarioLogueado || !usuarioLogueado.token) {
-    return <Navigate to="/login" replace />;
+    return location.pathname === "/reserva" ? null : <Navigate to="/login" replace />;
   }
 
   if (rol && usuarioLogueado.rol !== rol) {
