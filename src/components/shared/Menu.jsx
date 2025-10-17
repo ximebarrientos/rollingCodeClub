@@ -64,7 +64,7 @@ export default function Menu({ usuarioLogueado, setUsuarioLogueado }) {
               <>
                 {usuarioLogueado.rol === "administrador" ? (
                   <>
-                    <NavLink to="/perfil" >
+                    <NavLink to="/perfil">
                       <i className="bi bi-person fs-4 text-success"></i>
                     </NavLink>
                     <NavLink className="nav-link" to={"/administrador"}>
@@ -104,7 +104,7 @@ export default function Menu({ usuarioLogueado, setUsuarioLogueado }) {
                 <Button
                   as={Link}
                   to={"/registro"}
-                  variant="primary"
+                  variant="success"
                   size="sm"
                   className="py-2"
                 >

@@ -57,12 +57,13 @@ const Registro = () => {
   return (
     <div className="container">
       <Container className="my-5 px-4 border border-1 rounded-4 border-secondary">
-        <h2 className="text-center my-4">Crear Cuenta</h2>
+        <h2 className="text-center my-4 text-success">Crear Cuenta</h2>
         <Form onSubmit={handleSubmit(submitRegistro)}>
           <Row className="mb-3">
             <Form.Group as={Col} md="4" controlId="formNombreUsuario">
               <Form.Label>Usuario</Form.Label>
               <Form.Control
+                className="bg-primary text-white"
                 {...register("nombreUsuario", {
                   required: "El nombre de usuario es obligatorio",
                   minLength: { value: 4, message: "Mínimo 4 caracteres" },
@@ -77,6 +78,7 @@ const Registro = () => {
             <Form.Group as={Col} md="4" controlId="formNombre">
               <Form.Label>Nombre Completo</Form.Label>
               <Form.Control
+                className="bg-primary text-white"
                 {...register("nombre", {
                   required: "El nombre es obligatorio",
                 })}
@@ -89,6 +91,7 @@ const Registro = () => {
             <Form.Group as={Col} md="4" controlId="formApellido">
               <Form.Label>Apellido</Form.Label>
               <Form.Control
+                className="bg-primary text-white"
                 {...register("apellido", {
                   required: "El apellido es obligatorio",
                 })}
@@ -103,6 +106,7 @@ const Registro = () => {
             <Form.Label>Fecha de Nacimiento</Form.Label>
             <Form.Group as={Col} md="4" controlId="formFechaAnio">
               <Form.Select
+                className="bg-primary text-white"
                 {...register("anio", {
                   required: "Seleccionar Año es obligatorio",
                 })}
@@ -177,6 +181,7 @@ const Registro = () => {
 
             <Form.Group as={Col} md="4" controlId="formFechaMes">
               <Form.Select
+                className="bg-primary text-white"
                 {...register("mes", {
                   required: "Seleccionar Mes es obligatorio",
                 })}
@@ -202,6 +207,7 @@ const Registro = () => {
 
             <Form.Group as={Col} md="4" controlId="formFechaDia">
               <Form.Select
+                className="bg-primary text-white"
                 {...register("dia", {
                   required: "Seleccionar Día es obligatorio",
                 })}
@@ -249,6 +255,7 @@ const Registro = () => {
             <Form.Group as={Col} md="6" controlId="formGenero">
               <Form.Label>Género</Form.Label>
               <Form.Select
+                className="bg-primary text-white"
                 {...register("genero", {
                   required: "El género es obligatorio",
                 })}
@@ -273,6 +280,7 @@ const Registro = () => {
               <Form.Label>Celular</Form.Label>
               <Form.Control
                 type="number"
+                className="bg-primary text-white"
                 {...register("celular", {
                   required: "El celular es obligatorio",
                   pattern: {
@@ -292,6 +300,7 @@ const Registro = () => {
             <Form.Control
               type="email"
               placeholder="correo@rollinCodeClub.com"
+              className="bg-primary text-white"
               {...register("correoElectronico", {
                 required: "El email es obligatorio",
                 pattern: {
@@ -312,6 +321,7 @@ const Registro = () => {
               <Form.Control
                 type="password"
                 placeholder="Crea una contraseña"
+                className="bg-primary text-white"
                 {...register("password", {
                   required: "La contraseña es obligatoria",
                   pattern: {
@@ -332,6 +342,7 @@ const Registro = () => {
               <Form.Control
                 type="password"
                 placeholder="Confirma la contraseña"
+                className="bg-primary text-white"
                 {...register("repetirContrasenia", {
                   required: "Confirmar la contraseña es obligatorio",
                   validate: (value) =>
@@ -345,7 +356,7 @@ const Registro = () => {
           </Row>
 
           <div className="d-grid my-4 ">
-            <Button variant="primary" type="submit" size="lg">
+            <Button variant="success" type="submit" size="lg">
               Registrarse
             </Button>
           </div>
