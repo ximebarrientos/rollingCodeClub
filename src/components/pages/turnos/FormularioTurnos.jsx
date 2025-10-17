@@ -52,7 +52,7 @@ const FormularioTurnos = ({
           fecha: fechaConZonaHoraria,
           horario: data.horario,
           canchaId: cancha._id,
-          usuarioId: usuarioLogueado._id,
+          usuarioId: usuarioLogueado.id,
           usuarioNombre: usuarioLogueado.nombreUsuario
       };
 
