@@ -9,7 +9,8 @@ const FormularioTurnos = ({
   cancha,
   turnos,
   refreshData,
-  onTurnoReservado
+  onTurnoReservado,
+  usuarioLogueado
 }) => {
   const {
     register,
@@ -50,7 +51,9 @@ const FormularioTurnos = ({
       const nuevoTurno = {
           fecha: fechaConZonaHoraria,
           horario: data.horario,
-          canchaId: cancha._id
+          canchaId: cancha._id,
+          usuarioId: usuarioLogueado._id,
+          usuarioNombre: usuarioLogueado.nombreUsuario
       };
 
       console.log("Fecha original:", data.fecha);
