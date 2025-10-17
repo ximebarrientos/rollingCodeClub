@@ -6,7 +6,18 @@ import {
 } from "../../../helpers/usuariosAPI";
 
 const FilaUsuarioTabla = ({ usuario, cargarUsuarios, token }) => {
+  const esAdmin = usuario.rol && usuario.rol.toLowerCase() === "administrador";
+
   const handleAlternarEstado = async () => {
+    if (esAdmin) {
+      Swal.fire(
+        "Prohibido",
+        "No puedes bloquear o activar a otro administrador.",
+        "warning"
+      );
+      return;
+    }
+
     const nuevoEstado = usuario.estado === "activo" ? "bloqueado" : "activo";
 
     const respuesta = await alternarEstadoUsuario(
@@ -34,6 +45,15 @@ const FilaUsuarioTabla = ({ usuario, cargarUsuarios, token }) => {
   };
 
   const handleBorrarUsuario = () => {
+    if (esAdmin) {
+      Swal.fire(
+        "Prohibido",
+        "No puedes eliminar a otro administrador.",
+        "warning"
+      );
+      return;
+    }
+
     Swal.fire({
       title: `¿Estás seguro de borrar a ${usuario.nombreUsuario}?`,
       text: "¡Esta acción es irreversible!",
@@ -51,7 +71,12 @@ const FilaUsuarioTabla = ({ usuario, cargarUsuarios, token }) => {
           Swal.fire("¡Borrado!", "El usuario ha sido eliminado.", "success");
           cargarUsuarios();
         } else {
-          Swal.fire("Error", "No se pudo eliminar el usuario.", "error");
+          const error = await respuesta.json();
+          Swal.fire(
+            "Error",
+            error.mensaje || "No se pudo eliminar el usuario.",
+            "error"
+          );
         }
       }
     });
@@ -90,10 +115,17 @@ const FilaUsuarioTabla = ({ usuario, cargarUsuarios, token }) => {
             size="sm"
             variant={getEstadoVariant(usuario.estado)}
             onClick={handleAlternarEstado}
+            disabled={esAdmin}
           >
             {usuario.estado === "activo" ? "Activo" : "Bloqueado"}
           </Button>
-          <Button variant="danger" size="sm" onClick={handleBorrarUsuario}>
+
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={handleBorrarUsuario}
+            disabled={esAdmin}
+          >
             Borrar
           </Button>
         </div>
