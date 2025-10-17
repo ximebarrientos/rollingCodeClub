@@ -1,17 +1,24 @@
 import { useEffect, useState } from "react";
 import { Table, Button } from "react-bootstrap";
 import FilaProductoTabla from "./FilaProductoTabla";
-import { listarProductos } from "../../../helpers/queries.js";
+import {
+  listarProductos,
+  listarProductosPaginados,
+} from "../../../helpers/queries.js";
 
 const TablaProducto = ({ setMostrarFormulario, setProductoEditado }) => {
   const [productos, setProductos] = useState([]);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(9);
+  const [totalPage, setTotalPage] = useState(1);
 
   const obtenerProductos = async () => {
     try {
-      const respuesta = await listarProductos();
+      const respuesta = await listarProductosPaginados(page, limit);
       if (respuesta && respuesta.ok) {
         const datos = await respuesta.json();
-        setProductos(datos);
+        setProductos(datos.productos);
+        setTotalPage(datos.totalPaginas);
       } else {
         console.error("Error al obtener los productos");
       }
@@ -22,7 +29,7 @@ const TablaProducto = ({ setMostrarFormulario, setProductoEditado }) => {
 
   useEffect(() => {
     obtenerProductos();
-  }, []);
+  }, [page]);
 
   return (
     <>
@@ -31,8 +38,8 @@ const TablaProducto = ({ setMostrarFormulario, setProductoEditado }) => {
         <Button
           variant="outline-success"
           onClick={() => {
-            setProductoEditado(null); 
-            setMostrarFormulario(true); 
+            setProductoEditado(null);
+            setMostrarFormulario(true);
           }}
         >
           Agregar Producto (+)
@@ -57,7 +64,7 @@ const TablaProducto = ({ setMostrarFormulario, setProductoEditado }) => {
             productos.map((producto, index) => (
               <FilaProductoTabla
                 key={producto._id}
-                index={index + 1}
+                index={(page - 1) * limit + index + 1}
                 producto={producto}
                 obtenerProductos={obtenerProductos}
                 setMostrarFormulario={setMostrarFormulario}
@@ -73,6 +80,24 @@ const TablaProducto = ({ setMostrarFormulario, setProductoEditado }) => {
           )}
         </tbody>
       </Table>
+
+      <div className="d-flex justify-content-center align-items-center gap-2 my-3 flex-wrap">
+        <Button
+          variant="secondary"
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+        >
+          Anterior
+        </Button>
+        <div className="mx-3 fw-semibold">
+          Página {page} de {totalPage}
+        </div>
+        <Button
+          variant="secondary"
+          onClick={() => setPage((prev) => Math.min(prev + 1, totalPage))}
+        >
+          Siguiente
+        </Button>
+      </div>
     </>
   );
 };

@@ -9,11 +9,13 @@ import {
   Button,
   Modal,
 } from "react-bootstrap";
+import { useParams } from "react-router";
 import { listarProductos } from "../../../helpers/queries.js";
 import "./tienda.css";
 import Swal from "sweetalert2";
 
 export default function Tienda() {
+  const { categoria, subcategoria } = useParams();
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [busqueda, setBusqueda] = useState("");
@@ -22,16 +24,42 @@ export default function Tienda() {
     JSON.parse(localStorage.getItem("carrito")) || []
   );
 
+  const [page, setPage] = useState(1);
+  const limit = 9;
+  const [totalPage, setTotalPage] = useState(1);
+
   useEffect(() => {
     const cargar = async () => {
       try {
         const respuesta = await listarProductos();
         if (respuesta && respuesta.ok) {
           const data = await respuesta.json();
-          const indumentaria = data.filter(
-            (p) => p.categoria === "Indumentaria"
+
+          let filtrados = data;
+          if (categoria) {
+            filtrados = filtrados.filter(
+              (p) => p.categoria?.toLowerCase() === categoria.toLowerCase()
+            );
+          }
+          if (subcategoria) {
+            const subcatNormalizada = subcategoria
+              .replace(/-/g, " ")
+              .toLowerCase();
+            filtrados = filtrados.filter(
+              (p) => p.subcategoria?.toLowerCase() === subcatNormalizada
+            );
+          }
+
+          const totalPaginas = Math.ceil(filtrados.length / limit);
+          setTotalPage(totalPaginas);
+
+          const startIndex = (page - 1) * limit;
+          const productosPaginados = filtrados.slice(
+            startIndex,
+            startIndex + limit
           );
-          setProductos(indumentaria);
+
+          setProductos(productosPaginados);
         }
       } catch (error) {
         console.error("Error al cargar productos:", error);
@@ -40,7 +68,7 @@ export default function Tienda() {
       }
     };
     cargar();
-  }, []);
+  }, [categoria, subcategoria, page]);
 
   useEffect(() => {
     localStorage.setItem("carrito", JSON.stringify(carrito));
@@ -56,7 +84,6 @@ export default function Tienda() {
   const agregarAlCarrito = (producto) => {
     setCarrito((prev) => {
       const existente = prev.find((item) => item._id === producto._id);
-
       let nuevoCarrito;
       if (existente) {
         nuevoCarrito = prev.map((item) =>
@@ -86,13 +113,16 @@ export default function Tienda() {
   };
 
   const renderCard = (item) => (
-    <Col md={4} sm={6} key={item._id} className="mb-4">
+    <Col xs={12} sm={6} md={4} key={item._id} className="mb-4">
       <Card className="bg-success text-light text-center producto-card sombra-verde h-100">
-        <Card.Img
-          src={item.imagen || "/noimage.png"}
-          alt={item.nombreProducto}
-          className="p-3 producto-img"
-        />
+        <div className="p-3">
+          <Card.Img
+            src={item.imagen || "/noimage.png"}
+            alt={item.nombreProducto}
+            className="producto-img img-fluid rounded"
+            style={{ maxHeight: "250px", objectFit: "cover" }}
+          />
+        </div>
         <Card.Body>
           <Card.Title className="text-light">{item.nombreProducto}</Card.Title>
           <Card.Text className="fw-bold text-light">${item.precio}</Card.Text>
@@ -115,7 +145,13 @@ export default function Tienda() {
         <Row className="align-items-center mb-4">
           <Col xs={12} md={4}></Col>
           <Col xs={12} md={4} className="text-center">
-            <h2 className="fw-bold text-success mb-0">Indumentaria</h2>
+            <h2 className="fw-bold text-success mb-0">
+              {subcategoria
+                ? subcategoria.toUpperCase()
+                : categoria
+                ? categoria.toUpperCase()
+                : "TIENDA"}
+            </h2>
           </Col>
           <Col xs={12} md={4} className="text-end mt-3 mt-md-0">
             <Button
@@ -136,6 +172,65 @@ export default function Tienda() {
           </Col>
         </Row>
 
+        <div className="text-center mb-4">
+          <div className="d-none d-md-flex flex-wrap justify-content-center gap-2">
+            <Button href="/tienda/indumentaria" variant="outline-success">
+              Indumentaria
+            </Button>
+            <Button
+              href="/tienda/indumentaria/botines"
+              variant="outline-success"
+            >
+              Botines
+            </Button>
+            <Button
+              href="/tienda/indumentaria/camisetas"
+              variant="outline-success"
+            >
+              Camisetas
+            </Button>
+            <Button
+              href="/tienda/indumentaria/shorts"
+              variant="outline-success"
+            >
+              Shorts
+            </Button>
+            <Button href="/tienda/accesorios" variant="outline-success">
+              Accesorios
+            </Button>
+            <Button
+              href="/tienda/accesorios/kits-de-entrenamiento"
+              variant="outline-success"
+            >
+              Kits de Entrenamiento
+            </Button>
+            <Button href="/tienda/accesorios/pelotas" variant="outline-success">
+              Pelotas
+            </Button>
+          </div>
+
+          <div className="d-md-none">
+            <Form.Select
+              className="text-center bg-dark text-light border-success"
+              onChange={(e) => (window.location.href = e.target.value)}
+              defaultValue=""
+            >
+              <option value="" disabled>
+                Ver categorías...
+              </option>
+              <option value="/tienda/indumentaria">Indumentaria</option>
+              <option value="/tienda/indumentaria/botines">Botines</option>
+              <option value="/tienda/indumentaria/camisetas">Camisetas</option>
+              <option value="/tienda/indumentaria/shorts">Shorts</option>
+              <option value="/tienda/accesorios">Accesorios</option>
+              <option value="/tienda/accesorios/kits-de-entrenamiento">
+                Kits de Entrenamiento
+              </option>
+              <option value="/tienda/accesorios/pelotas">Pelotas</option>
+            </Form.Select>
+          </div>
+        </div>
+
         <Row className="justify-content-center mb-5">
           <Col md={6}>
             <Form.Control
@@ -152,43 +247,34 @@ export default function Tienda() {
           <div className="text-center py-5">
             <Spinner animation="border" variant="success" />
           </div>
-        ) : busqueda ? (
-          productosFiltrados.length > 0 ? (
-            <Row className="mb-5 justify-content-center">
-              {productosFiltrados.map((p) => renderCard(p))}
-            </Row>
-          ) : (
-            <h5 className="text-center text-muted mt-5">
-              No encontramos productos que coincidan con tu búsqueda.
-            </h5>
-          )
-        ) : productos.length > 0 ? (
-          <>
-            <Row id="botines" className="mb-5">
-              <h3 className="text-center text-light mb-4">Botines</h3>
-              {productos
-                .filter((p) => p.subcategoria === "Botines")
-                .map((p) => renderCard(p))}
-            </Row>
-
-            <Row id="camisetas" className="mb-5">
-              <h3 className="text-center text-light mb-4">Camisetas</h3>
-              {productos
-                .filter((p) => p.subcategoria === "Camisetas")
-                .map((p) => renderCard(p))}
-            </Row>
-
-            <Row id="shorts" className="mb-5">
-              <h3 className="text-center text-light mb-4">Shorts</h3>
-              {productos
-                .filter((p) => p.subcategoria === "Shorts")
-                .map((p) => renderCard(p))}
-            </Row>
-          </>
+        ) : productosFiltrados.length > 0 ? (
+          <Row className="mb-5 justify-content-center">
+            {productosFiltrados.map((p) => renderCard(p))}
+          </Row>
         ) : (
           <h5 className="text-center text-muted mt-5">
-            No hay productos cargados aún.
+            No encontramos productos que coincidan con tu búsqueda.
           </h5>
+        )}
+
+        {totalPage > 1 && (
+          <div className="d-flex justify-content-center align-items-center gap-2 my-3 flex-wrap">
+            <Button
+              variant="secondary"
+              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+            >
+              Anterior
+            </Button>
+            <div className="mx-3 fw-semibold">
+              Página {page} de {totalPage}
+            </div>
+            <Button
+              variant="secondary"
+              onClick={() => setPage((prev) => Math.min(prev + 1, totalPage))}
+            >
+              Siguiente
+            </Button>
+          </div>
         )}
       </Container>
 
@@ -216,17 +302,6 @@ export default function Tienda() {
                 {productoSeleccionado.descripcion ||
                   "Sin descripción disponible"}
               </p>
-              {productoSeleccionado.talles?.length ? (
-                <>
-                  <h5 className="mt-4">Talles disponibles</h5>
-                  <p>{productoSeleccionado.talles.join(", ")}</p>
-                </>
-              ) : productoSeleccionado.numeros?.length ? (
-                <>
-                  <h5 className="mt-4">Números disponibles</h5>
-                  <p>{productoSeleccionado.numeros.join(", ")}</p>
-                </>
-              ) : null}
             </Modal.Body>
             <Modal.Footer className="bg-dark">
               <Button variant="secondary" onClick={handleClose}>
