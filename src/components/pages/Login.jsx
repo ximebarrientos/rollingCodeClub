@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import Swal from "sweetalert2";
 import { Form, Button, Container } from "react-bootstrap";
 import { useForm } from "react-hook-form";
@@ -133,7 +133,6 @@ const Login = ({ setUsuarioLogueado }) => {
             </Button>
             <Button
               variant="outline-danger"
-              className="mb-3"
               size="lg"
               onClick={() => navegacion("/error404")}
             >
@@ -142,6 +141,15 @@ const Login = ({ setUsuarioLogueado }) => {
             </Button>
           </div>
         </Form>
+        <div className="d-grid mt-3 text-center mb-2">
+          <NavLink
+            variant="outline-primary"
+            size="lg"
+            to={"/registro"}
+          >
+            ¿No estás registrado? Regístrate aquí
+          </NavLink>
+        </div>
       </Container>
     </div>
   );
