@@ -1,12 +1,15 @@
-import { Navigate, Outlet } from "react-router";
+import { Navigate } from "react-router";
 
-const ProtectorRutas = ({usuarioLogueado}) => {
-    //si el usuario no es el admin
-    if(!usuarioLogueado.token || !usuarioLogueado.rol || usuarioLogueado.rol.toLowerCase() !== 'administrador'){
-        //redireccionar al usuario
-       return <Navigate to={'/'}/>
-    }
-    return <Outlet/>
+const ProtectorRutas = ({ children, usuarioLogueado, rol = null }) => {
+  if (!usuarioLogueado || !usuarioLogueado.token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (rol && usuarioLogueado.rol !== rol) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
 };
 
 export default ProtectorRutas;
