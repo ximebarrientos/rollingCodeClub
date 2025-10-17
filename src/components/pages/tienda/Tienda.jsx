@@ -9,13 +9,16 @@ import {
   Button,
   Modal,
 } from "react-bootstrap";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { listarProductos } from "../../../helpers/queries.js";
 import "./tienda.css";
 import Swal from "sweetalert2";
+import { Cart4 } from "react-bootstrap-icons";
 
-export default function Tienda() {
+export default function Tienda({ usuarioLogueado }) {
+  const navigate = useNavigate();
   const { categoria, subcategoria } = useParams();
+
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [busqueda, setBusqueda] = useState("");
@@ -27,6 +30,11 @@ export default function Tienda() {
   const [page, setPage] = useState(1);
   const limit = 9;
   const [totalPage, setTotalPage] = useState(1);
+  const [orden, setOrden] = useState("");
+
+  useEffect(() => {
+    setOrden("");
+  }, [usuarioLogueado]);
 
   useEffect(() => {
     const cargar = async () => {
@@ -36,28 +44,38 @@ export default function Tienda() {
           const data = await respuesta.json();
 
           let filtrados = data;
-          if (categoria) {
+
+          if (categoria && categoria !== "todas") {
             filtrados = filtrados.filter(
               (p) => p.categoria?.toLowerCase() === categoria.toLowerCase()
             );
           }
           if (subcategoria) {
-            const subcatNormalizada = subcategoria
-              .replace(/-/g, " ")
-              .toLowerCase();
+            const subcatNormalizada = subcategoria.replace(/-/g, " ").toLowerCase();
             filtrados = filtrados.filter(
               (p) => p.subcategoria?.toLowerCase() === subcatNormalizada
             );
           }
 
+          if (busqueda.trim() !== "") {
+            filtrados = filtrados.filter((p) =>
+              p.nombreProducto?.toLowerCase().includes(busqueda.toLowerCase())
+            );
+          }
+
+          filtrados.sort((a, b) => {
+            if (orden === "az") return a.nombreProducto.localeCompare(b.nombreProducto);
+            if (orden === "za") return b.nombreProducto.localeCompare(a.nombreProducto);
+            if (orden === "precioAsc") return a.precio - b.precio;
+            if (orden === "precioDesc") return b.precio - a.precio;
+            return a.nombreProducto.localeCompare(b.nombreProducto);
+          });
+
           const totalPaginas = Math.ceil(filtrados.length / limit);
           setTotalPage(totalPaginas);
 
           const startIndex = (page - 1) * limit;
-          const productosPaginados = filtrados.slice(
-            startIndex,
-            startIndex + limit
-          );
+          const productosPaginados = filtrados.slice(startIndex, startIndex + limit);
 
           setProductos(productosPaginados);
         }
@@ -68,15 +86,11 @@ export default function Tienda() {
       }
     };
     cargar();
-  }, [categoria, subcategoria, page]);
+  }, [categoria, subcategoria, page, orden, busqueda]);
 
   useEffect(() => {
     localStorage.setItem("carrito", JSON.stringify(carrito));
   }, [carrito]);
-
-  const productosFiltrados = productos.filter((p) =>
-    p.nombreProducto?.toLowerCase().includes(busqueda.toLowerCase())
-  );
 
   const handleShow = (producto) => setProductoSeleccionado(producto);
   const handleClose = () => setProductoSeleccionado(null);
@@ -114,7 +128,7 @@ export default function Tienda() {
 
   const renderCard = (item) => (
     <Col xs={12} sm={6} md={4} key={item._id} className="mb-4">
-      <Card className="bg-success text-light text-center producto-card sombra-verde h-100">
+      <Card className="text-light text-center producto-card sombra-verde h-100">
         <div className="p-3">
           <Card.Img
             src={item.imagen || "/noimage.png"}
@@ -127,10 +141,10 @@ export default function Tienda() {
           <Card.Title className="text-light">{item.nombreProducto}</Card.Title>
           <Card.Text className="fw-bold text-light">${item.precio}</Card.Text>
           <div className="d-flex justify-content-center gap-2">
-            <Button variant="warning" onClick={() => handleShow(item)}>
+            <Button variant="dark" onClick={() => handleShow(item)}>
               Ver más
             </Button>
-            <Button variant="dark" onClick={() => agregarAlCarrito(item)}>
+            <Button variant="success" onClick={() => agregarAlCarrito(item)}>
               Comprar
             </Button>
           </div>
@@ -142,69 +156,54 @@ export default function Tienda() {
   return (
     <div className="bg-dark text-light py-5">
       <Container>
-        <Row className="align-items-center mb-4">
-          <Col xs={12} md={4}></Col>
-          <Col xs={12} md={4} className="text-center">
-            <h2 className="fw-bold text-success mb-0">
-              {subcategoria
-                ? subcategoria.toUpperCase()
-                : categoria
-                ? categoria.toUpperCase()
-                : "TIENDA"}
-            </h2>
-          </Col>
-          <Col xs={12} md={4} className="text-end mt-3 mt-md-0">
-            <Button
-              variant="success"
-              href="/carrito"
-              className="position-relative shadow-sm"
-            >
-              Ver carrito 🛒
-              {carrito.length > 0 && (
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-light text-dark">
-                  {carrito.reduce(
-                    (total, prod) => total + (prod.cantidad || 1),
-                    0
-                  )}
-                </span>
-              )}
-            </Button>
-          </Col>
-        </Row>
-
         <div className="text-center mb-4">
           <div className="d-none d-md-flex flex-wrap justify-content-center gap-2">
-            <Button href="/tienda/indumentaria" variant="outline-success">
+            <Button
+              variant={!categoria || categoria === "todas" ? "success" : "outline-success"}
+              onClick={() => navigate("/tienda/todas")}
+            >
+              Todas las categorías
+            </Button>
+            <Button
+              variant={categoria === "indumentaria" && !subcategoria ? "success" : "outline-success"}
+              onClick={() => navigate("/tienda/indumentaria")}
+            >
               Indumentaria
             </Button>
             <Button
-              href="/tienda/indumentaria/botines"
-              variant="outline-success"
+              variant={subcategoria === "botines" ? "success" : "outline-success"}
+              onClick={() => navigate("/tienda/indumentaria/botines")}
             >
               Botines
             </Button>
             <Button
-              href="/tienda/indumentaria/camisetas"
-              variant="outline-success"
+              variant={subcategoria === "camisetas" ? "success" : "outline-success"}
+              onClick={() => navigate("/tienda/indumentaria/camisetas")}
             >
               Camisetas
             </Button>
             <Button
-              href="/tienda/indumentaria/shorts"
-              variant="outline-success"
+              variant={subcategoria === "shorts" ? "success" : "outline-success"}
+              onClick={() => navigate("/tienda/indumentaria/shorts")}
             >
               Shorts
             </Button>
-            <Button href="/tienda/accesorios" variant="outline-success">
+            <Button
+              variant={categoria === "accesorios" && !subcategoria ? "success" : "outline-success"}
+              onClick={() => navigate("/tienda/accesorios")}
+            >
               Accesorios
             </Button>
             <Button
-              href="/tienda/accesorios/kits-de-entrenamiento"
-              variant="outline-success"
+              variant={subcategoria === "kits-de-entrenamiento" ? "success" : "outline-success"}
+              onClick={() => navigate("/tienda/accesorios/kits-de-entrenamiento")}
             >
               Kits de Entrenamiento
             </Button>
-            <Button href="/tienda/accesorios/pelotas" variant="outline-success">
+            <Button
+              variant={subcategoria === "pelotas" ? "success" : "outline-success"}
+              onClick={() => navigate("/tienda/accesorios/pelotas")}
+            >
               Pelotas
             </Button>
           </div>
@@ -212,12 +211,10 @@ export default function Tienda() {
           <div className="d-md-none">
             <Form.Select
               className="text-center bg-dark text-light border-success"
-              onChange={(e) => (window.location.href = e.target.value)}
-              defaultValue=""
+              onChange={(e) => navigate(e.target.value)}
+              defaultValue={categoria ? `/tienda/${categoria}` : "/tienda/todas"}
             >
-              <option value="" disabled>
-                Ver categorías...
-              </option>
+              <option value="/tienda/todas">Todas las categorías</option>
               <option value="/tienda/indumentaria">Indumentaria</option>
               <option value="/tienda/indumentaria/botines">Botines</option>
               <option value="/tienda/indumentaria/camisetas">Camisetas</option>
@@ -231,8 +228,18 @@ export default function Tienda() {
           </div>
         </div>
 
-        <Row className="justify-content-center mb-5">
-          <Col md={6}>
+        <Row className="justify-content-center mb-3">
+          <Col md={6} className="text-center">
+            <Form.Check inline label="A → Z" name="orden" type="radio" checked={orden === "az"} onChange={() => setOrden("az")} className="text-success" />
+            <Form.Check inline label="Z → A" name="orden" type="radio" checked={orden === "za"} onChange={() => setOrden("za")} className="text-success" />
+            <Form.Check inline label="Precio ↑" name="orden" type="radio" checked={orden === "precioAsc"} onChange={() => setOrden("precioAsc")} className="text-success" />
+            <Form.Check inline label="Precio ↓" name="orden" type="radio" checked={orden === "precioDesc"} onChange={() => setOrden("precioDesc")} className="text-success" />
+            <Form.Check inline label="Todos" name="orden" type="radio" checked={orden === ""} onChange={() => setOrden("")} className="text-success" />
+          </Col>
+        </Row>
+
+        <Row className="justify-content-center align-items-center mb-5">
+          <Col md={6} xs={12} className="mb-3 mb-md-0">
             <Form.Control
               type="text"
               placeholder="Buscar productos..."
@@ -241,15 +248,30 @@ export default function Tienda() {
               onChange={(e) => setBusqueda(e.target.value)}
             />
           </Col>
+          <Col md="auto" xs={12} className="text-center">
+            <Button
+              variant="success"
+              href="/carrito"
+              className="position-relative px-4 py-2"
+            >
+              <Cart4 size={25} />
+              
+              {carrito.length > 0 && (
+                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-light text-dark">
+                  {carrito.reduce((t, p) => t + (p.cantidad || 1), 0)}
+                </span>
+              )}
+            </Button>
+          </Col>
         </Row>
 
         {cargando ? (
           <div className="text-center py-5">
             <Spinner animation="border" variant="success" />
           </div>
-        ) : productosFiltrados.length > 0 ? (
+        ) : productos.length > 0 ? (
           <Row className="mb-5 justify-content-center">
-            {productosFiltrados.map((p) => renderCard(p))}
+            {productos.map((p) => renderCard(p))}
           </Row>
         ) : (
           <h5 className="text-center text-muted mt-5">
@@ -259,19 +281,13 @@ export default function Tienda() {
 
         {totalPage > 1 && (
           <div className="d-flex justify-content-center align-items-center gap-2 my-3 flex-wrap">
-            <Button
-              variant="secondary"
-              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-            >
+            <Button variant="secondary" onClick={() => setPage((prev) => Math.max(prev - 1, 1))}>
               Anterior
             </Button>
             <div className="mx-3 fw-semibold">
               Página {page} de {totalPage}
             </div>
-            <Button
-              variant="secondary"
-              onClick={() => setPage((prev) => Math.min(prev + 1, totalPage))}
-            >
+            <Button variant="secondary" onClick={() => setPage((prev) => Math.min(prev + 1, totalPage))}>
               Siguiente
             </Button>
           </div>
@@ -299,18 +315,14 @@ export default function Tienda() {
               </p>
               <p>
                 <strong>Descripción:</strong>{" "}
-                {productoSeleccionado.descripcion ||
-                  "Sin descripción disponible"}
+                {productoSeleccionado.descripcion || "Sin descripción disponible"}
               </p>
             </Modal.Body>
             <Modal.Footer className="bg-dark">
               <Button variant="secondary" onClick={handleClose}>
                 Cerrar
               </Button>
-              <Button
-                variant="success"
-                onClick={() => agregarAlCarrito(productoSeleccionado)}
-              >
+              <Button variant="success" onClick={() => agregarAlCarrito(productoSeleccionado)}>
                 Comprar
               </Button>
             </Modal.Footer>
