@@ -4,7 +4,7 @@ import { obtenerCanchasAPI } from "../../../helpers/canchasAPI";
 import { obtenerTurnosAPI } from "../../../helpers/turnosAPI";
 import FormularioTurnos from "./FormularioTurnos";
 
-const ReservarTurnos = () => {
+const ReservarTurnos = ({ usuarioLogueado }) => {
     const [canchas, setCanchas] = useState([]);
     const [turnos, setTurnos] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -90,6 +90,7 @@ const ReservarTurnos = () => {
                 cancha={canchaSeleccionada}
                 turnos={turnos}
                 refreshData={cargarCanchasYTurnos}
+                usuarioLogueado={usuarioLogueado}
             />
         </Container>
     );

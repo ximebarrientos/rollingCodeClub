@@ -44,7 +44,14 @@ function App() {
           <Routes>
             {/* RUTAS PÚBLICAS */}
             <Route path="/" element={<Inicio />} />
-            <Route path="/reserva" element={<ReservarTurnos />} />
+            <Route
+              path="/reserva"
+              element={
+                <ProtectorRutas usuarioLogueado={usuarioLogueado}>
+                  <ReservarTurnos usuarioLogueado={usuarioLogueado} />
+                </ProtectorRutas>
+              }
+            />
             <Route path="/turnos" element={<FormularioTurnos />} />
             <Route path="/contacto" element={<Contacto />} />
             <Route path="/sobre-nosotros" element={<QuienesSomos />} />

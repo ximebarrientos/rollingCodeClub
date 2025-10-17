@@ -62,18 +62,33 @@ export default function Menu({ usuarioLogueado, setUsuarioLogueado }) {
           <div className="d-flex align-items-center gap-2 ms-lg-3 mt-3 mt-lg-0">
             {usuarioLogueado.token ? (
               <>
-                {usuarioLogueado.rol === "administrador" && (
-                  <NavLink className="nav-link" to={"/administrador"}>
-                    Administrador
-                  </NavLink>
+                {usuarioLogueado.rol === "administrador" ? (
+                  <>
+                    <NavLink to="/perfil">
+                      <i className="bi bi-person fs-4 text-success"></i>
+                    </NavLink>
+                    <NavLink className="nav-link" to={"/administrador"}>
+                      Administrador
+                    </NavLink>
+                    <Button size="sm" onClick={logout} className="py-2">
+                      Logout
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <div className="d-flex align-items-center gap-2">
+                      <NavLink to="/perfil" className="nav-link">
+                        Bienvenido {usuarioLogueado.nombreUsuario}
+                      </NavLink>
+                      <NavLink to="/carrito">
+                        <i className="bi bi-cart-fill fs-4 text-success"></i>
+                      </NavLink>
+                    </div>
+                    <Button size="sm" onClick={logout} className="py-2">
+                      Logout
+                    </Button>
+                  </>
                 )}
-
-                <NavLink className="nav-link" to={"/perfil"}>
-                  Mi Perfil
-                </NavLink>
-                <Button size="sm" onClick={logout} className="py-2">
-                  Logout
-                </Button>
               </>
             ) : (
               <>
@@ -89,7 +104,7 @@ export default function Menu({ usuarioLogueado, setUsuarioLogueado }) {
                 <Button
                   as={Link}
                   to={"/registro"}
-                  variant="primary"
+                  variant="success"
                   size="sm"
                   className="py-2"
                 >
