@@ -73,6 +73,8 @@ const FormularioCancha = ({ cancha, recargarCanchas, cerrarFormulario }) => {
             text: "La cancha ha sido creada con éxito",
             icon: "success",
             confirmButtonColor: "#0066cc",
+            background: "#212529",
+            color: "#fff",
           });
         } else throw new Error("Error al crear la cancha");
       } else if (cancha) {
@@ -83,6 +85,8 @@ const FormularioCancha = ({ cancha, recargarCanchas, cerrarFormulario }) => {
             text: "La cancha ha sido editada con éxito",
             icon: "success",
             confirmButtonColor: "#0066cc",
+            background: "#212529",
+            color: "#fff",
           });
         } else throw new Error("Error al editar la cancha");
       }
@@ -99,6 +103,8 @@ const FormularioCancha = ({ cancha, recargarCanchas, cerrarFormulario }) => {
         text: "Ocurrió un error al procesar la cancha",
         icon: "error",
         confirmButtonColor: "#dc3545",
+        background: "#212529",
+        color: "#fff",
       });
     }
   };
@@ -198,9 +204,8 @@ const FormularioCancha = ({ cancha, recargarCanchas, cerrarFormulario }) => {
               type="file"
               accept="image/png, image/jpeg, image/jpg, image/webp"
               {...register("imagenCancha", {
-                required: !cancha || cancha.nueva
-                  ? "La imagen es obligatoria"
-                  : false,
+                required:
+                  !cancha || cancha.nueva ? "La imagen es obligatoria" : false,
                 validate: {
                   fileSize: (files) =>
                     !files[0] ||
