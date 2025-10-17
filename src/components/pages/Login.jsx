@@ -34,6 +34,8 @@ const Login = ({ setUsuarioLogueado }) => {
           title: "Login exitoso",
           text: `Bienvenido ${usuario.nombreUsuario}`,
           icon: "success",
+          background: "#212529",
+          color: "#fff",
         });
         if (usuario.rol && usuario.rol.toLowerCase() === "administrador") {
           navegacion("/administrador");
@@ -45,6 +47,8 @@ const Login = ({ setUsuarioLogueado }) => {
           title: "Ocurrio un error",
           text: `Credenciales invalidas`,
           icon: "error",
+          background: "#212529",
+          color: "#fff",
         });
       }
     } catch (error) {
@@ -53,6 +57,8 @@ const Login = ({ setUsuarioLogueado }) => {
         title: "Ocurrio un error",
         text: `Error al conectar con el servidor`,
         icon: "error",
+        background: "#212529",
+        color: "#fff",
       });
     }
   };
@@ -142,11 +148,7 @@ const Login = ({ setUsuarioLogueado }) => {
           </div>
         </Form>
         <div className="d-grid mt-3 text-center mb-2">
-          <NavLink
-            variant="outline-primary"
-            size="lg"
-            to={"/registro"}
-          >
+          <NavLink variant="outline-primary" size="lg" to={"/registro"}>
             ¿No estás registrado? Regístrate aquí
           </NavLink>
         </div>
