@@ -66,7 +66,7 @@ const Login = ({ setUsuarioLogueado }) => {
             <Form.Label>Correo Electrónico</Form.Label>
             <Form.Control
               type="email"
-              placeholder="correo@rollinCodeClub.com"
+              placeholder="correo@rollincodeclub.com"
               className="bg-primary text-white"
               {...register("email", {
                 required: "El email es obligatorio",
@@ -86,7 +86,7 @@ const Login = ({ setUsuarioLogueado }) => {
             <Form.Label>Contraseña</Form.Label>
             <Form.Control
               type="password"
-              placeholder="Crea una contraseña"
+              placeholder="Contraseña"
               className="bg-primary text-white"
               {...register("password", {
                 required: "La contraseña es obligatoria",
