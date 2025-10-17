@@ -14,7 +14,7 @@ import { listarProductos } from "../../../helpers/queries.js";
 import "./tienda.css";
 import Swal from "sweetalert2";
 
-export default function Tienda() {
+export default function Tienda({ usuarioLogueado }) {
   const { categoria, subcategoria } = useParams();
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -27,6 +27,11 @@ export default function Tienda() {
   const [page, setPage] = useState(1);
   const limit = 9;
   const [totalPage, setTotalPage] = useState(1);
+  const [orden, setOrden] = useState("");
+
+  useEffect(() => {
+    setOrden("");
+  }, [usuarioLogueado]);
 
   useEffect(() => {
     const cargar = async () => {
@@ -36,6 +41,7 @@ export default function Tienda() {
           const data = await respuesta.json();
 
           let filtrados = data;
+
           if (categoria) {
             filtrados = filtrados.filter(
               (p) => p.categoria?.toLowerCase() === categoria.toLowerCase()
@@ -49,6 +55,22 @@ export default function Tienda() {
               (p) => p.subcategoria?.toLowerCase() === subcatNormalizada
             );
           }
+
+          if (busqueda.trim() !== "") {
+            filtrados = filtrados.filter((p) =>
+              p.nombreProducto?.toLowerCase().includes(busqueda.toLowerCase())
+            );
+          }
+
+          filtrados.sort((a, b) => {
+            if (orden === "az")
+              return a.nombreProducto.localeCompare(b.nombreProducto);
+            if (orden === "za")
+              return b.nombreProducto.localeCompare(a.nombreProducto);
+            if (orden === "precioAsc") return a.precio - b.precio;
+            if (orden === "precioDesc") return b.precio - a.precio;
+            return a.nombreProducto.localeCompare(b.nombreProducto);
+          });
 
           const totalPaginas = Math.ceil(filtrados.length / limit);
           setTotalPage(totalPaginas);
@@ -68,15 +90,25 @@ export default function Tienda() {
       }
     };
     cargar();
-  }, [categoria, subcategoria, page]);
+  }, [categoria, subcategoria, page, orden, busqueda]);
 
   useEffect(() => {
     localStorage.setItem("carrito", JSON.stringify(carrito));
   }, [carrito]);
 
-  const productosFiltrados = productos.filter((p) =>
-    p.nombreProducto?.toLowerCase().includes(busqueda.toLowerCase())
-  );
+  const productosFiltrados = productos
+    .filter((p) =>
+      p.nombreProducto?.toLowerCase().includes(busqueda.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (orden === "az")
+        return a.nombreProducto.localeCompare(b.nombreProducto);
+      if (orden === "za")
+        return b.nombreProducto.localeCompare(a.nombreProducto);
+      if (orden === "precioAsc") return a.precio - b.precio;
+      if (orden === "precioDesc") return b.precio - a.precio;
+      return 0;
+    });
 
   const handleShow = (producto) => setProductoSeleccionado(producto);
   const handleClose = () => setProductoSeleccionado(null);
@@ -230,6 +262,47 @@ export default function Tienda() {
             </Form.Select>
           </div>
         </div>
+
+        <Row className="justify-content-center mb-3">
+          <Col md={6} className="text-center">
+            <Form.Check
+              inline
+              label="A → Z"
+              name="orden"
+              type="radio"
+              checked={orden === "az"}
+              onChange={() => setOrden("az")}
+              className="text-success"
+            />
+            <Form.Check
+              inline
+              label="Z → A"
+              name="orden"
+              type="radio"
+              checked={orden === "za"}
+              onChange={() => setOrden("za")}
+              className="text-success"
+            />
+            <Form.Check
+              inline
+              label="Precio ↓-↑"
+              name="orden"
+              type="radio"
+              checked={orden === "precioAsc"}
+              onChange={() => setOrden("precioAsc")}
+              className="text-success"
+            />
+            <Form.Check
+              inline
+              label="Precio ↑-↓"
+              name="orden"
+              type="radio"
+              checked={orden === "precioDesc"}
+              onChange={() => setOrden("precioDesc")}
+              className="text-success"
+            />
+          </Col>
+        </Row>
 
         <Row className="justify-content-center mb-5">
           <Col md={6}>
