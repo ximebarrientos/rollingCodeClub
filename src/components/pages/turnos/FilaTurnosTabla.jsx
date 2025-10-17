@@ -33,7 +33,18 @@ const FilaTurnosTabla = ({ turno, recargarTurnos }) => {
 
     if (result.isConfirmed) {
       try {
-        await eliminarTurnoAPI(turno._id);
+        const respuesta = await eliminarTurnoAPI(turno._id);
+        if (!respuesta.ok) {
+          Swal.fire({
+            title: "Error",
+            text: "No se pudo eliminar el turno.",
+            icon: "error",
+            background: "#212529",
+            color: "#fff",
+          });
+          return;
+        }
+
         Swal.fire({
           title: "Eliminado",
           text: "El turno ha sido eliminado.",
