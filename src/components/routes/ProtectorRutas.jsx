@@ -12,9 +12,18 @@ const ProtectorRutas = ({ children, usuarioLogueado, rol = null }) => {
         title: "Inicio de sesión requerido",
         text: "Para reservar turnos necesitas estar logueado primero",
         icon: "info",
-        confirmButtonText: "Ir al login"
-      }).then(() => {
-        navigate("/login");
+        confirmButtonText: "Ir al login",
+        confirmButtonColor: "#198754",
+        showCancelButton: true,
+        cancelButtonColor: "#d33",
+        background: "#212529",
+          color: "#fff",
+      }).then((result) => {
+        if (result.isConfirmed){
+          navigate("/login");
+        } else {
+          navigate ("/")
+        }
       });
     }
   }, [usuarioLogueado, location.pathname, navigate]);
