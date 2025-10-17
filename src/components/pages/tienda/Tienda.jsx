@@ -114,7 +114,7 @@ export default function Tienda() {
 
   const renderCard = (item) => (
     <Col xs={12} sm={6} md={4} key={item._id} className="mb-4">
-      <Card className="bg-success text-light text-center producto-card sombra-verde h-100">
+      <Card className="text-light text-center producto-card sombra-verde h-100">
         <div className="p-3">
           <Card.Img
             src={item.imagen || "/noimage.png"}
@@ -127,10 +127,10 @@ export default function Tienda() {
           <Card.Title className="text-light">{item.nombreProducto}</Card.Title>
           <Card.Text className="fw-bold text-light">${item.precio}</Card.Text>
           <div className="d-flex justify-content-center gap-2">
-            <Button variant="warning" onClick={() => handleShow(item)}>
+            <Button variant="dark" onClick={() => handleShow(item)}>
               Ver más
             </Button>
-            <Button variant="dark" onClick={() => agregarAlCarrito(item)}>
+            <Button variant="success" onClick={() => agregarAlCarrito(item)}>
               Comprar
             </Button>
           </div>
