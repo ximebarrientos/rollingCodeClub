@@ -5,6 +5,7 @@ import TablaUsuario from "./usuario/TablaUsuario";
 import TablaCancha from "./cancha/TablaCancha";
 import TablaTurnos from "./turnos/TablaTurnos";
 import FormularioProducto from "./producto/FormularioProducto";
+import TablaPedidos from "./pedidos/TablaPedidos";
 
 const Administrador = ({ usuarioLogueado }) => {
   const [seleccion, setSeleccion] = useState("productos");
@@ -38,7 +39,10 @@ const Administrador = ({ usuarioLogueado }) => {
         return <TablaCancha usuarioLogueado={usuarioLogueado} />;
 
       case "turnos":
-        return <TablaTurnos usuarioLogueado={usuarioLogueado} />;
+        return <TablaTurnos />;
+      case "pedidos":
+        return <TablaPedidos />;
+
       default:
         return null;
     }
@@ -80,6 +84,13 @@ const Administrador = ({ usuarioLogueado }) => {
               onClick={() => setSeleccion("turnos")}
             >
               Turnos Ocupados
+            </ListGroup.Item>
+            <ListGroup.Item
+              action
+              active={seleccion === "pedidos"}
+              onClick={() => setSeleccion("pedidos")}
+            >
+              Pedidos de Compra
             </ListGroup.Item>
           </ListGroup>
         </Col>

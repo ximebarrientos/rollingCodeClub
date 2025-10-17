@@ -15,15 +15,25 @@ import PerfilUsuario from "./components/pages/usuario/PerfilUsuario.jsx";
 import CarritoCompras from "./components/pages/producto/CarritoCompras.jsx";
 import ReservarTurnos from "./components/pages/turnos/ReservarTurnos.jsx";
 import ProtectorRutas from "./components/routes/ProtectorRutas.jsx";
+import PagoExitosoMercadoPago from "./components/pages/producto/PagoExitosoMercadoPago.jsx";
 import { useEffect, useState } from "react";
 
 function App() {
   const usuarioSessionStorage =
     JSON.parse(sessionStorage.getItem("userKey")) || {};
   const [usuarioLogueado, setUsuarioLogueado] = useState(usuarioSessionStorage);
+  
   useEffect(() => {
-    sessionStorage.setItem("userKey", JSON.stringify(usuarioLogueado));
+    // Si el objeto de usuario está vacío, no intentamos guardar un "null" o vacío
+    // Esto asegura que la sesión se mantiene si el usuarioLogueado cambia (ej: actualización de datos)
+    if (Object.keys(usuarioLogueado).length > 0) {
+      sessionStorage.setItem("userKey", JSON.stringify(usuarioLogueado));
+    } else {
+      // Opcional: limpiar si el usuario cierra sesión (logoutea)
+      sessionStorage.removeItem("userKey");
+    }
   }, [usuarioLogueado]);
+
   return (
     <>
       <BrowserRouter>
@@ -33,16 +43,14 @@ function App() {
         />
         <main>
           <Routes>
-            <Route path="/" element={<Inicio />}></Route>
-            <Route path="/reserva" element={<ReservarTurnos />}></Route>
-            <Route path="/turnos" element={<FormularioTurnos />}></Route>
-            <Route path="/tienda" element={<Tienda />}></Route>
-            <Route
-              path="/tiendaAccesorios"
-              element={<TiendaAccesorios />}
-            ></Route>
-            <Route path="/contacto" element={<Contacto />}></Route>
-            <Route path="/sobre-nosotros" element={<QuienesSomos />}></Route>
+            {/* RUTAS PÚBLICAS */}
+            <Route path="/" element={<Inicio />} />
+            <Route path="/reserva" element={<ReservarTurnos />} />
+            <Route path="/turnos" element={<FormularioTurnos />} />
+            <Route path="/tienda" element={<Tienda />} />
+            <Route path="/tiendaAccesorios" element={<TiendaAccesorios />} />
+            <Route path="/contacto" element={<Contacto />} />
+            <Route path="/sobre-nosotros" element={<QuienesSomos />} />
             <Route
               path="/login"
               element={
@@ -51,35 +59,49 @@ function App() {
                   setUsuarioLogueado={setUsuarioLogueado}
                 />
               }
-            ></Route>
-            <Route path="/registro" element={<Registro />}></Route>
-
+            />
+            <Route path="/registro" element={<Registro />} />
+            <Route path="/carrito" element={<CarritoCompras />} />
             <Route
-              path="/perfil"
+              path="/pago/exitoso"
+              element={<PagoExitosoMercadoPago />}
+            />
+            <Route
+              path="/pago/fallido"
+              element={<h2 className='text-center mt-5 text-danger'>Pago fallido 😞</h2>}
+            />
+            <Route
+              path="/pago/pendiente"
+              element={<h2 className='text-center mt-5 text-warning'>Pago pendiente ⏳</h2>}
+            />
+            
+            {/* RUTAS PRIVADAS (USUARIO LOGUEADO) */}
+            
+            {/* 1. RUTA DE PERFIL (Protegida) */}
+            <Route 
+              path="/perfil" 
               element={
                 <ProtectorRutas usuarioLogueado={usuarioLogueado}>
-                  <PerfilUsuario
-                    usuarioLogueado={usuarioLogueado}
+                  <PerfilUsuario 
+                    usuarioLogueado={usuarioLogueado} 
                     setUsuarioLogueado={setUsuarioLogueado}
                   />
                 </ProtectorRutas>
-              }
+              } 
             />
+
+            {/* 2. RUTA DE ADMINISTRADOR (Protegida y con Rol) */}
             <Route
               path="/administrador"
               element={
-                <ProtectorRutas
-                  usuarioLogueado={usuarioLogueado}
-                  rol="administrador"
-                >
+                <ProtectorRutas usuarioLogueado={usuarioLogueado} rol="administrador">
                   <Administrador usuarioLogueado={usuarioLogueado} />
                 </ProtectorRutas>
               }
-            >
-              <Route index element={<Administrador />}></Route>
-            </Route>
-            <Route path="/carrito" element={<CarritoCompras />} />
-            <Route path="*" element={<Error404 />}></Route>
+            />
+
+            {/* RUTA 404 */}
+            <Route path="*" element={<Error404 />} />
           </Routes>
         </main>
         <Footer />
