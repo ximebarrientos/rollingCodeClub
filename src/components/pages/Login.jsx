@@ -61,15 +61,16 @@ const Login = ({ setUsuarioLogueado }) => {
       <Container className="my-5 px-4 border border-1 rounded-4 border-secondary">
         <h2 className="text-center my-4">Iniciar Sesión</h2>
         <Form onSubmit={handleSubmit(loginUser)}>
-          <Form.Group className="mb-3" controlId="formEmailSesion">
+          <Form.Group className="mb-3" controlId="email">
             <Form.Label>Correo Electrónico</Form.Label>
             <Form.Control
               type="email"
-              placeholder="correo@rollinCodeClub.com"
+              placeholder="correo@rollincodeclub.com"
+              className="bg-primary text-whit"
               {...register("email", {
                 required: "El email es obligatorio",
                 pattern: {
-                  value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+                  value: /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/,
                   message: "El email no tiene un formato válido",
                 },
               })}
@@ -84,6 +85,7 @@ const Login = ({ setUsuarioLogueado }) => {
             <Form.Control
               type="password"
               placeholder="Crea una contraseña"
+              className="bg-primary text-white"
               {...register("password", {
                 required: "La contraseña es obligatoria",
                 minLength: {
