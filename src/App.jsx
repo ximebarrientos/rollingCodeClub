@@ -23,12 +23,9 @@ function App() {
   const [usuarioLogueado, setUsuarioLogueado] = useState(usuarioSessionStorage);
 
   useEffect(() => {
-    // Si el objeto de usuario está vacío, no intentamos guardar un "null" o vacío
-    // Esto asegura que la sesión se mantiene si el usuarioLogueado cambia (ej: actualización de datos)
     if (Object.keys(usuarioLogueado).length > 0) {
       sessionStorage.setItem("userKey", JSON.stringify(usuarioLogueado));
     } else {
-      // Opcional: limpiar si el usuario cierra sesión (logoutea)
       sessionStorage.removeItem("userKey");
     }
   }, [usuarioLogueado]);
@@ -42,7 +39,6 @@ function App() {
         />
         <main>
           <Routes>
-            {/* RUTAS PÚBLICAS */}
             <Route path="/" element={<Inicio />} />
             <Route
               path="/reserva"
@@ -90,9 +86,6 @@ function App() {
               }
             />
 
-            {/* RUTAS PRIVADAS (USUARIO LOGUEADO) */}
-
-            {/* 1. RUTA DE PERFIL (Protegida) */}
             <Route
               path="/perfil"
               element={
@@ -105,7 +98,6 @@ function App() {
               }
             />
 
-            {/* 2. RUTA DE ADMINISTRADOR (Protegida y con Rol) */}
             <Route
               path="/administrador"
               element={
@@ -118,7 +110,6 @@ function App() {
               }
             />
 
-            {/* RUTA 404 */}
             <Route path="*" element={<Error404 />} />
           </Routes>
         </main>

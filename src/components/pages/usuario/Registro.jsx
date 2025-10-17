@@ -27,7 +27,7 @@ const Registro = () => {
 
     const respuesta = await registrarUsuario(usuarioFinal);
 
-    if (!respuesta || !respuesta.ok) {
+    if (!respuesta) {
       Swal.fire("Error", "No se pudo conectar con el servidor.", "error");
       return;
     }
@@ -48,12 +48,12 @@ const Registro = () => {
       const datosError = await respuesta.json();
       Swal.fire({
         title: "Error al Registrar",
+
         text: datosError.mensaje || "Ocurrió un error al crear la cuenta.",
         icon: "error",
       });
     }
   };
-
   return (
     <div className="container">
       <Container className="my-5 px-4 border border-1 rounded-4 border-secondary">
