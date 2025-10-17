@@ -1,64 +1,123 @@
-import { Form, Row, Col, Button, Container } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Form, Row, Col, Button, Container, Alert } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
-import { registrarUsuario } from "../../../helpers/usuariosAPI";
 
-const Registro = () => {
+import { editarUsuario } from "../../../helpers/usuariosAPI";
+
+const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
+  const [editando, setEditando] = useState(false);
+  const [cargando, setCargando] = useState(false);
+
   const {
     register,
     handleSubmit,
-    watch,
+    setValue,
     formState: { errors },
   } = useForm();
 
-  const navegacion = useNavigate();
-  const passwordValue = watch("password", "");
+  useEffect(() => {
+    console.log("Datos de usuario para precarga:", usuarioLogueado);
+    if (usuarioLogueado && usuarioLogueado.token) {
+      let fechaNac = usuarioLogueado.fechaNacimiento;
 
-  const submitRegistro = async (usuario) => {
-    const { anio, mes, dia, repetirContrasenia, ...resto } = usuario;
+      if (fechaNac && fechaNac.includes("T")) {
+        fechaNac = fechaNac.split("T")[0];
+      }
 
-    const fechaNacimiento = `${anio}-${mes}-${dia.padStart(2, "0")}`;
+      const [anio, mes, dia] = (fechaNac || "----").split("-");
 
-    const usuarioFinal = {
+      setValue("nombreUsuario", usuarioLogueado.nombreUsuario || "");
+      setValue("nombre", usuarioLogueado.nombre || "");
+      setValue("apellido", usuarioLogueado.apellido || "");
+      setValue("genero", usuarioLogueado.genero || "");
+      setValue("celular", usuarioLogueado.celular || "");
+      setValue("correoElectronico", usuarioLogueado.correoElectronico || "");
+
+      setValue("anio", anio || "");
+
+      setValue("mes", mes || "");
+
+      const diaSinCero = dia ? parseInt(dia).toString() : "";
+      setValue("dia", diaSinCero);
+    }
+  }, [usuarioLogueado, setValue]);
+
+  const submitEdicion = async (datosFormulario) => {
+    setCargando(true);
+
+    const { anio, mes, dia, ...resto } = datosFormulario;
+
+    const diaAjustado = String(dia).padStart(2, "0");
+    const fechaNacimiento = `${anio}-${mes}-${diaAjustado}`;
+
+    const datosFinales = {
       ...resto,
       fechaNacimiento: fechaNacimiento,
     };
 
-    const respuesta = await registrarUsuario(usuarioFinal);
+    try {
+      const respuesta = await editarUsuario(
+        usuarioLogueado.id,
+        datosFinales,
+        usuarioLogueado.token
+      );
 
-    if (!respuesta || !respuesta.ok) {
-      Swal.fire("Error", "No se pudo conectar con el servidor.", "error");
-      return;
-    }
+      if (respuesta.ok) {
+        const usuarioActualizado = await respuesta.json();
 
-    if (respuesta.status === 201) {
-      const datosRespuesta = await respuesta.json();
+        const nuevoUsuarioLogueado = {
+          ...usuarioLogueado,
+          ...usuarioActualizado.usuario,
+          token: usuarioLogueado.token,
+        };
+        sessionStorage.setItem("userKey", JSON.stringify(nuevoUsuarioLogueado));
+        setUsuarioLogueado(nuevoUsuarioLogueado);
 
-      const nombreUsuario =
-        datosRespuesta.usuario?.nombreUsuario || "Nuevo Usuario";
-
-      Swal.fire({
-        title: `¡Cuenta Creada!`,
-        text: `¡Bienvenido ${nombreUsuario}! Inicia sesión para continuar.`,
-        icon: "success",
-      });
-      navegacion("/login");
-    } else {
-      const datosError = await respuesta.json();
-      Swal.fire({
-        title: "Error al Registrar",
-        text: datosError.mensaje || "Ocurrió un error al crear la cuenta.",
-        icon: "error",
-      });
+        Swal.fire(
+          "Actualizado",
+          "Tu perfil se ha guardado correctamente.",
+          "success"
+        );
+        setEditando(false);
+      } else {
+        const datosError = await respuesta.json();
+        Swal.fire(
+          "Error",
+          datosError.mensaje || "Error al actualizar el perfil.",
+          "error"
+        );
+      }
+    } catch (error) {
+      console.error("Error en la actualización:", error);
+      Swal.fire(
+        "Error Grave",
+        "No se pudo conectar con el servidor para actualizar.",
+        "error"
+      );
+    } finally {
+      setCargando(false);
     }
   };
 
   return (
     <div className="container">
       <Container className="my-5 px-4 border border-1 rounded-4 border-secondary">
-        <h2 className="text-center my-4">Crear Cuenta</h2>
-        <Form onSubmit={handleSubmit(submitRegistro)}>
+        <h2 className="text-center my-4">
+          Mi Perfil
+          <Button
+            variant={editando ? "secondary" : "warning"}
+            size="sm"
+            onClick={() => {
+              setEditando(!editando);
+            }}
+            className="float-end mt-1"
+          >
+            {editando ? "Cancelar" : "Editar Datos"}
+          </Button>
+        </h2>
+
+        <Form onSubmit={handleSubmit(submitEdicion)}>
           <Row className="mb-3">
             <Form.Group as={Col} md="4" controlId="formNombreUsuario">
               <Form.Label>Usuario</Form.Label>
@@ -68,6 +127,7 @@ const Registro = () => {
                   minLength: { value: 4, message: "Mínimo 4 caracteres" },
                   maxLength: { value: 20, message: "Máximo 20 caracteres" },
                 })}
+                disabled={!editando}
               />
               <Form.Text className="text-danger">
                 {errors.nombreUsuario?.message}
@@ -80,6 +140,7 @@ const Registro = () => {
                 {...register("nombre", {
                   required: "El nombre es obligatorio",
                 })}
+                disabled={!editando}
               />
               <Form.Text className="text-danger">
                 {errors.nombre?.message}
@@ -92,6 +153,7 @@ const Registro = () => {
                 {...register("apellido", {
                   required: "El apellido es obligatorio",
                 })}
+                disabled={!editando}
               />
               <Form.Text className="text-danger">
                 {errors.apellido?.message}
@@ -106,8 +168,10 @@ const Registro = () => {
                 {...register("anio", {
                   required: "Seleccionar Año es obligatorio",
                 })}
+                disabled={!editando}
               >
                 <option value="">Año</option>
+
                 <option value="2010">2010</option>
                 <option value="2009">2009</option>
                 <option value="2008">2008</option>
@@ -180,8 +244,10 @@ const Registro = () => {
                 {...register("mes", {
                   required: "Seleccionar Mes es obligatorio",
                 })}
+                disabled={!editando}
               >
                 <option value="">Mes</option>
+
                 <option value="01">Enero</option>
                 <option value="02">Febrero</option>
                 <option value="03">Marzo</option>
@@ -205,8 +271,10 @@ const Registro = () => {
                 {...register("dia", {
                   required: "Seleccionar Día es obligatorio",
                 })}
+                disabled={!editando}
               >
                 <option value="">Día</option>
+
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -252,6 +320,7 @@ const Registro = () => {
                 {...register("genero", {
                   required: "El género es obligatorio",
                 })}
+                disabled={!editando}
               >
                 <option value=""></option>
                 <option value="Masculino">Masculino</option>
@@ -280,6 +349,7 @@ const Registro = () => {
                     message: "Número de celular inválido (ej: 3811234567)",
                   },
                 })}
+                disabled={!editando}
               />
               <Form.Text className="text-danger">
                 {errors.celular?.message}
@@ -291,7 +361,6 @@ const Registro = () => {
             <Form.Label>Correo Electrónico</Form.Label>
             <Form.Control
               type="email"
-              placeholder="correo@rollinCodeClub.com"
               {...register("correoElectronico", {
                 required: "El email es obligatorio",
                 pattern: {
@@ -300,59 +369,29 @@ const Registro = () => {
                   message: "El email debe tener un formato válido.",
                 },
               })}
+              disabled={!editando}
             />
             <Form.Text className="text-danger">
               {errors.correoElectronico?.message}
             </Form.Text>
           </Form.Group>
 
-          <Row className="mb-3">
-            <Form.Group as={Col} md="6" controlId="formPassword">
-              <Form.Label>Contraseña</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Crea una contraseña"
-                {...register("password", {
-                  required: "La contraseña es obligatoria",
-                  pattern: {
-                    value:
-                      /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/,
-                    message:
-                      "Debe tener 8-16 caracteres, 1 dígito, 1 minúscula, 1 mayúscula y 1 caracter especial.",
-                  },
-                })}
-              />
-              <Form.Text className="text-danger">
-                {errors.password?.message}
-              </Form.Text>
-            </Form.Group>
-
-            <Form.Group as={Col} md="6" controlId="formRepetirContrasenia">
-              <Form.Label>Repetir Contraseña</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Confirma la contraseña"
-                {...register("repetirContrasenia", {
-                  required: "Confirmar la contraseña es obligatorio",
-                  validate: (value) =>
-                    value === passwordValue || "Las contraseñas no coinciden.",
-                })}
-              />
-              <Form.Text className="text-danger">
-                {errors.repetirContrasenia?.message}
-              </Form.Text>
-            </Form.Group>
-          </Row>
-
-          <div className="d-grid my-4 ">
-            <Button variant="primary" type="submit" size="lg">
-              Registrarse
-            </Button>
-          </div>
+          {editando && (
+            <div className="d-grid my-4 ">
+              <Button
+                variant="success"
+                type="submit"
+                size="lg"
+                disabled={cargando}
+              >
+                {cargando ? "Guardando..." : "Guardar Cambios"}
+              </Button>
+            </div>
+          )}
         </Form>
       </Container>
     </div>
   );
 };
 
-export default Registro;
+export default PerfilUsuario;
