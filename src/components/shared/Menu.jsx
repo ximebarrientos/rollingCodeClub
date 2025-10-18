@@ -1,7 +1,7 @@
 import { Navbar, Nav, NavDropdown, Container, Button } from "react-bootstrap";
 import { Link, NavLink, useNavigate } from "react-router";
 
-export default function Menu({ usuarioLogueado, setUsuarioLogueado }) {
+export default function Menu({ usuarioLogueado, setUsuarioLogueado, onLoginClick }) {
   const navegacion = useNavigate();
 
   const logout = () => {
@@ -93,8 +93,7 @@ export default function Menu({ usuarioLogueado, setUsuarioLogueado }) {
             ) : (
               <>
                 <Button
-                  as={Link}
-                  to={"/login"}
+                  onClick={onLoginClick}
                   variant="outline-light"
                   size="sm"
                   className="py-2"

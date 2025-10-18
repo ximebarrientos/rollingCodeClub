@@ -1,11 +1,11 @@
 import { NavLink, useNavigate } from "react-router";
 import Swal from "sweetalert2";
-import { Form, Button, Container } from "react-bootstrap";
+import { Form, Button, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { login } from "../../helpers/usuariosAPI";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-const Login = ({ setUsuarioLogueado }) => {
+const Login = ({ show, onHide, setUsuarioLogueado }) => {
   const {
     register,
     handleSubmit,
@@ -37,6 +37,7 @@ const Login = ({ setUsuarioLogueado }) => {
           background: "#212529",
           color: "#fff",
         });
+        onHide();
         if (usuario.rol && usuario.rol.toLowerCase() === "administrador") {
           navegacion("/administrador");
         } else {
@@ -64,9 +65,11 @@ const Login = ({ setUsuarioLogueado }) => {
   };
 
   return (
-    <div className="container">
-      <Container className="my-5 px-4 border border-1 rounded-4 border-secondary">
-        <h2 className="text-center my-4">Iniciar Sesión</h2>
+    <Modal show={show} onHide={onHide} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>Iniciar Sesión</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
         <Form onSubmit={handleSubmit(loginUser)}>
           <Form.Group className="mb-3" controlId="emailLogin">
             <Form.Label>Correo Electrónico</Form.Label>
@@ -112,7 +115,7 @@ const Login = ({ setUsuarioLogueado }) => {
             <Button
               variant="link"
               className="p-0 text-decoration-none"
-              onClick={() => navegacion("/error404")}
+              onClick={() => { onHide(); navegacion("/error404"); }}
             >
               ¿Olvidaste tu contraseña?
             </Button>
@@ -132,7 +135,7 @@ const Login = ({ setUsuarioLogueado }) => {
             <Button
               variant="outline-info"
               size="lg"
-              onClick={() => navegacion("/error404")}
+              onClick={() => { onHide(); navegacion("/error404"); }}
             >
               <i className="bi bi-facebook me-2"></i>
               Iniciar sesión con Facebook
@@ -140,7 +143,7 @@ const Login = ({ setUsuarioLogueado }) => {
             <Button
               variant="outline-danger"
               size="lg"
-              onClick={() => navegacion("/error404")}
+              onClick={() => { onHide(); navegacion("/error404"); }}
             >
               <i className="bi bi-google me-2"></i>
               Iniciar sesión con Google
@@ -148,12 +151,12 @@ const Login = ({ setUsuarioLogueado }) => {
           </div>
         </Form>
         <div className="d-grid mt-3 text-center mb-2">
-          <NavLink variant="outline-primary" size="lg" to={"/registro"}>
+          <NavLink variant="outline-primary" size="lg" to={"/registro"} onClick={onHide}>
             ¿No estás registrado? Regístrate aquí
           </NavLink>
         </div>
-      </Container>
-    </div>
+      </Modal.Body>
+    </Modal>
   );
 };
 

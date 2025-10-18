@@ -2,7 +2,7 @@ import { Navigate, useLocation, useNavigate } from "react-router";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
 
-const ProtectorRutas = ({ children, usuarioLogueado, rol = null }) => {
+const ProtectorRutas = ({ children, usuarioLogueado, rol = null, setShowModalLogin }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -20,16 +20,22 @@ const ProtectorRutas = ({ children, usuarioLogueado, rol = null }) => {
           color: "#fff",
       }).then((result) => {
         if (result.isConfirmed){
-          navigate("/login");
+          setShowModalLogin(true);
         } else {
-          navigate ("/")
+          navigate ("/");
         }
       });
     }
-  }, [usuarioLogueado, location.pathname, navigate]);
+  }, [usuarioLogueado, location.pathname, navigate, setShowModalLogin]);
+
+  useEffect(() => {
+    if ((!usuarioLogueado || !usuarioLogueado.token) && location.pathname !== "/reserva") {
+      setShowModalLogin(true);
+    }
+  }, [usuarioLogueado, location.pathname, setShowModalLogin]);
 
   if (!usuarioLogueado || !usuarioLogueado.token) {
-    return location.pathname === "/reserva" ? null : <Navigate to="/login" replace />;
+    return location.pathname === "/reserva" ? null : <Navigate to="/" replace />;
   }
 
   if (rol && usuarioLogueado.rol !== rol) {

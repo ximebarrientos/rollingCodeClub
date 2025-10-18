@@ -21,11 +21,15 @@ function App() {
   const usuarioSessionStorage =
     JSON.parse(sessionStorage.getItem("userKey")) || {};
   const [usuarioLogueado, setUsuarioLogueado] = useState(usuarioSessionStorage);
+  const [showModalLogin, setShowModalLogin] = useState(false);
 
   useEffect(() => {
+    // Si el objeto de usuario está vacío, no intentamos guardar un "null" o vacío
+    // Esto asegura que la sesión se mantiene si el usuarioLogueado cambia (ej: actualización de datos)
     if (Object.keys(usuarioLogueado).length > 0) {
       sessionStorage.setItem("userKey", JSON.stringify(usuarioLogueado));
     } else {
+      // Opcional: limpiar si el usuario cierra sesión (logoutea)
       sessionStorage.removeItem("userKey");
     }
   }, [usuarioLogueado]);
@@ -36,14 +40,22 @@ function App() {
         <Menu
           usuarioLogueado={usuarioLogueado}
           setUsuarioLogueado={setUsuarioLogueado}
+          onLoginClick={() => setShowModalLogin(true)}
+        />
+        <Login
+          show={showModalLogin}
+          onHide={() => setShowModalLogin(false)}
+          usuarioLogueado={usuarioLogueado}
+          setUsuarioLogueado={setUsuarioLogueado}
         />
         <main>
           <Routes>
+            {/* RUTAS PÚBLICAS */}
             <Route path="/" element={<Inicio />} />
             <Route
               path="/reserva"
               element={
-                <ProtectorRutas usuarioLogueado={usuarioLogueado}>
+                <ProtectorRutas usuarioLogueado={usuarioLogueado} setShowModalLogin={setShowModalLogin}>
                   <ReservarTurnos usuarioLogueado={usuarioLogueado} />
                 </ProtectorRutas>
               }
@@ -56,15 +68,6 @@ function App() {
             <Route
               path="/tienda/:categoria/:subcategoria"
               element={<Tienda />}
-            />
-            <Route
-              path="/login"
-              element={
-                <Login
-                  usuarioLogueado={usuarioLogueado}
-                  setUsuarioLogueado={setUsuarioLogueado}
-                />
-              }
             />
             <Route path="/registro" element={<Registro />} />
             <Route path="/carrito" element={<CarritoCompras />} />
@@ -86,10 +89,13 @@ function App() {
               }
             />
 
+            {/* RUTAS PRIVADAS (USUARIO LOGUEADO) */}
+
+            {/* 1. RUTA DE PERFIL (Protegida) */}
             <Route
               path="/perfil"
               element={
-                <ProtectorRutas usuarioLogueado={usuarioLogueado}>
+                <ProtectorRutas usuarioLogueado={usuarioLogueado} setShowModalLogin={setShowModalLogin}>
                   <PerfilUsuario
                     usuarioLogueado={usuarioLogueado}
                     setUsuarioLogueado={setUsuarioLogueado}
@@ -98,18 +104,21 @@ function App() {
               }
             />
 
+            {/* 2. RUTA DE ADMINISTRADOR (Protegida y con Rol) */}
             <Route
               path="/administrador"
               element={
                 <ProtectorRutas
                   usuarioLogueado={usuarioLogueado}
                   rol="administrador"
+                  setShowModalLogin={setShowModalLogin}
                 >
                   <Administrador usuarioLogueado={usuarioLogueado} />
                 </ProtectorRutas>
               }
             />
 
+            {/* RUTA 404 */}
             <Route path="*" element={<Error404 />} />
           </Routes>
         </main>
@@ -120,3 +129,4 @@ function App() {
 }
 
 export default App;
+
