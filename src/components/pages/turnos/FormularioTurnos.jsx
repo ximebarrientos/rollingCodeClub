@@ -10,38 +10,48 @@ const FormularioTurnos = ({
   turnos,
   refreshData,
   onTurnoReservado,
-  usuarioLogueado
+  usuarioLogueado,
 }) => {
   const {
     register,
     handleSubmit,
     reset,
     watch,
-    formState: { errors }
+    formState: { errors },
   } = useForm({
     defaultValues: {
-      fecha: '',
-      horario: ''
-    }
+      fecha: "",
+      horario: "",
+    },
   });
 
   const onSubmit = async (data) => {
     try {
       // Verificar si el turno ya está ocupado (con manejo de errores)
-      const turnoOcupado = turnos.some(turno => {
+      const turnoOcupado = turnos.some((turno) => {
         try {
-          const fechaTurno = new Date(turno.fecha).toISOString().split('T')[0];
-          return turno.canchaId?._id === cancha?._id &&
-                 fechaTurno === data.fecha &&
-                 turno.horario === data.horario;
+          const fechaTurno = new Date(turno.fecha).toISOString().split("T")[0];
+          return (
+            turno.canchaId?._id === cancha?._id &&
+            fechaTurno === data.fecha &&
+            turno.horario === data.horario
+          );
         } catch (error) {
-          console.warn('Error procesando turno existente:', error);
+          console.warn("Error procesando turno existente:", error);
           return false;
         }
       });
 
       if (turnoOcupado) {
-        Swal.fire("Turno ocupado", `El horario ${data.horario} para la fecha ${new Date(data.fecha).toLocaleDateString('es-ES')} ya está reservado en esta cancha.`, "warning");
+        Swal.fire({
+          title: "Turno ocupado",
+          text: `El horario ${data.horario} para la fecha ${new Date(
+            data.fecha
+          ).toLocaleDateString("es-ES")} ya está reservado en esta cancha.`,
+          icon: "warning",
+          background: "#212529",
+          color: "#fff",
+        });
         return;
       }
 
@@ -49,35 +59,44 @@ const FormularioTurnos = ({
       const fechaConZonaHoraria = `${data.fecha}T12:00:00-03:00`;
 
       const nuevoTurno = {
-          fecha: fechaConZonaHoraria,
-          horario: data.horario,
-          canchaId: cancha._id,
-          usuarioId: usuarioLogueado._id,
-          usuarioNombre: usuarioLogueado.nombreUsuario
+        fecha: fechaConZonaHoraria,
+        horario: data.horario,
+        canchaId: cancha._id,
+        usuarioId: usuarioLogueado.id,
+        usuarioNombre: usuarioLogueado.nombreUsuario,
       };
 
-      console.log("Fecha original:", data.fecha);
-      console.log("Fecha con zona horaria:", fechaConZonaHoraria);
-      console.log("Enviando payload de turno:", nuevoTurno);
-
       const respuesta = await crearTurnoAPI(nuevoTurno);
-      console.log("Respuesta de API:", respuesta);
 
       if (respuesta.ok) {
-          Swal.fire("¡Turno reservado!", "Tu turno ha sido confirmado.", "success");
-          reset();
-          onHide();
-          if (refreshData) {
-            refreshData();
-          }
+        Swal.fire({
+          title: "¡Turno reservado!",
+          text: "Tu turno ha sido confirmado.",
+          icon: "success",
+          background: "#212529",
+          color: "#fff",
+        });
+        reset();
+        onHide();
+        if (refreshData) {
+          refreshData();
+        }
       } else {
-          const errorData = await respuesta.json().catch(() => ({}));
-          console.error("Error detallado del backend:", errorData);
-          Swal.fire("Error", `No se pudo reservar el turno: ${respuesta.status} ${respuesta.statusText}`, "error");
+        const errorData = await respuesta.json().catch(() => ({}));
+        console.error("Error detallado del backend:", errorData);
+        Swal.fire(
+          "Error",
+          `No se pudo reservar el turno: ${respuesta.status} ${respuesta.statusText}`,
+          "error"
+        );
       }
     } catch (error) {
-        console.error("Error completo en onSubmit:", error);
-        Swal.fire("Error", "Ocurrió un error inesperado al reservar el turno. Por favor, inténtalo de nuevo.", "error");
+      console.error("Error completo en onSubmit:", error);
+      Swal.fire(
+        "Error",
+        "Ocurrió un error inesperado al reservar el turno. Por favor, inténtalo de nuevo.",
+        "error"
+      );
     }
   };
 
@@ -97,9 +116,10 @@ const FormularioTurnos = ({
             <Form.Label>Fecha del Turno *</Form.Label>
             <Form.Control
               type="date"
+              className="bg-primary text-white"
               {...register("fecha", {
                 required: "La fecha es obligatoria",
-                validate: value => {
+                validate: (value) => {
                   const selectedDate = new Date(value);
                   const today = new Date();
                   today.setHours(0, 0, 0, 0);
@@ -108,11 +128,11 @@ const FormularioTurnos = ({
                     return "La fecha no puede ser anterior a hoy";
                   }
                   return true;
-                }
+                },
               })}
               min={(() => {
-                  const today = new Date();
-                  return today.toISOString().split('T')[0];
+                const today = new Date();
+                return today.toISOString().split("T")[0];
               })()}
               isInvalid={!!errors.fecha}
             />
@@ -124,10 +144,11 @@ const FormularioTurnos = ({
           <Form.Group className="mb-3">
             <Form.Label>Horario Disponible *</Form.Label>
             <Form.Select
+              className="bg-primary text-white"
               {...register("horario", {
                 required: "El horario es obligatorio",
-                validate: value =>
-                  cancha?.horariosCancha?.includes(value) || "Horario inválido"
+                validate: (value) =>
+                  cancha?.horariosCancha?.includes(value) || "Horario inválido",
               })}
               isInvalid={!!errors.horario}
             >
@@ -139,15 +160,19 @@ const FormularioTurnos = ({
 
                 if (fechaSeleccionada && turnos) {
                   try {
-                    estaOcupado = turnos.some(turno => {
+                    estaOcupado = turnos.some((turno) => {
                       if (!turno?.canchaId?._id) return false;
-                      const fechaTurno = new Date(turno.fecha).toISOString().split('T')[0];
-                      return turno.canchaId._id === cancha._id &&
-                             fechaTurno === fechaSeleccionada &&
-                             turno.horario === horario;
+                      const fechaTurno = new Date(turno.fecha)
+                        .toISOString()
+                        .split("T")[0];
+                      return (
+                        turno.canchaId._id === cancha._id &&
+                        fechaTurno === fechaSeleccionada &&
+                        turno.horario === horario
+                      );
                     });
                   } catch (error) {
-                    console.warn('Error verificando horario ocupado:', error);
+                    console.warn("Error verificando horario ocupado:", error);
                   }
                 }
 
@@ -156,9 +181,9 @@ const FormularioTurnos = ({
                     key={index}
                     value={horario}
                     disabled={estaOcupado}
-                    className={estaOcupado ? 'text-muted' : ''}
+                    className={estaOcupado ? "text-muted" : ""}
                   >
-                    {horario} {estaOcupado ? '(Ocupado)' : ''}
+                    {horario} {estaOcupado ? "(Ocupado)" : ""}
                   </option>
                 );
               }) || []}

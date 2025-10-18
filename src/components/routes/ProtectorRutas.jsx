@@ -2,7 +2,7 @@ import { Navigate, useLocation, useNavigate } from "react-router";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
 
-const ProtectorRutas = ({ children, usuarioLogueado, rol = null }) => {
+const ProtectorRutas = ({ children, usuarioLogueado, rol = null, setShowModalLogin }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -12,15 +12,30 @@ const ProtectorRutas = ({ children, usuarioLogueado, rol = null }) => {
         title: "Inicio de sesión requerido",
         text: "Para reservar turnos necesitas estar logueado primero",
         icon: "info",
-        confirmButtonText: "Ir al login"
-      }).then(() => {
-        navigate("/login");
+        confirmButtonText: "Ir al login",
+        confirmButtonColor: "#198754",
+        showCancelButton: true,
+        cancelButtonColor: "#d33",
+        background: "#212529",
+          color: "#fff",
+      }).then((result) => {
+        if (result.isConfirmed){
+          setShowModalLogin(true);
+        } else {
+          navigate ("/");
+        }
       });
     }
-  }, [usuarioLogueado, location.pathname, navigate]);
+  }, [usuarioLogueado, location.pathname, navigate, setShowModalLogin]);
+
+  useEffect(() => {
+    if ((!usuarioLogueado || !usuarioLogueado.token) && location.pathname !== "/reserva") {
+      setShowModalLogin(true);
+    }
+  }, [usuarioLogueado, location.pathname, setShowModalLogin]);
 
   if (!usuarioLogueado || !usuarioLogueado.token) {
-    return location.pathname === "/reserva" ? null : <Navigate to="/login" replace />;
+    return location.pathname === "/reserva" ? null : <Navigate to="/" replace />;
   }
 
   if (rol && usuarioLogueado.rol !== rol) {

@@ -1,5 +1,6 @@
 import { Button } from "react-bootstrap";
 import { eliminarCanchaAPI } from "../../../helpers/canchasAPI";
+import { obtenerTurnosAPI } from "../../../helpers/turnosAPI";
 import Swal from "sweetalert2";
 
 const FilaCanchaTabla = ({ cancha, recargarCanchas, onEditar }) => {
@@ -13,16 +14,58 @@ const FilaCanchaTabla = ({ cancha, recargarCanchas, onEditar }) => {
       cancelButtonColor: "#6c757d",
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
+      background: "#212529",
+      color: "#fff",
     });
 
     if (result.isConfirmed) {
       try {
-        await eliminarCanchaAPI(cancha._id);
-        Swal.fire("Eliminada", "La cancha ha sido eliminada.", "success");
+        // Verificar si hay turnos reservados para esta cancha
+        const turnos = await obtenerTurnosAPI();
+        const turnosParaCancha = turnos.filter(
+          (turno) => turno.canchaId?._id === cancha._id
+        );
+
+        if (turnosParaCancha.length > 0) {
+          Swal.fire({
+            title: "No se puede eliminar",
+            text: "Esta cancha tiene turnos reservados. Elimina los turnos antes de borrar la cancha.",
+            icon: "warning",
+            background: "#212529",
+            color: "#fff",
+          });
+          return;
+        }
+
+        const respuesta = await eliminarCanchaAPI(cancha._id);
+        if (!respuesta.ok) {
+          Swal.fire({
+            title: "Error",
+            text: "No se pudo eliminar la cancha.",
+            icon: "error",
+            background: "#212529",
+            color: "#fff",
+          });
+          return;
+        }
+
+        Swal.fire({
+          title: "Eliminada",
+          text: "La cancha ha sido eliminada.",
+          icon: "success",
+          background: "#212529",
+          color: "#fff",
+        });
         recargarCanchas();
       } catch (error) {
         console.error(error);
-        Swal.fire("Error", "No se pudo eliminar la cancha.", "error");
+        Swal.fire({
+          title: "Error",
+          text: "No se pudo eliminar la cancha.",
+          icon: "error",
+          background: "#212529",
+          color: "#fff",
+        });
       }
     }
   };
