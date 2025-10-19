@@ -29,6 +29,8 @@ const Contacto = () => {
       icon: "success",
       confirmButtonText: "Aceptar",
       confirmButtonColor: "#198754",
+      background: "#212529",
+      color: "#fff",
     });
     reset();
     setShowModal(false);
@@ -159,13 +161,11 @@ const Contacto = () => {
                   required: "El nombre es requerido",
                   minLength: {
                     value: 3,
-                    message:
-                      "El nombre debe tener al menos 3 caracteres",
+                    message: "El nombre debe tener al menos 3 caracteres",
                   },
                   maxLength: {
                     value: 50,
-                    message:
-                      "El nombre no puede superar los 50 caracteres",
+                    message: "El nombre no puede superar los 50 caracteres",
                   },
                 })}
                 required
@@ -222,8 +222,14 @@ const Contacto = () => {
                 placeholder="Ingresa tu mensaje"
                 {...register("mensajeContacto", {
                   required: "El mensaje es requerido",
-                  minLength:{ value: 15, message: "El mensaje debe tener al menos 15 caracteres" },
-                  maxLength:{ value: 250, message: "El mensaje no puede superar los 250 caracteres" },
+                  minLength: {
+                    value: 15,
+                    message: "El mensaje debe tener al menos 15 caracteres",
+                  },
+                  maxLength: {
+                    value: 250,
+                    message: "El mensaje no puede superar los 250 caracteres",
+                  },
                 })}
                 required
                 minLength={15}

@@ -22,11 +22,13 @@ const TablaUsuario = ({ usuarioLogueado }) => {
       const datosUsuarios = await respuesta.json();
       setUsuarios(datosUsuarios);
     } else {
-      Swal.fire(
-        "Error",
-        "No se pudieron cargar los usuarios. Revisa el token.",
-        "error"
-      );
+      Swal.fire({
+        title: "Error",
+        text: "No se pudieron cargar los usuarios. Revisa el token.",
+        icon: "error",
+        background: "#212529",
+        color: "#fff",
+      });
     }
   };
 

@@ -1,6 +1,6 @@
 import { Button, Image } from "react-bootstrap";
 import { borrarProducto } from "../../../helpers/queries.js";
-import Swal from "sweetalert2"; 
+import Swal from "sweetalert2";
 
 const FilaProductoTabla = ({
   producto,
@@ -30,6 +30,8 @@ const FilaProductoTabla = ({
       cancelButtonColor: "#6c757d",
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
+      background: "#212529",
+      color: "#fff",
     }).then(async (result) => {
       if (result.isConfirmed) {
         const respuesta = await borrarProducto(_id);
@@ -40,6 +42,8 @@ const FilaProductoTabla = ({
             icon: "success",
             confirmButtonColor: "#198754",
             timer: 2000,
+            background: "#212529",
+            color: "#fff",
           });
           obtenerProductos();
         } else {
@@ -48,6 +52,8 @@ const FilaProductoTabla = ({
             text: "❌ Ocurrió un error al eliminar el producto.",
             icon: "error",
             confirmButtonColor: "#d33",
+            background: "#212529",
+            color: "#fff",
           });
         }
       }
