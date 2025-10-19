@@ -46,11 +46,13 @@ const FilaUsuarioTabla = ({ usuario, cargarUsuarios, token }) => {
 
   const handleBorrarUsuario = () => {
     if (esAdmin) {
-      Swal.fire(
-        "Prohibido",
-        "No puedes eliminar a otro administrador.",
-        "warning"
-      );
+      Swal.fire({
+        title: "Prohibido",
+        text: "No puedes eliminar a otro administrador.",
+        icon: "warning",
+        background: "#212529",
+        color: "#fff",
+      });
       return;
     }
 
@@ -63,12 +65,20 @@ const FilaUsuarioTabla = ({ usuario, cargarUsuarios, token }) => {
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Sí, borrar",
       cancelButtonText: "Cancelar",
+      background: "#212529",
+      color: "#fff",
     }).then(async (result) => {
       if (result.isConfirmed) {
         const respuesta = await borrarUsuario(usuario._id, token);
 
         if (respuesta.status === 200) {
-          Swal.fire("¡Borrado!", "El usuario ha sido eliminado.", "success");
+          Swal.fire({
+            title: "¡Borrado!",
+            text: "El usuario ha sido eliminado.",
+            icon: "success",
+            background: "#212529",
+            color: "#fff",
+          });
           cargarUsuarios();
         } else {
           const error = await respuesta.json();
