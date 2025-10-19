@@ -114,7 +114,9 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
   return (
     <div className="container">
       <Container className="my-5 px-4 border border-1 rounded-4 border-secondary">
+        
         <h2 className="text-center my-4 text-success">
+          <i className="bi bi-person-circle fs-1 me-2"></i>
           Mi Perfil
           <Button
             variant={editando ? "secondary" : "warning"}
@@ -379,7 +381,11 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
               <Card className="h-100">
                 <CardBody>
                   <CardTitle>Usuario</CardTitle>
-                  <CardText>{usuarioLogueado.nombreUsuario}</CardText>
+                  <CardText
+                    className="text-success"
+                  >
+                    {usuarioLogueado.nombreUsuario}
+                  </CardText>
                 </CardBody>
               </Card>
             </Col>
@@ -387,7 +393,7 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
               <Card className="h-100">
                 <CardBody>
                   <CardTitle>Nombre</CardTitle>
-                  <CardText>{usuarioLogueado.nombre}</CardText>
+                  <CardText className="text-success">{usuarioLogueado.nombre}</CardText>
                 </CardBody>
               </Card>
             </Col>
@@ -395,7 +401,7 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
               <Card className="h-100">
                 <CardBody>
                   <CardTitle>Apellido</CardTitle>
-                  <CardText>{usuarioLogueado.apellido}</CardText>
+                  <CardText className="text-success">{usuarioLogueado.apellido}</CardText>
                 </CardBody>
               </Card>
             </Col>
@@ -403,7 +409,7 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
               <Card className="h-100">
                 <CardBody>
                   <CardTitle>Fecha de Nacimiento</CardTitle>
-                  <CardText>
+                  <CardText className="text-success">
                     {usuarioLogueado.fechaNacimiento.split("T")[0]}
                   </CardText>
                 </CardBody>
@@ -413,7 +419,7 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
               <Card className="h-100">
                 <CardBody>
                   <CardTitle>Género</CardTitle>
-                  <CardText>{usuarioLogueado.genero}</CardText>
+                  <CardText className="text-success">{usuarioLogueado.genero}</CardText>
                 </CardBody>
               </Card>
             </Col>
@@ -421,7 +427,7 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
               <Card className="h-100">
                 <CardBody>
                   <CardTitle>Celular</CardTitle>
-                  <CardText>{usuarioLogueado.celular}</CardText>
+                  <CardText className="text-success">{usuarioLogueado.celular}</CardText>
                 </CardBody>
               </Card>
             </Col>
@@ -429,7 +435,7 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
               <Card className="h-100">
                 <CardBody>
                   <CardTitle>Correo Electrónico</CardTitle>
-                  <CardText>{usuarioLogueado.correoElectronico}</CardText>
+                  <CardText className="text-success">{usuarioLogueado.correoElectronico}</CardText>
                 </CardBody>
               </Card>
             </Col>
