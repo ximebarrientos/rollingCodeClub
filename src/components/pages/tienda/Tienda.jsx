@@ -330,7 +330,7 @@ export default function Tienda({ usuarioLogueado }) {
             <Form.Control
               type="text"
               placeholder="Buscar productos..."
-              className="text-center"
+              className="text-center bg-primary border-success text-white"
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
             />
