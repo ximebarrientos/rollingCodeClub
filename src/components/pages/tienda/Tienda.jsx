@@ -297,7 +297,7 @@ export default function Tienda({ usuarioLogueado }) {
             />
             <Form.Check
               inline
-              label="Precio ↑"
+              label="Precio ↓-↑"
               name="orden"
               type="radio"
               checked={orden === "precioAsc"}
@@ -306,7 +306,7 @@ export default function Tienda({ usuarioLogueado }) {
             />
             <Form.Check
               inline
-              label="Precio ↓"
+              label="Precio ↑-↓"
               name="orden"
               type="radio"
               checked={orden === "precioDesc"}
