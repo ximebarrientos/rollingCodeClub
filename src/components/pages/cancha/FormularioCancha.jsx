@@ -26,7 +26,6 @@ const FormularioCancha = ({ cancha, recargarCanchas, cerrarFormulario }) => {
       setValue("precioCancha", cancha.precioCancha);
       setValue("descripcionCancha", cancha.descripcionCancha);
       setImagenActual(cancha.imagenCancha);
-
       cancha.horariosCancha.forEach((horario) => {
         setValue(`horario-${horario}`, true);
       });
@@ -67,40 +66,66 @@ const FormularioCancha = ({ cancha, recargarCanchas, cerrarFormulario }) => {
       let respuesta;
       if (cancha && cancha.nueva) {
         respuesta = await crearCanchaAPI(formData);
-        if (respuesta && respuesta.ok) {
-          Swal.fire({
-            title: "Cancha creada",
-            text: "La cancha ha sido creada con éxito",
-            icon: "success",
-            confirmButtonColor: "#0066cc",
-            background: "#212529",
-            color: "#fff",
-          });
-        } else throw new Error("Error al crear la cancha");
       } else if (cancha) {
         respuesta = await editarCanchaAPI(cancha._id, formData);
-        if (respuesta && respuesta.ok) {
-          Swal.fire({
-            title: "Cancha editada",
-            text: "La cancha ha sido editada con éxito",
-            icon: "success",
-            confirmButtonColor: "#0066cc",
-            background: "#212529",
-            color: "#fff",
-          });
-        } else throw new Error("Error al editar la cancha");
       }
 
-      reset();
-      setPreview("");
-      setImagenActual("");
-      recargarCanchas();
-      cerrarFormulario();
-    } catch (error) {
-      console.error(error);
+      if (!respuesta) throw new Error("No se pudo conectar con el servidor.");
+
+      if (respuesta.ok) {
+        Swal.fire({
+          title: cancha && cancha.nueva ? "Cancha creada" : "Cancha editada",
+          text:
+            cancha && cancha.nueva
+              ? "La cancha ha sido creada con éxito"
+              : "La cancha ha sido editada con éxito",
+          icon: "success",
+          confirmButtonColor: "#0066cc",
+          background: "#212529",
+          color: "#fff",
+        });
+
+        reset();
+        setPreview("");
+        setImagenActual("");
+        recargarCanchas();
+        cerrarFormulario();
+        return;
+      }
+
+      let mensajeError = "Ocurrió un error al procesar la cancha.";
+      try {
+        const errorData = await respuesta.json();
+        if (errorData.errores && Array.isArray(errorData.errores)) {
+          mensajeError = errorData.errores[0]?.msg || mensajeError;
+        } else if (errorData.mensaje) {
+          mensajeError = errorData.mensaje;
+        } else {
+          const textoPlano = JSON.stringify(errorData).toLowerCase();
+          if (
+            textoPlano.includes("e11000") ||
+            textoPlano.includes("duplicate") ||
+            textoPlano.includes("unique")
+          ) {
+            mensajeError = "Ya existe una cancha con ese nombre.";
+          }
+        }
+      } catch {
+        mensajeError = "Error al procesar la respuesta del servidor.";
+      }
+
       Swal.fire({
         title: "Error",
-        text: "Ocurrió un error al procesar la cancha",
+        text: mensajeError,
+        icon: "error",
+        confirmButtonColor: "#dc3545",
+        background: "#212529",
+        color: "#fff",
+      });
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: error.message || "Ocurrió un error al procesar la cancha.",
         icon: "error",
         confirmButtonColor: "#dc3545",
         background: "#212529",
