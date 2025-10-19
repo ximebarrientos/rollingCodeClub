@@ -27,7 +27,6 @@ const FormularioTurnos = ({
 
   const onSubmit = async (data) => {
     try {
-      // Verificar si el turno ya está ocupado (con manejo de errores)
       const turnoOcupado = turnos.some((turno) => {
         try {
           const fechaTurno = new Date(turno.fecha).toISOString().split("T")[0];
@@ -54,8 +53,6 @@ const FormularioTurnos = ({
         });
         return;
       }
-
-      // Crear fecha con zona horaria Argentina (-03:00) para evitar problemas de conversión
       const fechaConZonaHoraria = `${data.fecha}T12:00:00-03:00`;
 
       const nuevoTurno = {
@@ -154,7 +151,7 @@ const FormularioTurnos = ({
             >
               <option value="">Seleccionar horario</option>
               {cancha?.horariosCancha?.map((horario, index) => {
-                // Verificar si este horario está ocupado para la fecha seleccionada
+          
                 const fechaSeleccionada = watch("fecha");
                 let estaOcupado = false;
 

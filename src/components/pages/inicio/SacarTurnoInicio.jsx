@@ -6,7 +6,7 @@ export default function SacarTurnoInicio() {
     <Row className="mt-5 mb-5">
       <Col className="bg-success p-4 rounded text-center sombra-verde">
         <h2 className="fw-bold">Saca tu turno aquí</h2>
-        <Button variant="dark" size="lg" className="mt-3">
+        <Button variant="dark" size="lg" className="mt-3" href="/reserva">
           Reservar turno
         </Button>
       </Col>

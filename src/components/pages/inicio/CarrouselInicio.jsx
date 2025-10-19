@@ -6,10 +6,9 @@ export default function CarrouselInicio() {
      
       <Carousel.Item>
         <img
-          className="d-block w-100"
+          className="d-block w-100 carousel-img"
           src="./canchafutbolimg.jpg" 
           alt="Fútbol 5 Techada"
-          style={{ maxHeight: "500px", objectFit: "cover" }}
         />
         <Carousel.Caption className="bg-dark bg-opacity-50 rounded p-2">
           <h3>Fútbol 5 Techada</h3>
@@ -19,23 +18,21 @@ export default function CarrouselInicio() {
 
       <Carousel.Item>
         <img
-          className="d-block w-100"
+          className="d-block w-100 carousel-img"
           src="./canchadestechadaimg.jpg"
-          alt="Fútbol 5 Destechada"
-          style={{ maxHeight: "500px", objectFit: "cover" }}
+          alt="Fútbol 5 Descubierta"
         />
         <Carousel.Caption className="bg-dark bg-opacity-50 rounded p-2">
-          <h3>Fútbol 5 Destechada</h3>
+          <h3>Fútbol 5 Descubierta</h3>
           <p>Al aire libre, con toda la frescura 🌤️</p>
         </Carousel.Caption>
       </Carousel.Item>
 
       <Carousel.Item>
         <img
-          className="d-block w-100"
+          className="d-block w-100 carousel-img"
           src="./f7techada.jpg"
           alt="Fútbol 7 Techada"
-          style={{ maxHeight: "500px", objectFit: "cover" }}
         />
         <Carousel.Caption className="bg-dark bg-opacity-50 rounded p-2">
           <h3>Fútbol 7 Techada</h3>
@@ -45,13 +42,12 @@ export default function CarrouselInicio() {
 
       <Carousel.Item>
         <img
-          className="d-block w-100"
+          className="d-block w-100 carousel-img"
           src="./f7destechada.jpg"
-          alt="Fútbol 7 Destechada"
-          style={{ maxHeight: "500px", objectFit: "cover" }}
+          alt="Fútbol 7 Descubierta"
         />
         <Carousel.Caption className="bg-dark bg-opacity-50 rounded p-2">
-          <h3>Fútbol 7 Destechada</h3>
+          <h3>Fútbol 7 Descubierta</h3>
           <p>Juegos al aire libre con toda la adrenalina ⚽</p>
         </Carousel.Caption>
       </Carousel.Item>
