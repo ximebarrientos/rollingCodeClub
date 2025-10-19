@@ -1,0 +1,77 @@
+.sombra-verde {
+  transition: all 0.9s ease;
+}
+
+.sombra-verde:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 20px rgba(36, 202, 125, 0.6);
+}
+
+.producto-card {
+  background-color: #212529;
+  border: none;
+}
+
+.producto-img {
+  width: 100%;
+  max-height: 250px;
+  object-fit: cover;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+.producto-card:hover .producto-img {
+  transform: scale(1.05);
+}
+
+.sponsor-logo {
+  width: 100%;
+  max-width: 300px; 
+  max-height: 100px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  display: block;
+  margin: 0 auto;
+  transition: transform 0.6s ease, filter 0.6s ease;
+}
+
+.sponsor-logo:hover {
+  transform: scale(1.1);
+  filter: brightness(1) drop-shadow(0 0 10px rgba(36, 202, 125, 0.6));
+}
+
+.carousel-img {
+  width: 100%;
+  height: 500px;          
+  object-fit: cover;       
+  border-radius: 12px;
+}
+
+.carousel-caption {
+  bottom: 8%;
+}
+
+.carousel-caption h3 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+}
+
+.carousel-caption p {
+  font-size: 1.1rem;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 992px) {
+  .carousel-img { height: 320px; }
+  .carousel-caption { bottom: 7%; }
+  .carousel-caption h3 { font-size: 1.3rem; }
+  .carousel-caption p { font-size: 1rem; }
+}
+
+@media (max-width: 576px) {
+  .carousel-img { height: 220px; }
+  .carousel-caption { bottom: 4%; }
+  .carousel-caption h3 { font-size: 1.1rem; }
+  .carousel-caption p { font-size: 0.9rem; }
+}
