@@ -63,11 +63,11 @@ function App() {
             <Route path="/turnos" element={<FormularioTurnos />} />
             <Route path="/contacto" element={<Contacto />} />
             <Route path="/sobre-nosotros" element={<QuienesSomos />} />
-            <Route path="/tienda" element={<Tienda />} />
-            <Route path="/tienda/:categoria" element={<Tienda />} />
+            <Route path="/tienda" element={<Tienda usuarioLogueado={usuarioLogueado}/>} />
+            <Route path="/tienda/:categoria" element={<Tienda usuarioLogueado={usuarioLogueado}/>} />
             <Route
               path="/tienda/:categoria/:subcategoria"
-              element={<Tienda />}
+              element={<Tienda usuarioLogueado={usuarioLogueado}/>}
             />
             <Route path="/registro" element={<Registro />} />
             <Route path="/carrito" element={<CarritoCompras />} />
