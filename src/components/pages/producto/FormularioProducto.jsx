@@ -34,14 +34,12 @@ const FormularioProducto = ({
       setValue("categoria", productoEditado.categoria);
       setValue("subcategoria", productoEditado.subcategoria);
       setValue("descripcion", productoEditado.descripcion);
-
       if (productoEditado.talles) {
         setValue("tallesTexto", productoEditado.talles.join(", "));
       }
       if (productoEditado.numeros) {
         setValue("numerosTexto", productoEditado.numeros.join(", "));
       }
-
       setImagenActual(productoEditado.imagen);
     } else {
       reset();
@@ -83,7 +81,9 @@ const FormularioProducto = ({
         ? await editarProducto(productoEditado._id, formData)
         : await crearProducto(formData);
 
-      if (respuesta && respuesta.ok) {
+      if (!respuesta) throw new Error("No se pudo conectar con el servidor.");
+
+      if (respuesta.ok) {
         Swal.fire({
           title: productoEditado
             ? "Producto editado con éxito"
@@ -91,6 +91,8 @@ const FormularioProducto = ({
           icon: "success",
           confirmButtonColor: "#198754",
           timer: 2000,
+          background: "#212529",
+          color: "#fff",
         });
 
         reset();
@@ -98,16 +100,46 @@ const FormularioProducto = ({
         setImagenActual("");
         setProductoEditado(null);
         setMostrarFormulario(false);
-      } else {
-        throw new Error("Error en la respuesta del servidor");
+        return;
       }
-    } catch (error) {
-      console.error(error);
+
+      let mensajeError = "Ocurrió un error al procesar el producto.";
+      try {
+        const errorData = await respuesta.json();
+        if (errorData.errores && Array.isArray(errorData.errores)) {
+          mensajeError = errorData.errores[0]?.msg || mensajeError;
+        } else if (errorData.mensaje) {
+          mensajeError = errorData.mensaje;
+        } else {
+          const textoPlano = JSON.stringify(errorData).toLowerCase();
+          if (
+            textoPlano.includes("e11000") ||
+            textoPlano.includes("duplicate") ||
+            textoPlano.includes("unique")
+          ) {
+            mensajeError = "Ya existe un producto con este nombre.";
+          }
+        }
+      } catch {
+        mensajeError = "Error al procesar la respuesta del servidor.";
+      }
+
       Swal.fire({
-        title: "Error al guardar el producto",
-        text: "Revisa los datos e intenta nuevamente.",
+        title: "Error",
+        text: mensajeError,
         icon: "error",
         confirmButtonColor: "#d33",
+        background: "#212529",
+        color: "#fff",
+      });
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: error.message || "Ocurrió un error al procesar el producto.",
+        icon: "error",
+        confirmButtonColor: "#d33",
+        background: "#212529",
+        color: "#fff",
       });
     }
   };
