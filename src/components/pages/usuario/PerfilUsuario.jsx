@@ -85,11 +85,13 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
         sessionStorage.setItem("userKey", JSON.stringify(nuevoUsuarioLogueado));
         setUsuarioLogueado(nuevoUsuarioLogueado);
 
-        Swal.fire(
-          "Actualizado",
-          "Tu perfil se ha guardado correctamente.",
-          "success"
-        );
+        Swal.fire({
+          title: "Actualizado",
+          text: "Tu perfil se ha guardado correctamente.",
+          icon: "success",
+          background: "#212529",
+          color: "#fff",
+        });
         setEditando(false);
       } else {
         const datosError = await respuesta.json();
@@ -101,11 +103,13 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
       }
     } catch (error) {
       console.error("Error en la actualización:", error);
-      Swal.fire(
-        "Error Grave",
-        "No se pudo conectar con el servidor para actualizar.",
-        "error"
-      );
+      Swal.fire({
+        title: "Error Grave",
+        text: "No se pudo conectar con el servidor para actualizar.",
+        icon: "error",
+        background: "#212529",
+        color: "#fff",
+      });
     } finally {
       setCargando(false);
     }
