@@ -3,7 +3,7 @@ import { Row, Col } from "react-bootstrap";
 export default function BienvenidaInicio() {
   return (
     <Row className="mb-5 mt-5 align-items-center">
-      {/* Texto de bienvenida */}
+
       <Col md={6} className="p-4 rounded bg-dark shadow-sm text-center text-md-start">
         <h2 className="fw-bold text-success">Bienvenidos a Rolling Code Club</h2>
         <p className="lead">
@@ -15,7 +15,6 @@ export default function BienvenidaInicio() {
         </p>
       </Col>
 
-      {/* Mini mapa */}
       <Col md={6} className="mt-4 mt-md-0">
         <iframe
           title="Mapa Rolling Code Club"

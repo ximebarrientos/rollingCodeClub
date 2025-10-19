@@ -16,15 +16,11 @@ export default function SponsorsInicio() {
           <img
             src={sponsor.img}
             alt={sponsor.nombre}
-            className="img-fluid sponsor-logo"
-            style={{
-              
-              objectFit: "contain",
-              filter: "brightness(0) invert(1)",
-            }}
+            className="sponsor-logo img-fluid"
           />
         </Col>
       ))}
     </Row>
   );
 }
+

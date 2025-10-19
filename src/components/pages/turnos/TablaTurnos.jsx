@@ -42,30 +42,24 @@ const TablaTurnos = () => {
     );
   }
 
-  // Filtrar turnos para mostrar solo fechas de hoy o futuras
-  // También incluir turnos de hoy si sus horarios no han pasado
   const turnosFiltrados = turnos.filter(turno => {
     const fechaTurno = new Date(turno.fecha);
     const fechaHoy = new Date();
 
-    // Resetear horas para comparación de fechas
     fechaTurno.setHours(0, 0, 0, 0);
     const fechaActual = new Date(fechaHoy);
     fechaActual.setHours(0, 0, 0, 0);
 
-    // Si es fecha futura, incluir
     if (fechaTurno > fechaActual) {
       return true;
     }
 
-    // Si es fecha de hoy, verificar horario
     if (fechaTurno.getTime() === fechaActual.getTime()) {
       const [horaInicio] = turno.horario.split('-').map(h => parseInt(h.split(':')[0]));
       const horaActual = fechaHoy.getHours();
-      return horaInicio > horaActual; // Solo incluir si no ha empezado
+      return horaInicio > horaActual; 
     }
 
-    // Si es fecha pasada, excluir
     return false;
   });
 

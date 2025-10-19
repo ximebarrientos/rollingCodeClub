@@ -20,7 +20,6 @@ const FilaCanchaTabla = ({ cancha, recargarCanchas, onEditar }) => {
 
     if (result.isConfirmed) {
       try {
-        // Verificar si hay turnos reservados para esta cancha
         const turnos = await obtenerTurnosAPI();
         const turnosParaCancha = turnos.filter(
           (turno) => turno.canchaId?._id === cancha._id
