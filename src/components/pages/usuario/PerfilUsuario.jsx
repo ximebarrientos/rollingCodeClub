@@ -114,7 +114,6 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
   return (
     <div className="container">
       <Container className="my-5 px-4 border border-1 rounded-4 border-secondary">
-        
         <h2 className="text-center my-4 text-success">
           <i className="bi bi-person-circle fs-1 me-2"></i>
           Mi Perfil
@@ -136,6 +135,7 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
               <Form.Group as={Col} md="4" controlId="formNombreUsuario">
                 <Form.Label>Usuario</Form.Label>
                 <Form.Control
+                  className="bg-primary text-success"
                   {...register("nombreUsuario", {
                     required: "El nombre de usuario es obligatorio",
                     minLength: { value: 4, message: "Mínimo 4 caracteres" },
@@ -150,6 +150,7 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
               <Form.Group as={Col} md="4" controlId="formNombre">
                 <Form.Label>Nombre Completo</Form.Label>
                 <Form.Control
+                  className="bg-primary text-success"
                   {...register("nombre", {
                     required: "El nombre es obligatorio",
                   })}
@@ -162,6 +163,7 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
               <Form.Group as={Col} md="4" controlId="formApellido">
                 <Form.Label>Apellido</Form.Label>
                 <Form.Control
+                  className="bg-primary text-success"
                   {...register("apellido", {
                     required: "El apellido es obligatorio",
                   })}
@@ -176,6 +178,7 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
               <Form.Label>Fecha de Nacimiento</Form.Label>
               <Form.Group as={Col} md="4" controlId="formFechaAnio">
                 <Form.Select
+                  className="bg-primary text-success"
                   {...register("anio", {
                     required: "Seleccionar Año es obligatorio",
                   })}
@@ -236,6 +239,7 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
 
               <Form.Group as={Col} md="4" controlId="formFechaMes">
                 <Form.Select
+                  className="bg-primary text-success"
                   {...register("mes", {
                     required: "Seleccionar Mes es obligatorio",
                   })}
@@ -261,6 +265,7 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
 
               <Form.Group as={Col} md="4" controlId="formFechaDia">
                 <Form.Select
+                  className="bg-primary text-success"
                   {...register("dia", {
                     required: "Seleccionar Día es obligatorio",
                   })}
@@ -308,6 +313,7 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
               <Form.Group as={Col} md="6" controlId="formGenero">
                 <Form.Label>Género</Form.Label>
                 <Form.Select
+                  className="bg-primary text-success"
                   {...register("genero", {
                     required: "El género es obligatorio",
                   })}
@@ -331,6 +337,7 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
               >
                 <Form.Label>Celular</Form.Label>
                 <Form.Control
+                  className="bg-primary text-success"
                   type="number"
                   {...register("celular", {
                     required: "El celular es obligatorio",
@@ -349,6 +356,7 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
             <Form.Group className="mb-3" controlId="formCorreoElectronico">
               <Form.Label>Correo Electrónico</Form.Label>
               <Form.Control
+                className="bg-primary text-success"
                 type="email"
                 {...register("correoElectronico", {
                   required: "El email es obligatorio",
@@ -378,35 +386,37 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
         ) : (
           <Row>
             <Col md={4} className="mb-4">
-              <Card className="h-100">
+              <Card className="h-100 border-success">
                 <CardBody>
                   <CardTitle>Usuario</CardTitle>
-                  <CardText
-                    className="text-success"
-                  >
+                  <CardText className="text-success">
                     {usuarioLogueado.nombreUsuario}
                   </CardText>
                 </CardBody>
               </Card>
             </Col>
             <Col md={4} className="mb-4">
-              <Card className="h-100">
+              <Card className="h-100 border-success">
                 <CardBody>
                   <CardTitle>Nombre</CardTitle>
-                  <CardText className="text-success">{usuarioLogueado.nombre}</CardText>
+                  <CardText className="text-success">
+                    {usuarioLogueado.nombre}
+                  </CardText>
                 </CardBody>
               </Card>
             </Col>
             <Col md={4} className="mb-4">
-              <Card className="h-100">
+              <Card className="h-100 border-success">
                 <CardBody>
                   <CardTitle>Apellido</CardTitle>
-                  <CardText className="text-success">{usuarioLogueado.apellido}</CardText>
+                  <CardText className="text-success">
+                    {usuarioLogueado.apellido}
+                  </CardText>
                 </CardBody>
               </Card>
             </Col>
             <Col md={6} className="mb-4">
-              <Card className="h-100">
+              <Card className="h-100 border-success">
                 <CardBody>
                   <CardTitle>Fecha de Nacimiento</CardTitle>
                   <CardText className="text-success">
@@ -416,26 +426,32 @@ const PerfilUsuario = ({ usuarioLogueado, setUsuarioLogueado }) => {
               </Card>
             </Col>
             <Col md={6} className="mb-4">
-              <Card className="h-100">
+              <Card className="h-100 border-success">
                 <CardBody>
                   <CardTitle>Género</CardTitle>
-                  <CardText className="text-success">{usuarioLogueado.genero}</CardText>
+                  <CardText className="text-success">
+                    {usuarioLogueado.genero}
+                  </CardText>
                 </CardBody>
               </Card>
             </Col>
             <Col md={6} className="mb-4">
-              <Card className="h-100">
+              <Card className="h-100 border-success">
                 <CardBody>
                   <CardTitle>Celular</CardTitle>
-                  <CardText className="text-success">{usuarioLogueado.celular}</CardText>
+                  <CardText className="text-success">
+                    {usuarioLogueado.celular}
+                  </CardText>
                 </CardBody>
               </Card>
             </Col>
             <Col md={6} className="mb-4">
-              <Card className="h-100">
+              <Card className="h-100 border-success">
                 <CardBody>
                   <CardTitle>Correo Electrónico</CardTitle>
-                  <CardText className="text-success">{usuarioLogueado.correoElectronico}</CardText>
+                  <CardText className="text-success">
+                    {usuarioLogueado.correoElectronico}
+                  </CardText>
                 </CardBody>
               </Card>
             </Col>
