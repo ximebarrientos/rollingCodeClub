@@ -51,7 +51,9 @@ export default function Tienda({ usuarioLogueado }) {
             );
           }
           if (subcategoria) {
-            const subcatNormalizada = subcategoria.replace(/-/g, " ").toLowerCase();
+            const subcatNormalizada = subcategoria
+              .replace(/-/g, " ")
+              .toLowerCase();
             filtrados = filtrados.filter(
               (p) => p.subcategoria?.toLowerCase() === subcatNormalizada
             );
@@ -64,8 +66,10 @@ export default function Tienda({ usuarioLogueado }) {
           }
 
           filtrados.sort((a, b) => {
-            if (orden === "az") return a.nombreProducto.localeCompare(b.nombreProducto);
-            if (orden === "za") return b.nombreProducto.localeCompare(a.nombreProducto);
+            if (orden === "az")
+              return a.nombreProducto.localeCompare(b.nombreProducto);
+            if (orden === "za")
+              return b.nombreProducto.localeCompare(a.nombreProducto);
             if (orden === "precioAsc") return a.precio - b.precio;
             if (orden === "precioDesc") return b.precio - a.precio;
             return a.nombreProducto.localeCompare(b.nombreProducto);
@@ -75,7 +79,10 @@ export default function Tienda({ usuarioLogueado }) {
           setTotalPage(totalPaginas);
 
           const startIndex = (page - 1) * limit;
-          const productosPaginados = filtrados.slice(startIndex, startIndex + limit);
+          const productosPaginados = filtrados.slice(
+            startIndex,
+            startIndex + limit
+          );
 
           setProductos(productosPaginados);
         }
@@ -96,6 +103,18 @@ export default function Tienda({ usuarioLogueado }) {
   const handleClose = () => setProductoSeleccionado(null);
 
   const agregarAlCarrito = (producto) => {
+    if (!usuarioLogueado || !usuarioLogueado.token) {
+      Swal.fire({
+        icon: "warning",
+        title: "Acceso restringido",
+        text: "Solo los usuarios logueados pueden comprar productos.",
+        confirmButtonText: "Entendido",
+        background: "#212529",
+        color: "#fff",
+        iconColor: "#ffc107",
+      });
+      return;
+    }
     setCarrito((prev) => {
       const existente = prev.find((item) => item._id === producto._id);
       let nuevoCarrito;
@@ -159,49 +178,75 @@ export default function Tienda({ usuarioLogueado }) {
         <div className="text-center mb-4">
           <div className="d-none d-md-flex flex-wrap justify-content-center gap-2">
             <Button
-              variant={!categoria || categoria === "todas" ? "success" : "outline-success"}
+              variant={
+                !categoria || categoria === "todas"
+                  ? "success"
+                  : "outline-success"
+              }
               onClick={() => navigate("/tienda/todas")}
             >
               Todas las categorías
             </Button>
             <Button
-              variant={categoria === "indumentaria" && !subcategoria ? "success" : "outline-success"}
+              variant={
+                categoria === "indumentaria" && !subcategoria
+                  ? "success"
+                  : "outline-success"
+              }
               onClick={() => navigate("/tienda/indumentaria")}
             >
               Indumentaria
             </Button>
             <Button
-              variant={subcategoria === "botines" ? "success" : "outline-success"}
+              variant={
+                subcategoria === "botines" ? "success" : "outline-success"
+              }
               onClick={() => navigate("/tienda/indumentaria/botines")}
             >
               Botines
             </Button>
             <Button
-              variant={subcategoria === "camisetas" ? "success" : "outline-success"}
+              variant={
+                subcategoria === "camisetas" ? "success" : "outline-success"
+              }
               onClick={() => navigate("/tienda/indumentaria/camisetas")}
             >
               Camisetas
             </Button>
             <Button
-              variant={subcategoria === "shorts" ? "success" : "outline-success"}
+              variant={
+                subcategoria === "shorts" ? "success" : "outline-success"
+              }
               onClick={() => navigate("/tienda/indumentaria/shorts")}
             >
               Shorts
             </Button>
             <Button
-              variant={categoria === "accesorios" && !subcategoria ? "success" : "outline-success"}
+              variant={
+                categoria === "accesorios" && !subcategoria
+                  ? "success"
+                  : "outline-success"
+              }
               onClick={() => navigate("/tienda/accesorios")}
             >
               Accesorios
             </Button>
             <Button
-              variant={subcategoria === "kits-de-entrenamiento" ? "success" : "outline-success"}
-              onClick={() => navigate("/tienda/accesorios/kits-de-entrenamiento")}
+              variant={
+                subcategoria === "kits-de-entrenamiento"
+                  ? "success"
+                  : "outline-success"
+              }
+              onClick={() =>
+                navigate("/tienda/accesorios/kits-de-entrenamiento")
+              }
             >
               Kits de Entrenamiento
             </Button>
             <Button
-              variant={subcategoria === "pelotas" ? "success" : "outline-success"}
+              variant={
+                subcategoria === "pelotas" ? "success" : "outline-success"
+              }
               onClick={() => navigate("/tienda/accesorios/pelotas")}
             >
               Pelotas
@@ -212,7 +257,9 @@ export default function Tienda({ usuarioLogueado }) {
             <Form.Select
               className="text-center bg-dark text-light border-success"
               onChange={(e) => navigate(e.target.value)}
-              defaultValue={categoria ? `/tienda/${categoria}` : "/tienda/todas"}
+              defaultValue={
+                categoria ? `/tienda/${categoria}` : "/tienda/todas"
+              }
             >
               <option value="/tienda/todas">Todas las categorías</option>
               <option value="/tienda/indumentaria">Indumentaria</option>
@@ -230,11 +277,51 @@ export default function Tienda({ usuarioLogueado }) {
 
         <Row className="justify-content-center mb-3">
           <Col md={6} className="text-center">
-            <Form.Check inline label="A → Z" name="orden" type="radio" checked={orden === "az"} onChange={() => setOrden("az")} className="text-success" />
-            <Form.Check inline label="Z → A" name="orden" type="radio" checked={orden === "za"} onChange={() => setOrden("za")} className="text-success" />
-            <Form.Check inline label="Precio ↑" name="orden" type="radio" checked={orden === "precioAsc"} onChange={() => setOrden("precioAsc")} className="text-success" />
-            <Form.Check inline label="Precio ↓" name="orden" type="radio" checked={orden === "precioDesc"} onChange={() => setOrden("precioDesc")} className="text-success" />
-            <Form.Check inline label="Todos" name="orden" type="radio" checked={orden === ""} onChange={() => setOrden("")} className="text-success" />
+            <Form.Check
+              inline
+              label="A → Z"
+              name="orden"
+              type="radio"
+              checked={orden === "az"}
+              onChange={() => setOrden("az")}
+              className="text-success"
+            />
+            <Form.Check
+              inline
+              label="Z → A"
+              name="orden"
+              type="radio"
+              checked={orden === "za"}
+              onChange={() => setOrden("za")}
+              className="text-success"
+            />
+            <Form.Check
+              inline
+              label="Precio ↓-↑"
+              name="orden"
+              type="radio"
+              checked={orden === "precioAsc"}
+              onChange={() => setOrden("precioAsc")}
+              className="text-success"
+            />
+            <Form.Check
+              inline
+              label="Precio ↑-↓"
+              name="orden"
+              type="radio"
+              checked={orden === "precioDesc"}
+              onChange={() => setOrden("precioDesc")}
+              className="text-success"
+            />
+            <Form.Check
+              inline
+              label="Todos"
+              name="orden"
+              type="radio"
+              checked={orden === ""}
+              onChange={() => setOrden("")}
+              className="text-success"
+            />
           </Col>
         </Row>
 
@@ -243,7 +330,7 @@ export default function Tienda({ usuarioLogueado }) {
             <Form.Control
               type="text"
               placeholder="Buscar productos..."
-              className="text-center"
+              className="text-center bg-primary border-success text-white"
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
             />
@@ -255,7 +342,7 @@ export default function Tienda({ usuarioLogueado }) {
               className="position-relative px-4 py-2"
             >
               <Cart4 size={25} />
-              
+
               {carrito.length > 0 && (
                 <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-light text-dark">
                   {carrito.reduce((t, p) => t + (p.cantidad || 1), 0)}
@@ -281,13 +368,19 @@ export default function Tienda({ usuarioLogueado }) {
 
         {totalPage > 1 && (
           <div className="d-flex justify-content-center align-items-center gap-2 my-3 flex-wrap">
-            <Button variant="secondary" onClick={() => setPage((prev) => Math.max(prev - 1, 1))}>
+            <Button
+              variant="secondary"
+              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+            >
               Anterior
             </Button>
             <div className="mx-3 fw-semibold">
               Página {page} de {totalPage}
             </div>
-            <Button variant="secondary" onClick={() => setPage((prev) => Math.min(prev + 1, totalPage))}>
+            <Button
+              variant="secondary"
+              onClick={() => setPage((prev) => Math.min(prev + 1, totalPage))}
+            >
               Siguiente
             </Button>
           </div>
@@ -315,14 +408,18 @@ export default function Tienda({ usuarioLogueado }) {
               </p>
               <p>
                 <strong>Descripción:</strong>{" "}
-                {productoSeleccionado.descripcion || "Sin descripción disponible"}
+                {productoSeleccionado.descripcion ||
+                  "Sin descripción disponible"}
               </p>
             </Modal.Body>
             <Modal.Footer className="bg-dark">
               <Button variant="secondary" onClick={handleClose}>
                 Cerrar
               </Button>
-              <Button variant="success" onClick={() => agregarAlCarrito(productoSeleccionado)}>
+              <Button
+                variant="success"
+                onClick={() => agregarAlCarrito(productoSeleccionado)}
+              >
                 Comprar
               </Button>
             </Modal.Footer>

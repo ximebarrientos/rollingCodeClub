@@ -81,6 +81,7 @@ const TablaProducto = ({ setMostrarFormulario, setProductoEditado }) => {
           <Form.Control
             type="text"
             placeholder="Buscar producto..."
+            className="bg-primary border-success text-white"
             value={busqueda}
             onChange={(e) => {
               setBusqueda(e.target.value);
