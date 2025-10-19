@@ -32,26 +32,9 @@ export default function Menu({ usuarioLogueado, setUsuarioLogueado, onLoginClick
             <NavLink to={"/reserva"} className={"nav-link"}>
               Reservar
             </NavLink>
-            <NavDropdown title="Tienda" id="tiendaDropdown" menuVariant="dark">
-              <NavDropdown.Header>Indumentaria</NavDropdown.Header>
-              <NavDropdown.Item as={Link} to="/tienda">
-                Camisetas
-              </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/tienda">
-                Shorts
-              </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/tienda">
-                Botines
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Header>Accesorios</NavDropdown.Header>
-              <NavDropdown.Item as={Link} to="/tienda">
-                Kits de entrenamiento
-              </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/tienda">
-                Pelotas
-              </NavDropdown.Item>
-            </NavDropdown>
+            <NavLink to={"/tienda"} className={"nav-link"}>
+              Tienda
+            </NavLink>
             <NavLink to={"/contacto"} className={"nav-link"}>
               Contacto
             </NavLink>
