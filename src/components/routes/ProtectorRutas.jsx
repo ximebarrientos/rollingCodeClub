@@ -1,33 +1,9 @@
-import { Navigate, useLocation, useNavigate } from "react-router";
+import { Navigate, useLocation} from "react-router";
 import { useEffect } from "react";
-import Swal from "sweetalert2";
 
 const ProtectorRutas = ({ children, usuarioLogueado, rol = null, setShowModalLogin }) => {
   const location = useLocation();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if ((!usuarioLogueado || !usuarioLogueado.token) && location.pathname === "/reserva") {
-      Swal.fire({
-        title: "Inicio de sesión requerido",
-        text: "Para reservar turnos necesitas estar logueado primero",
-        icon: "info",
-        confirmButtonText: "Ir al login",
-        confirmButtonColor: "#198754",
-        showCancelButton: true,
-        cancelButtonColor: "#d33",
-        background: "#212529",
-          color: "#fff",
-      }).then((result) => {
-        if (result.isConfirmed){
-          setShowModalLogin(true);
-        } else {
-          navigate ("/");
-        }
-      });
-    }
-  }, [usuarioLogueado, location.pathname, navigate, setShowModalLogin]);
-
+    
   useEffect(() => {
     if ((!usuarioLogueado || !usuarioLogueado.token) && location.pathname !== "/reserva") {
       setShowModalLogin(true);

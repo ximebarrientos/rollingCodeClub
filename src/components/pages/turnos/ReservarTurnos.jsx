@@ -3,13 +3,17 @@ import { Container, Row, Col, Card, Button, Alert, Spinner } from "react-bootstr
 import { obtenerCanchasAPI } from "../../../helpers/canchasAPI";
 import { obtenerTurnosAPI } from "../../../helpers/turnosAPI";
 import FormularioTurnos from "./FormularioTurnos";
+import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
-const ReservarTurnos = ({ usuarioLogueado }) => {
+
+const ReservarTurnos = ({ usuarioLogueado,setShowModalLogin }) => {
     const [canchas, setCanchas] = useState([]);
     const [turnos, setTurnos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [canchaSeleccionada, setCanchaSeleccionada] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         cargarCanchasYTurnos();
@@ -31,6 +35,25 @@ const ReservarTurnos = ({ usuarioLogueado }) => {
     };
 
     const handleSeleccionarCancha = (cancha) => {
+        if (!usuarioLogueado || !usuarioLogueado.token){
+              Swal.fire({
+                title: "Inicio de sesión requerido",
+                text: "Para reservar turnos necesitas estar logueado primero",
+                icon: "info",
+                confirmButtonText: "Ir al login",
+                confirmButtonColor: "#63ca63ff",
+                showCancelButton: true,
+                cancelButtonColor: "#d33",
+                background: "#212529",
+                color: "#fff",
+              }).then((result) => {
+                if (result.isConfirmed){
+                  setShowModalLogin(true);
+                } else {
+                  navigate ("/");
+                }
+              });
+            }
         setCanchaSeleccionada(cancha);
         setShowModal(true);
     };
