@@ -66,7 +66,7 @@ function App() {
               element={<Tienda usuarioLogueado={usuarioLogueado}/>}
             />
             <Route path="/registro" element={<Registro />} />
-            <Route path="/carrito" element={<CarritoCompras />} />
+            <Route path="/carrito" element={<CarritoCompras usuarioLogueado={usuarioLogueado} />} />
             <Route path="/pago/exitoso" element={<PagoExitosoMercadoPago />} />
             <Route
               path="/pago/fallido"
@@ -120,4 +120,3 @@ function App() {
 }
 
 export default App;
-

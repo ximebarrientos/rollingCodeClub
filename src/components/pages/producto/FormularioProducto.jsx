@@ -22,6 +22,26 @@ const FormularioProducto = ({
     watch,
   } = useForm();
 
+const categoriaActual = watch("categoria");
+const subcategoriaActual = watch("subcategoria");
+
+useEffect(() => {
+
+  if (categoriaActual === "Accesorios") {
+    resetField("tallesTexto");
+    resetField("numerosTexto");
+  }
+
+  if (categoriaActual === "Indumentaria") {
+    if (!["Camisetas", "Shorts"].includes(subcategoriaActual)) {
+      resetField("tallesTexto");
+    }
+    if (subcategoriaActual !== "Botines") {
+      resetField("numerosTexto");
+    }
+  }
+}, [categoriaActual, subcategoriaActual, resetField]);
+
   const subcategoriasPorCategoria = {
     Indumentaria: ["Camisetas", "Shorts", "Botines"],
     Accesorios: ["Kits de entrenamiento", "Pelotas"],
