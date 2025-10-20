@@ -46,6 +46,7 @@ const ReservarTurnos = ({ usuarioLogueado,setShowModalLogin }) => {
                 cancelButtonColor: "#d33",
                 background: "#212529",
                 color: "#fff",
+                scrollbarPadding: false,
               }).then((result) => {
                 if (result.isConfirmed){
                   setShowModalLogin(true);
