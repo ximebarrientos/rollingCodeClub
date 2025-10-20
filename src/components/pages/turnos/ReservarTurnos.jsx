@@ -68,7 +68,8 @@ const ReservarTurnos = ({ usuarioLogueado }) => {
                                     <Card.Text>
                                         <strong>Categoría:</strong> {cancha.categoriaCancha}<br />
                                         <strong>Horarios:</strong> {cancha.horariosCancha.join(", ")}<br />
-                                        <strong>Precio:</strong> ${cancha.precioCancha}
+                                        <strong>Precio:</strong> ${cancha.precioCancha}<br/>
+                                        <strong>Descripción:</strong> {cancha.descripcionCancha}
                                     </Card.Text>
                                     <Button
                                         variant="outline-info"
