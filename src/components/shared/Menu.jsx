@@ -6,6 +6,7 @@ export default function Menu({ usuarioLogueado, setUsuarioLogueado, onLoginClick
 
   const logout = () => {
     setUsuarioLogueado({});
+    localStorage.setItem("carrito_invitado", JSON.stringify([]));
     navegacion("/");
   };
   return (
