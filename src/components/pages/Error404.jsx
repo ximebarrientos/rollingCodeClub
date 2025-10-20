@@ -4,6 +4,7 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Image from "react-bootstrap/Image";
 import "./error404.css"; 
+import { Link } from "react-router";
 
 export default function Error404() {
   return (
@@ -23,7 +24,7 @@ export default function Error404() {
             Lo sentimos 😔. La página que estás buscando no existe.
           </p>
 
-          <Button variant="primary" size="lg" href="/">
+          <Button as={Link} to={"/"} variant="primary" size="lg" >
             Volver al inicio
           </Button>
         </Col>
