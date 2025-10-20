@@ -1,4 +1,6 @@
+import { Link } from "react-router";
 import "./footer.css"
+
 
 export default function Footer() {
   return (
@@ -19,9 +21,9 @@ export default function Footer() {
           <div className="col-6 col-md-3">
             <h6 className="fw-bold mb-3">DESCUBRE RCC</h6>
             <ul className="list-unstyled d-grid gap-2">
-              <li><a href="*" className="text-decoration-none">Políticas de privacidad</a></li>
-              <li><a href="*" className="text-decoration-none">Preguntas frecuentes</a></li>
-              <li><a href="*" className="text-decoration-none">Términos y condiciones</a></li>
+              <li><Link to={"*"} className="text-decoration-none">Políticas de privacidad</Link></li>
+              <li><Link to={"*"} className="text-decoration-none">Preguntas frecuentes</Link></li>
+              <li><Link to={"*"} className="text-decoration-none">Términos y condiciones</Link></li>
             </ul>
           </div>
 

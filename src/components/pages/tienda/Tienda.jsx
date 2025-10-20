@@ -9,7 +9,7 @@ import {
   Button,
   Modal,
 } from "react-bootstrap";
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate, Link } from "react-router";
 import { listarProductos } from "../../../helpers/queries.js";
 import "./tienda.css";
 import Swal from "sweetalert2";
@@ -353,8 +353,9 @@ export default function Tienda({ usuarioLogueado }) {
           </Col>
           <Col md="auto" xs={12} className="text-center">
             <Button
+              as={Link}
+              to={"/carrito"}
               variant="success"
-              href="/carrito"
               className="position-relative px-4 py-2"
             >
               <Cart4 size={25} />
