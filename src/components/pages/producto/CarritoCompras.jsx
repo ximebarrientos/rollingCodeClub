@@ -11,14 +11,30 @@ import {
 import Swal from "sweetalert2";
 import { crearOrdenCarritoAPI } from "../../../helpers/queriesPagos.js";
 
-const CarritoCompras = () => {
+const CarritoCompras = ({ usuarioLogueado }) => {
+  const getCarritoKey = () => {
+    return usuarioLogueado && usuarioLogueado._id
+      ? `carrito_${usuarioLogueado._id}`
+      : "carrito_invitado";
+  };
+
+  const [carritoKey, setCarritoKey] = useState(getCarritoKey());
   const [carrito, setCarrito] = useState(
-    JSON.parse(localStorage.getItem("carrito")) || []
+    JSON.parse(localStorage.getItem(carritoKey)) || []
   );
 
   useEffect(() => {
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-  }, [carrito]);
+    const nuevaClave = getCarritoKey();
+    setCarritoKey(nuevaClave);
+  }, [usuarioLogueado]);
+
+  useEffect(() => {
+    setCarrito(JSON.parse(localStorage.getItem(carritoKey)) || []);
+  }, [carritoKey]);
+
+  useEffect(() => {
+    localStorage.setItem(carritoKey, JSON.stringify(carrito));
+  }, [carrito, carritoKey]);
 
   const total = carrito.reduce(
     (acc, prod) => acc + prod.precio * (prod.cantidad || 1),

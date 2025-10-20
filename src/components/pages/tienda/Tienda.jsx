@@ -19,18 +19,34 @@ export default function Tienda({ usuarioLogueado }) {
   const navigate = useNavigate();
   const { categoria, subcategoria } = useParams();
 
+  const getCarritoKey = () => {
+    return usuarioLogueado && usuarioLogueado._id
+      ? `carrito_${usuarioLogueado._id}`
+      : "carrito_invitado";
+  };
+
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [busqueda, setBusqueda] = useState("");
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
+  const [carritoKey, setCarritoKey] = useState(getCarritoKey());
   const [carrito, setCarrito] = useState(
-    JSON.parse(localStorage.getItem("carrito")) || []
+    JSON.parse(localStorage.getItem(carritoKey)) || []
   );
 
   const [page, setPage] = useState(1);
   const limit = 9;
   const [totalPage, setTotalPage] = useState(1);
   const [orden, setOrden] = useState("");
+
+  useEffect(() => {
+    const nuevaClave = getCarritoKey();
+    setCarritoKey(nuevaClave);
+  }, [usuarioLogueado]);
+
+  useEffect(() => {
+    setCarrito(JSON.parse(localStorage.getItem(carritoKey)) || []);
+  }, [carritoKey]);
 
   useEffect(() => {
     setOrden("");
@@ -96,8 +112,8 @@ export default function Tienda({ usuarioLogueado }) {
   }, [categoria, subcategoria, page, orden, busqueda]);
 
   useEffect(() => {
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-  }, [carrito]);
+    localStorage.setItem(carritoKey, JSON.stringify(carrito));
+  }, [carrito, carritoKey]);
 
   const handleShow = (producto) => setProductoSeleccionado(producto);
   const handleClose = () => setProductoSeleccionado(null);
@@ -128,7 +144,7 @@ export default function Tienda({ usuarioLogueado }) {
         nuevoCarrito = [...prev, { ...producto, cantidad: 1 }];
       }
 
-      localStorage.setItem("carrito", JSON.stringify(nuevoCarrito));
+
 
       Swal.fire({
         icon: "success",
