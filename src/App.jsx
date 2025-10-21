@@ -48,25 +48,27 @@ function App() {
         <main>
           <Routes>
             <Route path="/" element={<Inicio />} />
-            <Route
-              path="/reserva"
-              element={
-                <ProtectorRutas usuarioLogueado={usuarioLogueado} setShowModalLogin={setShowModalLogin}>
-                  <ReservarTurnos usuarioLogueado={usuarioLogueado} />
-                </ProtectorRutas>
-              }
-            />
+            <Route path="/reserva" element={<ReservarTurnos usuarioLogueado={usuarioLogueado} setShowModalLogin={setShowModalLogin}/>} />
             <Route path="/turnos" element={<FormularioTurnos />} />
             <Route path="/contacto" element={<Contacto />} />
             <Route path="/sobre-nosotros" element={<QuienesSomos />} />
-            <Route path="/tienda" element={<Tienda usuarioLogueado={usuarioLogueado}/>} />
-            <Route path="/tienda/:categoria" element={<Tienda usuarioLogueado={usuarioLogueado}/>} />
+            <Route
+              path="/tienda"
+              element={<Tienda usuarioLogueado={usuarioLogueado} />}
+            />
+            <Route
+              path="/tienda/:categoria"
+              element={<Tienda usuarioLogueado={usuarioLogueado} />}
+            />
             <Route
               path="/tienda/:categoria/:subcategoria"
-              element={<Tienda usuarioLogueado={usuarioLogueado}/>}
+              element={<Tienda usuarioLogueado={usuarioLogueado} />}
             />
             <Route path="/registro" element={<Registro />} />
-            <Route path="/carrito" element={<CarritoCompras usuarioLogueado={usuarioLogueado} />} />
+            <Route
+              path="/carrito"
+              element={<CarritoCompras usuarioLogueado={usuarioLogueado} />}
+            />
             <Route path="/pago/exitoso" element={<PagoExitosoMercadoPago />} />
             <Route
               path="/pago/fallido"
@@ -88,7 +90,10 @@ function App() {
             <Route
               path="/perfil"
               element={
-                <ProtectorRutas usuarioLogueado={usuarioLogueado} setShowModalLogin={setShowModalLogin}>
+                <ProtectorRutas
+                  usuarioLogueado={usuarioLogueado}
+                  setShowModalLogin={setShowModalLogin}
+                >
                   <PerfilUsuario
                     usuarioLogueado={usuarioLogueado}
                     setUsuarioLogueado={setUsuarioLogueado}

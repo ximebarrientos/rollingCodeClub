@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Form, Row, Col, Spinner } from "react-bootstrap";
+import { Table, Button, Form, Row, Col, Spinner, Modal } from "react-bootstrap";
 import FilaProductoTabla from "./FilaProductoTabla";
 import { listarProductos } from "../../../helpers/queries.js";
 
@@ -11,6 +11,7 @@ const TablaProducto = ({ setMostrarFormulario, setProductoEditado }) => {
   const [totalPage, setTotalPage] = useState(1);
   const [busqueda, setBusqueda] = useState("");
   const [orden, setOrden] = useState("");
+  const [productoSeleccionado, setProductoSeleccionado] = useState(null);
 
   const obtenerProductos = async () => {
     try {
@@ -183,6 +184,7 @@ const TablaProducto = ({ setMostrarFormulario, setProductoEditado }) => {
                     obtenerProductos={obtenerProductos}
                     setMostrarFormulario={setMostrarFormulario}
                     setProductoEditado={setProductoEditado}
+                    setProductoSeleccionado={setProductoSeleccionado}
                   />
                 ))
               ) : (
@@ -216,6 +218,81 @@ const TablaProducto = ({ setMostrarFormulario, setProductoEditado }) => {
           )}
         </>
       )}
+
+      <Modal
+        show={!!productoSeleccionado}
+        onHide={() => setProductoSeleccionado(null)}
+        centered
+      >
+        {productoSeleccionado && (
+          <>
+            <Modal.Header closeButton className="bg-success text-light">
+              <Modal.Title>{productoSeleccionado.nombreProducto}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body className="bg-dark text-light">
+              <img
+                src={productoSeleccionado.imagen || "/noimage.png"}
+                alt={productoSeleccionado.nombreProducto}
+                style={{
+                  width: "100%",
+                  borderRadius: "8px",
+                  marginBottom: "15px",
+                }}
+              />
+              <p>
+                <strong>Precio:</strong> ${productoSeleccionado.precio}
+              </p>
+              <p>
+                <strong>Categoría:</strong> {productoSeleccionado.categoria}
+              </p>
+              <p>
+                <strong>Subcategoría:</strong>{" "}
+                {productoSeleccionado.subcategoria}
+              </p>
+              <p>
+                <strong>Descripción:</strong>{" "}
+                {productoSeleccionado.descripcion ||
+                  "Sin descripción disponible"}
+              </p>
+              {productoSeleccionado.categoria?.toLowerCase() ===
+                "indumentaria" && (
+                <>
+                  {productoSeleccionado.subcategoria?.toLowerCase() ===
+                  "botines" ? (
+                    productoSeleccionado.numeros?.length ? (
+                      <p>
+                        <strong>Números disponibles:</strong>{" "}
+                        {productoSeleccionado.numeros.join(", ")}
+                      </p>
+                    ) : (
+                      <p className="text-muted">
+                        No hay números disponibles registrados.
+                      </p>
+                    )
+                  ) : productoSeleccionado.talles?.length ? (
+                    <p>
+                      <strong>Talles disponibles:</strong>{" "}
+                      {productoSeleccionado.talles.join(", ")}
+                    </p>
+                  ) : (
+                    <p className="text-muted">
+                      No hay talles disponibles registrados.
+                    </p>
+                  )}
+                </>
+              )}
+            </Modal.Body>
+            <Modal.Footer className="bg-dark">
+              <Button
+                variant="secondary"
+                onClick={() => setProductoSeleccionado(null)}
+              >
+                Cerrar
+              </Button>
+            </Modal.Footer>
+          </>
+        )}
+      </Modal>
     </>
   );
 };
