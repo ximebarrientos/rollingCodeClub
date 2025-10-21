@@ -8,6 +8,7 @@ const FilaProductoTabla = ({
   obtenerProductos,
   setMostrarFormulario,
   setProductoEditado,
+  setProductoSeleccionado,
 }) => {
   const {
     _id,
@@ -100,14 +101,22 @@ const FilaProductoTabla = ({
       <td>
         <Button
           size="sm"
+          variant="info"
+          className="me-2"
+          onClick={() => setProductoSeleccionado(producto)}
+        >
+          <i className="bi bi-eye"></i>
+        </Button>
+        <Button
+          size="sm"
           variant="warning"
           className="me-2"
           onClick={handleEditar}
         >
-          Editar
+          <i className="bi bi-pencil-square"></i>
         </Button>
         <Button size="sm" variant="danger" onClick={handleBorrar}>
-          Borrar
+          <i className="bi bi-trash"></i>
         </Button>
       </td>
     </tr>
