@@ -3,7 +3,7 @@ import { eliminarCanchaAPI } from "../../../helpers/canchasAPI";
 import { obtenerTurnosAPI } from "../../../helpers/turnosAPI";
 import Swal from "sweetalert2";
 
-const FilaCanchaTabla = ({ cancha, recargarCanchas, onEditar }) => {
+const FilaCanchaTabla = ({ cancha, recargarCanchas, onEditar, setCanchaModal }) => {
   const handleDelete = async () => {
     const result = await Swal.fire({
       title: "¿Eliminar cancha?",
@@ -76,6 +76,14 @@ const FilaCanchaTabla = ({ cancha, recargarCanchas, onEditar }) => {
       <td>{cancha.horariosCancha.join(", ")}</td>
       <td>${cancha.precioCancha}</td>
       <td>
+        <Button
+          size="sm"
+          variant="info"
+          className="me-2"
+          onClick={() => setCanchaModal(cancha)}
+        >
+          <i className="bi bi-eye"></i>
+        </Button>
         <Button size="sm" variant="warning" className="me-2" onClick={onEditar}>
           <i className="bi bi-pencil-square"></i>
         </Button>
