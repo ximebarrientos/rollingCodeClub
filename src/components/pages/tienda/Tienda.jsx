@@ -144,8 +144,6 @@ export default function Tienda({ usuarioLogueado }) {
         nuevoCarrito = [...prev, { ...producto, cantidad: 1 }];
       }
 
-
-
       Swal.fire({
         icon: "success",
         title: "Producto agregado 🛒",
@@ -428,6 +426,33 @@ export default function Tienda({ usuarioLogueado }) {
                 {productoSeleccionado.descripcion ||
                   "Sin descripción disponible"}
               </p>
+              {productoSeleccionado.categoria?.toLowerCase() ===
+                "indumentaria" && (
+                <>
+                  {productoSeleccionado.subcategoria?.toLowerCase() ===
+                  "botines" ? (
+                    productoSeleccionado.numeros?.length ? (
+                      <p>
+                        <strong>Números disponibles:</strong>{" "}
+                        {productoSeleccionado.numeros.join(", ")}
+                      </p>
+                    ) : (
+                      <p className="text-muted">
+                        No hay números disponibles registrados.
+                      </p>
+                    )
+                  ) : productoSeleccionado.talles?.length ? (
+                    <p>
+                      <strong>Talles disponibles:</strong>{" "}
+                      {productoSeleccionado.talles.join(", ")}
+                    </p>
+                  ) : (
+                    <p className="text-muted">
+                      No hay talles disponibles registrados.
+                    </p>
+                  )}
+                </>
+              )}
             </Modal.Body>
             <Modal.Footer className="bg-dark">
               <Button variant="secondary" onClick={handleClose}>
