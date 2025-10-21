@@ -219,7 +219,11 @@ const TablaProducto = ({ setMostrarFormulario, setProductoEditado }) => {
         </>
       )}
 
-      <Modal show={!!productoSeleccionado} onHide={() => setProductoSeleccionado(null)} centered>
+      <Modal
+        show={!!productoSeleccionado}
+        onHide={() => setProductoSeleccionado(null)}
+        centered
+      >
         {productoSeleccionado && (
           <>
             <Modal.Header closeButton className="bg-success text-light">
@@ -242,16 +246,47 @@ const TablaProducto = ({ setMostrarFormulario, setProductoEditado }) => {
                 <strong>Categoría:</strong> {productoSeleccionado.categoria}
               </p>
               <p>
-                <strong>Subcategoría:</strong> {productoSeleccionado.subcategoria}
+                <strong>Subcategoría:</strong>{" "}
+                {productoSeleccionado.subcategoria}
               </p>
               <p>
                 <strong>Descripción:</strong>{" "}
                 {productoSeleccionado.descripcion ||
                   "Sin descripción disponible"}
               </p>
+              {productoSeleccionado.categoria?.toLowerCase() ===
+                "indumentaria" && (
+                <>
+                  {productoSeleccionado.subcategoria?.toLowerCase() ===
+                  "botines" ? (
+                    productoSeleccionado.numeros?.length ? (
+                      <p>
+                        <strong>Números disponibles:</strong>{" "}
+                        {productoSeleccionado.numeros.join(", ")}
+                      </p>
+                    ) : (
+                      <p className="text-muted">
+                        No hay números disponibles registrados.
+                      </p>
+                    )
+                  ) : productoSeleccionado.talles?.length ? (
+                    <p>
+                      <strong>Talles disponibles:</strong>{" "}
+                      {productoSeleccionado.talles.join(", ")}
+                    </p>
+                  ) : (
+                    <p className="text-muted">
+                      No hay talles disponibles registrados.
+                    </p>
+                  )}
+                </>
+              )}
             </Modal.Body>
             <Modal.Footer className="bg-dark">
-              <Button variant="secondary" onClick={() => setProductoSeleccionado(null)}>
+              <Button
+                variant="secondary"
+                onClick={() => setProductoSeleccionado(null)}
+              >
                 Cerrar
               </Button>
             </Modal.Footer>
