@@ -53,6 +53,10 @@ export default function Tienda({ usuarioLogueado }) {
   }, [usuarioLogueado]);
 
   useEffect(() => {
+    setPage(1);
+  }, [categoria, subcategoria]);
+
+  useEffect(() => {
     const cargar = async () => {
       try {
         const respuesta = await listarProductos();
@@ -91,14 +95,20 @@ export default function Tienda({ usuarioLogueado }) {
             return a.nombreProducto.localeCompare(b.nombreProducto);
           });
 
-          const totalPaginas = Math.ceil(filtrados.length / limit);
-          setTotalPage(totalPaginas);
+          let productosPaginados;
+          if (busqueda.trim() !== "") {
+            setTotalPage(1);
+            productosPaginados = filtrados;
+          } else {
+            const totalPaginas = Math.ceil(filtrados.length / limit);
+            setTotalPage(totalPaginas);
 
-          const startIndex = (page - 1) * limit;
-          const productosPaginados = filtrados.slice(
-            startIndex,
-            startIndex + limit
-          );
+            const startIndex = (page - 1) * limit;
+            productosPaginados = filtrados.slice(
+              startIndex,
+              startIndex + limit
+            );
+          }
 
           setProductos(productosPaginados);
         }
@@ -109,6 +119,8 @@ export default function Tienda({ usuarioLogueado }) {
       }
     };
     cargar();
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [categoria, subcategoria, page, orden, busqueda]);
 
   useEffect(() => {
@@ -297,7 +309,10 @@ export default function Tienda({ usuarioLogueado }) {
               name="orden"
               type="radio"
               checked={orden === "az"}
-              onChange={() => setOrden("az")}
+              onChange={() => {
+                setOrden("az");
+                setPage(1);
+              }}
               className="text-success"
             />
             <Form.Check
@@ -306,7 +321,10 @@ export default function Tienda({ usuarioLogueado }) {
               name="orden"
               type="radio"
               checked={orden === "za"}
-              onChange={() => setOrden("za")}
+              onChange={() => {
+                setOrden("za");
+                setPage(1);
+              }}
               className="text-success"
             />
             <Form.Check
@@ -315,7 +333,10 @@ export default function Tienda({ usuarioLogueado }) {
               name="orden"
               type="radio"
               checked={orden === "precioAsc"}
-              onChange={() => setOrden("precioAsc")}
+              onChange={() => {
+                setOrden("precioAsc");
+                setPage(1);
+              }}
               className="text-success"
             />
             <Form.Check
@@ -324,7 +345,10 @@ export default function Tienda({ usuarioLogueado }) {
               name="orden"
               type="radio"
               checked={orden === "precioDesc"}
-              onChange={() => setOrden("precioDesc")}
+              onChange={() => {
+                setOrden("precioDesc");
+                setPage(1);
+              }}
               className="text-success"
             />
             <Form.Check
@@ -333,7 +357,10 @@ export default function Tienda({ usuarioLogueado }) {
               name="orden"
               type="radio"
               checked={orden === ""}
-              onChange={() => setOrden("")}
+              onChange={() => {
+                setOrden("");
+                setPage(1);
+              }}
               className="text-success"
             />
           </Col>
@@ -346,7 +373,10 @@ export default function Tienda({ usuarioLogueado }) {
               placeholder="Buscar productos..."
               className="text-center bg-primary border-success text-white"
               value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
+              onChange={(e) => {
+                setBusqueda(e.target.value);
+                setPage(1);
+              }}
             />
           </Col>
           <Col md="auto" xs={12} className="text-center">
