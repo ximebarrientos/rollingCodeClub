@@ -27,11 +27,13 @@ const FilaUsuarioTabla = ({ usuario, cargarUsuarios, token }) => {
     );
 
     if (respuesta.status === 200) {
-      Swal.fire(
-        "Éxito",
-        `Usuario ${usuario.nombreUsuario} ha sido ${nuevoEstado}.`,
-        "success"
-      );
+      Swal.fire({
+        title:"Éxito",
+        text:`Usuario ${usuario.nombreUsuario} ha sido ${nuevoEstado}.`,
+        icon:"success",
+        background:"#212529",
+        color:"#fff",
+    });
       cargarUsuarios();
     } else {
       const error = await respuesta.json();
