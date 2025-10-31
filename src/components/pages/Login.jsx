@@ -22,6 +22,19 @@ const Login = ({ show, onHide, setUsuarioLogueado }) => {
         const { usuario, token } = await respuesta.json();
         console.log("Datos de usuario recibidos del Backend:", usuario);
         console.log("Token recibido:", token);
+        console.log("Estado del usuario:", usuario.estado);
+        if (usuario.estado === "bloqueado") {
+          Swal.fire({
+            title: "Cuenta bloqueada",
+            text: "Su cuenta ha sido bloqueada. Si cree que es un error, contacte a soporte.",
+            icon: "error",
+            background: "#212529",
+            color: "#fff",
+          });
+          return;
+        }
+        
+        
         setUsuarioLogueado({
           ...usuario,
           token: token,
