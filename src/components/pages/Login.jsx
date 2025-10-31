@@ -20,9 +20,6 @@ const Login = ({ show, onHide, setUsuarioLogueado }) => {
       const respuesta = await login(user);
       if (respuesta.status === 200) {
         const { usuario, token } = await respuesta.json();
-        console.log("Datos de usuario recibidos del Backend:", usuario);
-        console.log("Token recibido:", token);
-        console.log("Estado del usuario:", usuario.estado);
         if (usuario.estado === "bloqueado") {
           Swal.fire({
             title: "Cuenta bloqueada",
