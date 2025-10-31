@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Modal, Button, Table, Spinner, Alert, Badge } from "react-bootstrap";
-import { obtenerTurnosAPI } from "../../../helpers/turnosAPI";
+import { obtenerTurnosAPI, eliminarTurnoAPI } from "../../../helpers/turnosAPI";
+import Swal from "sweetalert2";
 
 const MisReservasModal = ({ show, onHide, usuarioLogueado }) => {
   const [misTurnos, setMisTurnos] = useState([]);
@@ -17,19 +18,74 @@ const MisReservasModal = ({ show, onHide, usuarioLogueado }) => {
       setLoading(true);
       const todosLosTurnos = await obtenerTurnosAPI();
 
-      // Filtrar solo los turnos del usuario logueado
       const turnosUsuario = todosLosTurnos.filter(
         (t) =>
           t.nombreUsuario?.toLowerCase() ===
-          usuarioLogueado.nombreUsuario?.toLowerCase()
+          usuarioLogueado?.nombreUsuario?.toLowerCase()
       );
 
-      setMisTurnos(turnosUsuario);
+      const hoy = new Date();
+      const turnosFuturos = turnosUsuario.filter((t) => {
+        const fechaTurno = new Date(t.fecha);
+        return fechaTurno.setHours(0, 0, 0, 0) >= hoy.setHours(0, 0, 0, 0);
+      });
+
+      setMisTurnos(turnosFuturos);
     } catch (error) {
-      console.error("Error al cargar mis turnos", error);
+      console.error("Error al cargar mis turnos:", error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCancelarReserva = async (idTurno) => {
+    Swal.fire({
+      title: "¿Cancelar reserva?",
+      text: "Esta acción no se puede deshacer.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Sí, cancelar",
+      cancelButtonText: "No",
+      background: "#212529",
+      color: "#fff",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const respuesta = await eliminarTurnoAPI(idTurno);
+
+          if (respuesta && respuesta.ok) {
+            Swal.fire({
+              title: "Reserva cancelada",
+              icon: "success",
+              timer: 1800,
+              background: "#212529",
+              color: "#fff",
+              showConfirmButton: false,
+            });
+            cargarMisTurnos();
+          } else {
+            Swal.fire({
+              title: "Error",
+              text: "No se pudo cancelar la reserva.",
+              icon: "error",
+              background: "#212529",
+              color: "#fff",
+            });
+          }
+        } catch (error) {
+          console.error("Error al cancelar reserva:", error);
+          Swal.fire({
+            title: "Error",
+            text: "Ocurrió un problema al conectar con el servidor.",
+            icon: "error",
+            background: "#212529",
+            color: "#fff",
+          });
+        }
+      }
+    });
   };
 
   const formatFecha = (fecha) => {
@@ -55,7 +111,7 @@ const MisReservasModal = ({ show, onHide, usuarioLogueado }) => {
           </div>
         ) : misTurnos.length === 0 ? (
           <Alert variant="info" className="text-center">
-            No tenés reservas activas todavía.
+            No tenés reservas activas.
           </Alert>
         ) : (
           <Table striped bordered hover variant="dark" responsive>
@@ -65,6 +121,7 @@ const MisReservasModal = ({ show, onHide, usuarioLogueado }) => {
                 <th>Cancha</th>
                 <th>Categoría</th>
                 <th>Horario</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -75,6 +132,15 @@ const MisReservasModal = ({ show, onHide, usuarioLogueado }) => {
                   <td>{turno.canchaId?.categoriaCancha || "N/A"}</td>
                   <td>
                     <Badge bg="success">{turno.horario}</Badge>
+                  </td>
+                  <td>
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={() => handleCancelarReserva(turno._id)}
+                    >
+                      Cancelar
+                    </Button>
                   </td>
                 </tr>
               ))}

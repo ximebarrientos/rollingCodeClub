@@ -47,7 +47,7 @@ const ReservarTurnos = ({ usuarioLogueado, setShowModalLogin }) => {
     if (!usuarioLogueado || !usuarioLogueado.token) {
       Swal.fire({
         title: "Inicio de sesión requerido",
-        text: "Para reservar turnos necesitas estar logueado primero",
+        text: "Para reservar turnos necesitás iniciar sesión primero.",
         icon: "info",
         confirmButtonText: "Ir al login",
         confirmButtonColor: "#63ca63ff",
@@ -63,6 +63,7 @@ const ReservarTurnos = ({ usuarioLogueado, setShowModalLogin }) => {
           navigate("/");
         }
       });
+      return; 
     }
     setCanchaSeleccionada(cancha);
     setShowModal(true);
