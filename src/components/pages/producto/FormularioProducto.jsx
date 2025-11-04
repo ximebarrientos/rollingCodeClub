@@ -11,6 +11,7 @@ const FormularioProducto = ({
 }) => {
   const [preview, setPreview] = useState("");
   const [imagenActual, setImagenActual] = useState("");
+  const [cargandoProducto, setCargandoProducto] = useState(false);
 
   const {
     register,
@@ -22,25 +23,8 @@ const FormularioProducto = ({
     watch,
   } = useForm();
 
-const categoriaActual = watch("categoria");
-const subcategoriaActual = watch("subcategoria");
-
-useEffect(() => {
-
-  if (categoriaActual === "Accesorios") {
-    resetField("tallesTexto");
-    resetField("numerosTexto");
-  }
-
-  if (categoriaActual === "Indumentaria") {
-    if (!["Camisetas", "Shorts"].includes(subcategoriaActual)) {
-      resetField("tallesTexto");
-    }
-    if (subcategoriaActual !== "Botines") {
-      resetField("numerosTexto");
-    }
-  }
-}, [categoriaActual, subcategoriaActual, resetField]);
+  const categoriaActual = watch("categoria");
+  const subcategoriaActual = watch("subcategoria");
 
   const subcategoriasPorCategoria = {
     Indumentaria: ["Camisetas", "Shorts", "Botines"],
@@ -49,24 +33,58 @@ useEffect(() => {
 
   useEffect(() => {
     if (productoEditado) {
+      setCargandoProducto(true);
+    }
+  }, [productoEditado]);
+
+  useEffect(() => {
+    if (cargandoProducto) return;
+
+    if (categoriaActual === "Accesorios") {
+      resetField("tallesTexto");
+      resetField("numerosTexto");
+    }
+
+    if (categoriaActual === "Indumentaria") {
+      if (!["Camisetas", "Shorts"].includes(subcategoriaActual)) {
+        resetField("tallesTexto");
+      }
+      if (subcategoriaActual !== "Botines") {
+        resetField("numerosTexto");
+      }
+    }
+  }, [categoriaActual, subcategoriaActual, resetField, cargandoProducto]);
+
+  useEffect(() => {
+    if (productoEditado) {
       setValue("nombreProducto", productoEditado.nombreProducto);
       setValue("precio", productoEditado.precio);
       setValue("categoria", productoEditado.categoria);
       setValue("subcategoria", productoEditado.subcategoria);
       setValue("descripcion", productoEditado.descripcion);
+
       if (productoEditado.talles) {
         setValue("tallesTexto", productoEditado.talles.join(", "));
       }
       if (productoEditado.numeros) {
         setValue("numerosTexto", productoEditado.numeros.join(", "));
       }
+
       setImagenActual(productoEditado.imagen);
+
+      setTimeout(() => setCargandoProducto(false), 200);
     } else {
       reset();
       setPreview("");
       setImagenActual("");
     }
   }, [productoEditado, setValue, reset]);
+
+  const subcategoriasDisponibles =
+    subcategoriasPorCategoria[categoriaActual] ||
+    (productoEditado
+      ? subcategoriasPorCategoria[productoEditado.categoria]
+      : []);
 
   const onSubmit = async (data) => {
     try {
@@ -231,24 +249,23 @@ useEffect(() => {
                 {...register("subcategoria", {
                   required: "Seleccione una subcategoría",
                 })}
-                disabled={!watch("categoria")}
+                disabled={!categoriaActual && !productoEditado}
               >
                 <option value="">Seleccionar</option>
-                {watch("categoria") &&
-                  subcategoriasPorCategoria[watch("categoria")]?.map((sub) => (
-                    <option key={sub} value={sub}>
-                      {sub}
-                    </option>
-                  ))}
+                {subcategoriasDisponibles.map((sub) => (
+                  <option key={sub} value={sub}>
+                    {sub}
+                  </option>
+                ))}
               </Form.Select>
               <Form.Text className="text-danger">
                 {errors.subcategoria?.message}
               </Form.Text>
             </Form.Group>
 
-            {watch("categoria") === "Indumentaria" && (
+            {categoriaActual === "Indumentaria" && (
               <>
-                {["Camisetas", "Shorts"].includes(watch("subcategoria")) && (
+                {["Camisetas", "Shorts"].includes(subcategoriaActual) && (
                   <Form.Group className="mb-3">
                     <Form.Label>Talles (separados por coma)</Form.Label>
                     <Form.Control
@@ -263,7 +280,7 @@ useEffect(() => {
                   </Form.Group>
                 )}
 
-                {watch("subcategoria") === "Botines" && (
+                {subcategoriaActual === "Botines" && (
                   <Form.Group className="mb-3">
                     <Form.Label>Números (separados por coma)</Form.Label>
                     <Form.Control

@@ -54,8 +54,8 @@ export default function Menu({ usuarioLogueado, setUsuarioLogueado, onLoginClick
                     <NavLink className="nav-link" to={"/administrador"}>
                       Administrador
                     </NavLink>
-                    <Button size="sm" onClick={logout} className="py-2">
-                      Logout
+                    <Button variant="info" size="sm" onClick={logout} className="py-2">
+                      Cerrar Sesión
                     </Button>
                   </>
                 ) : (
@@ -68,8 +68,8 @@ export default function Menu({ usuarioLogueado, setUsuarioLogueado, onLoginClick
                         <i className="bi bi-cart-fill fs-4 text-success"></i>
                       </NavLink>
                     </div>
-                    <Button size="sm" onClick={logout} className="py-2">
-                      Logout
+                    <Button variant="info" size="sm" onClick={logout} className="py-2">
+                      Cerrar Sesión
                     </Button>
                   </>
                 )}
